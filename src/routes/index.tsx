@@ -328,6 +328,20 @@ function StageSummary({ stage }: { stage: Stage }) {
           {stage.subtitle}
         </p>
 
+        {stage.intro && (
+          <details className="group rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-xs leading-relaxed text-muted-foreground transition-colors hover:bg-white/[0.05]">
+            <summary className="cursor-pointer list-none text-[11px] font-medium uppercase tracking-wider text-foreground/80">
+              <span className="inline-flex items-center gap-1.5">
+                Контекст этапа
+                <span className="opacity-50 transition-transform group-open:rotate-180">▾</span>
+              </span>
+            </summary>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              {stage.intro}
+            </p>
+          </details>
+        )}
+
         <div className="grid gap-2 pt-2">
           {stage.categories.map((c) => (
             <div
