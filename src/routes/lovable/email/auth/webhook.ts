@@ -1,3 +1,4 @@
+// Auth email webhook — renders branded RU templates and enqueues to pgmq.
 import * as React from 'react'
 import { render } from '@react-email/components'
 import { parseEmailWebhookPayload } from '@lovable.dev/email-js'

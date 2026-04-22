@@ -1,3 +1,4 @@
+// Auth email preview — renders templates with sample data for dashboard preview.
 import * as React from 'react'
 import { render } from '@react-email/components'
 import { createFileRoute } from '@tanstack/react-router'
