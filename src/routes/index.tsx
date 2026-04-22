@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
+import { useAuth } from "@/hooks/use-auth";
+import { useChecklistProgress, itemId } from "@/hooks/use-checklist-progress";
 
 export const Route = createFileRoute("/")({
   component: MindMapPage,
@@ -17,6 +19,14 @@ export const Route = createFileRoute("/")({
 });
 
 function MindMapPage() {
+  const navigate = useNavigate();
+  const { user, ready, logout } = useAuth();
+  const { progress, toggle } = useChecklistProgress();
+
+  useEffect(() => {
+    if (ready && !user) navigate({ to: "/login", replace: true });
+  }, [ready, user, navigate]);
+
   const [activeStage, setActiveStage] = useState<string>(ROADMAP[0].id);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -98,6 +108,22 @@ function MindMapPage() {
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
+        {/* User bar */}
+        {user && (
+          <div className="glass-pill mb-6 flex items-center justify-between gap-3 rounded-full px-4 py-2 text-xs">
+            <span className="truncate text-foreground/80">
+              Привет, <span className="font-medium text-foreground">{user.name}</span>
+              <span className="ml-2 hidden text-muted-foreground sm:inline">· {user.email}</span>
+            </span>
+            <button
+              onClick={logout}
+              className="shrink-0 rounded-full px-3 py-1 text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-foreground"
+            >
+              Выйти
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <header className="mb-8 flex flex-col gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
@@ -147,13 +173,14 @@ function MindMapPage() {
         <StageRail
           activeStage={activeStage}
           onSelect={setActiveStage}
+          progress={progress}
         />
 
         {/* Detail */}
         <section className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-12">
           {/* Stage summary */}
           <aside className="lg:col-span-4">
-            <StageSummary stage={stage} />
+            <StageSummary stage={stage} progress={progress} />
           </aside>
 
           {/* Categories */}
@@ -172,6 +199,8 @@ function MindMapPage() {
                     open={isOpen}
                     onToggle={() => setOpenCategory(isOpen ? null : key)}
                     index={idx}
+                    progress={progress}
+                    onItemToggle={toggle}
                   />
                 );
               })}
@@ -226,15 +255,22 @@ function MindMapPage() {
 function StageRail({
   activeStage,
   onSelect,
+  progress,
 }: {
   activeStage: string;
   onSelect: (id: string) => void;
+  progress: Record<string, boolean>;
 }) {
   return (
     <div className="glass relative rounded-3xl p-3 sm:p-4">
       <div className="flex gap-2 overflow-x-auto sm:gap-3">
         {ROADMAP.map((s) => {
           const active = s.id === activeStage;
+          const total = s.categories.reduce((sum, c) => sum + c.items.length, 0);
+          const done = s.categories.reduce(
+            (sum, c) => sum + c.items.filter((_, i) => progress[itemId(s.id, c.title, i)]).length,
+            0,
+          );
           return (
             <button
               key={s.id}
@@ -270,9 +306,9 @@ function StageRail({
                 >
                   {s.index}
                 </span>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                    Этап {s.index}
+                    Этап {s.index} · {done}/{total}
                   </div>
                   <div className="truncate text-sm font-medium text-foreground">
                     {s.title}
@@ -289,8 +325,13 @@ function StageRail({
 
 /* ─────────────────────────────────────── Stage Summary */
 
-function StageSummary({ stage }: { stage: Stage }) {
+function StageSummary({ stage, progress }: { stage: Stage; progress: Record<string, boolean> }) {
   const itemCount = stage.categories.reduce((s, c) => s + c.items.length, 0);
+  const doneCount = stage.categories.reduce(
+    (s, c) => s + c.items.filter((_, i) => progress[itemId(stage.id, c.title, i)]).length,
+    0,
+  );
+  const pct = itemCount ? Math.round((doneCount / itemCount) * 100) : 0;
   return (
     <div
       className="glass specular relative overflow-hidden rounded-3xl p-7 animate-fade-up"
@@ -316,7 +357,7 @@ function StageSummary({ stage }: { stage: Stage }) {
             {stage.index}
           </span>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            Этап {stage.index} · {stage.categories.length} блоков · {itemCount} шагов
+            Этап {stage.index} · {doneCount}/{itemCount} выполнено
           </div>
         </div>
 
@@ -342,24 +383,41 @@ function StageSummary({ stage }: { stage: Stage }) {
           </details>
         )}
 
-        <div className="grid gap-2 pt-2">
-          {stage.categories.map((c) => (
+        {/* Progress bar */}
+        <div className="space-y-1.5 pt-1">
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
+            <span>Прогресс этапа</span>
+            <span className="font-medium" style={{ color: `var(--${stage.color})` }}>{pct}%</span>
+          </div>
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
             <div
-              key={c.title}
-              className="glass-soft flex items-center justify-between rounded-xl px-3.5 py-2.5"
-            >
-              <span className="text-sm text-foreground/90">{c.title}</span>
-              <span
-                className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                style={{
-                  background: `oklch(from var(--${stage.color}) l c h / 0.2)`,
-                  color: `var(--${stage.color})`,
-                }}
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${pct}%`, background: `var(--${stage.color})` }}
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-2 pt-2">
+          {stage.categories.map((c) => {
+            const done = c.items.filter((_, i) => progress[itemId(stage.id, c.title, i)]).length;
+            return (
+              <div
+                key={c.title}
+                className="glass-soft flex items-center justify-between rounded-xl px-3.5 py-2.5"
               >
-                {c.items.length}
-              </span>
-            </div>
-          ))}
+                <span className="text-sm text-foreground/90">{c.title}</span>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums"
+                  style={{
+                    background: `oklch(from var(--${stage.color}) l c h / 0.2)`,
+                    color: `var(--${stage.color})`,
+                  }}
+                >
+                  {done}/{c.items.length}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -376,6 +434,8 @@ function CategoryCard({
   open,
   onToggle,
   index,
+  progress,
+  onItemToggle,
 }: {
   stage: Stage;
   title: string;
@@ -384,7 +444,10 @@ function CategoryCard({
   open: boolean;
   onToggle: () => void;
   index: number;
+  progress: Record<string, boolean>;
+  onItemToggle: (id: string) => void;
 }) {
+  const doneCount = items.filter((_, i) => progress[itemId(stage.id, title, i)]).length;
   return (
     <div
       className={[
@@ -416,12 +479,19 @@ function CategoryCard({
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+            className="rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums"
             style={{
-              background: "oklch(1 0 0 / 0.08)",
+              background:
+                doneCount === items.length && items.length > 0
+                  ? `oklch(from var(--${stage.color}) l c h / 0.25)`
+                  : "oklch(1 0 0 / 0.08)",
+              color:
+                doneCount === items.length && items.length > 0
+                  ? `var(--${stage.color})`
+                  : undefined,
             }}
           >
-            {items.length}
+            {doneCount}/{items.length}
           </span>
           <Chevron open={open} />
         </div>
@@ -444,35 +514,65 @@ function CategoryCard({
                 {intro}
               </p>
             )}
-            <ul className="space-y-3">
-              {items.map((item, i) => (
-                <li
-                  key={i}
-                  className="group rounded-xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
-                >
-                  <div className="flex items-start gap-3">
-                    <span
-                      className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border text-[10px]"
-                      style={{
-                        borderColor: `oklch(from var(--${stage.color}) l c h / 0.5)`,
-                        color: `var(--${stage.color})`,
-                        background: `oklch(from var(--${stage.color}) l c h / 0.08)`,
-                      }}
-                      aria-hidden
+            <ul className="space-y-1.5">
+              {items.map((item, i) => {
+                const id = itemId(stage.id, title, i);
+                const checked = !!progress[id];
+                return (
+                  <li key={i}>
+                    <button
+                      type="button"
+                      onClick={() => onItemToggle(id)}
+                      className="group flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/[0.04]"
                     >
-                      ☐
-                    </span>
-                    <div className="space-y-1.5">
-                      <p className="text-sm font-medium leading-snug text-foreground">
-                        {item.title}
-                      </p>
-                      <p className="text-xs leading-relaxed text-muted-foreground">
-                        {item.detail}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              ))}
+                      <span
+                        className="mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[6px] border transition-all"
+                        style={
+                          checked
+                            ? {
+                                borderColor: `var(--${stage.color})`,
+                                background: `var(--${stage.color})`,
+                                boxShadow: `0 4px 12px -4px var(--${stage.color})`,
+                              }
+                            : {
+                                borderColor: `oklch(from var(--${stage.color}) l c h / 0.5)`,
+                                background: `oklch(from var(--${stage.color}) l c h / 0.08)`,
+                              }
+                        }
+                        aria-hidden
+                      >
+                        {checked && (
+                          <svg
+                            width="11"
+                            height="11"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="oklch(0.18 0.03 255)"
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        )}
+                      </span>
+                      <div className="space-y-1.5">
+                        <p
+                          className={[
+                            "text-sm font-medium leading-snug transition-colors",
+                            checked ? "text-muted-foreground line-through" : "text-foreground",
+                          ].join(" ")}
+                        >
+                          {item.title}
+                        </p>
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {item.detail}
+                        </p>
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
