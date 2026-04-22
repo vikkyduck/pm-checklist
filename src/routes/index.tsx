@@ -506,35 +506,65 @@ function CategoryCard({
                 {intro}
               </p>
             )}
-            <ul className="space-y-3">
-              {items.map((item, i) => (
-                <li
-                  key={i}
-                  className="group rounded-xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
-                >
-                  <div className="flex items-start gap-3">
-                    <span
-                      className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border text-[10px]"
-                      style={{
-                        borderColor: `oklch(from var(--${stage.color}) l c h / 0.5)`,
-                        color: `var(--${stage.color})`,
-                        background: `oklch(from var(--${stage.color}) l c h / 0.08)`,
-                      }}
-                      aria-hidden
+            <ul className="space-y-1.5">
+              {items.map((item, i) => {
+                const id = itemId(stage.id, title, i);
+                const checked = !!progress[id];
+                return (
+                  <li key={i}>
+                    <button
+                      type="button"
+                      onClick={() => onItemToggle(id)}
+                      className="group flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/[0.04]"
                     >
-                      ☐
-                    </span>
-                    <div className="space-y-1.5">
-                      <p className="text-sm font-medium leading-snug text-foreground">
-                        {item.title}
-                      </p>
-                      <p className="text-xs leading-relaxed text-muted-foreground">
-                        {item.detail}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              ))}
+                      <span
+                        className="mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[6px] border transition-all"
+                        style={
+                          checked
+                            ? {
+                                borderColor: `var(--${stage.color})`,
+                                background: `var(--${stage.color})`,
+                                boxShadow: `0 4px 12px -4px var(--${stage.color})`,
+                              }
+                            : {
+                                borderColor: `oklch(from var(--${stage.color}) l c h / 0.5)`,
+                                background: `oklch(from var(--${stage.color}) l c h / 0.08)`,
+                              }
+                        }
+                        aria-hidden
+                      >
+                        {checked && (
+                          <svg
+                            width="11"
+                            height="11"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="oklch(0.18 0.03 255)"
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        )}
+                      </span>
+                      <div className="space-y-1.5">
+                        <p
+                          className={[
+                            "text-sm font-medium leading-snug transition-colors",
+                            checked ? "text-muted-foreground line-through" : "text-foreground",
+                          ].join(" ")}
+                        >
+                          {item.title}
+                        </p>
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {item.detail}
+                        </p>
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
