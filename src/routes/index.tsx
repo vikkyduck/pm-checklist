@@ -43,7 +43,10 @@ function MindMapPage() {
       .map((c) => ({
         ...c,
         items: c.items.filter(
-          (i) => i.toLowerCase().includes(q) || c.title.toLowerCase().includes(q),
+          (i) =>
+            i.title.toLowerCase().includes(q) ||
+            i.detail.toLowerCase().includes(q) ||
+            c.title.toLowerCase().includes(q),
         ),
       }))
       .filter((c) => c.items.length > 0);
