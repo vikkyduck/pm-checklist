@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useEffect, useRef } from "react";
-import { ROADMAP, type Stage } from "@/lib/pm-roadmap";
+import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
 
 export const Route = createFileRoute("/")({
   component: MindMapPage,
@@ -43,7 +43,10 @@ function MindMapPage() {
       .map((c) => ({
         ...c,
         items: c.items.filter(
-          (i) => i.toLowerCase().includes(q) || c.title.toLowerCase().includes(q),
+          (i) =>
+            i.title.toLowerCase().includes(q) ||
+            i.detail.toLowerCase().includes(q) ||
+            c.title.toLowerCase().includes(q),
         ),
       }))
       .filter((c) => c.items.length > 0);
@@ -96,22 +99,24 @@ function MindMapPage() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
         {/* Header */}
-        <header className="mb-10 flex flex-col gap-6 lg:mb-14 lg:flex-row lg:items-end lg:justify-between">
+        <header className="mb-8 flex flex-col gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide text-foreground/80">
               <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              Project Manager · интерактивный чек-лист
+              {META.subtitle}
             </div>
             <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Сопровождающие задачи PM
+              {META.title}
               <span className="block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
                 от первого дня до закрытия
               </span>
             </h1>
-            <p className="max-w-xl text-base text-muted-foreground">
-              Шесть этапов, {ROADMAP.reduce((s, x) => s + x.categories.length, 0)}{" "}
-              блоков и {totalItems} конкретных шагов. Выберите этап слева, раскройте
-              блок — увидите чек-лист.
+            <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
+              {META.description}
+            </p>
+            <p className="max-w-xl text-xs text-muted-foreground/80">
+              Шесть этапов · {ROADMAP.reduce((s, x) => s + x.categories.length, 0)}{" "}
+              блоков · {totalItems} конкретных шагов
             </p>
           </div>
 
@@ -162,6 +167,7 @@ function MindMapPage() {
                     key={key}
                     stage={stage}
                     title={cat.title}
+                    intro={cat.intro}
                     items={cat.items}
                     open={isOpen}
                     onToggle={() => setOpenCategory(isOpen ? null : key)}
@@ -175,6 +181,31 @@ function MindMapPage() {
                 </div>
               )}
             </div>
+          </div>
+        </section>
+
+        {/* How to use */}
+        <section className="mt-10">
+          <div className="glass rounded-3xl p-6 lg:p-8">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+              <h2 className="text-sm font-medium uppercase tracking-wider text-foreground/80">
+                Как пользоваться
+              </h2>
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-3">
+              {META.usage.map((u, i) => (
+                <li
+                  key={i}
+                  className="glass-soft rounded-2xl p-4 text-sm leading-relaxed text-foreground/85"
+                >
+                  <span className="mb-2 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {u}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -297,6 +328,20 @@ function StageSummary({ stage }: { stage: Stage }) {
           {stage.subtitle}
         </p>
 
+        {stage.intro && (
+          <details className="group rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-xs leading-relaxed text-muted-foreground transition-colors hover:bg-white/[0.05]">
+            <summary className="cursor-pointer list-none text-[11px] font-medium uppercase tracking-wider text-foreground/80">
+              <span className="inline-flex items-center gap-1.5">
+                Контекст этапа
+                <span className="opacity-50 transition-transform group-open:rotate-180">▾</span>
+              </span>
+            </summary>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              {stage.intro}
+            </p>
+          </details>
+        )}
+
         <div className="grid gap-2 pt-2">
           {stage.categories.map((c) => (
             <div
@@ -326,6 +371,7 @@ function StageSummary({ stage }: { stage: Stage }) {
 function CategoryCard({
   stage,
   title,
+  intro,
   items,
   open,
   onToggle,
@@ -333,7 +379,8 @@ function CategoryCard({
 }: {
   stage: Stage;
   title: string;
-  items: string[];
+  intro?: string;
+  items: Item[];
   open: boolean;
   onToggle: () => void;
   index: number;
@@ -363,9 +410,11 @@ function CategoryCard({
               boxShadow: `0 0 12px var(--${stage.color})`,
             }}
           />
-          <h3 className="text-base font-medium text-foreground">{title}</h3>
+          <h3 className="text-base font-medium leading-snug text-foreground">
+            {title}
+          </h3>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <span
             className="rounded-full px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
             style={{
@@ -384,20 +433,44 @@ function CategoryCard({
       >
         <div className="overflow-hidden">
           <div className="border-t border-white/10 px-5 py-4">
-            <ul className="space-y-2.5">
+            {intro && (
+              <p
+                className="mb-4 rounded-xl border-l-2 px-3 py-2 text-xs leading-relaxed text-muted-foreground"
+                style={{
+                  borderColor: `var(--${stage.color})`,
+                  background: "oklch(1 0 0 / 0.03)",
+                }}
+              >
+                {intro}
+              </p>
+            )}
+            <ul className="space-y-3">
               {items.map((item, i) => (
                 <li
                   key={i}
-                  className="group flex items-start gap-3 rounded-lg px-2 py-1.5 text-sm text-foreground/90 transition-colors hover:bg-white/5"
+                  className="group rounded-xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
                 >
-                  <span
-                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{
-                      background: `var(--${stage.color})`,
-                      opacity: 0.7,
-                    }}
-                  />
-                  <span className="leading-relaxed">{item}</span>
+                  <div className="flex items-start gap-3">
+                    <span
+                      className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border text-[10px]"
+                      style={{
+                        borderColor: `oklch(from var(--${stage.color}) l c h / 0.5)`,
+                        color: `var(--${stage.color})`,
+                        background: `oklch(from var(--${stage.color}) l c h / 0.08)`,
+                      }}
+                      aria-hidden
+                    >
+                      ☐
+                    </span>
+                    <div className="space-y-1.5">
+                      <p className="text-sm font-medium leading-snug text-foreground">
+                        {item.title}
+                      </p>
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        {item.detail}
+                      </p>
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>
