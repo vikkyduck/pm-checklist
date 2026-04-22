@@ -1,35 +1,66 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { api, auth } from "@/lib/api";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth/callback")({
   component: CallbackPage,
-  validateSearch: (search: Record<string, unknown>) => ({
-    token: typeof search.token === "string" ? search.token : "",
-  }),
   head: () => ({ meta: [{ title: "Входим… · PM Чек-лист" }] }),
 });
 
 function CallbackPage() {
-  const { token } = Route.useSearch();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) { setError("В ссылке нет токена"); return; }
     let cancelled = false;
-    (async () => {
-      try {
-        const { token: jwt, user } = await api.verifyToken(token);
-        if (cancelled) return;
-        auth.setSession(jwt, user);
-        navigate({ to: "/", replace: true });
-      } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Ошибка входа");
+
+    async function finish() {
+      // Supabase auto-detects session from URL hash/query (detectSessionInUrl).
+      // We just wait for the session to materialise.
+      const { data, error } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (error) {
+        setError(error.message);
+        return;
       }
-    })();
-    return () => { cancelled = true; };
-  }, [token, navigate]);
+      if (data.session) {
+        // Make sure profile.display_name reflects the name from login form.
+        const meta = data.session.user.user_metadata as Record<string, unknown>;
+        const displayName =
+          (typeof meta?.display_name === "string" && meta.display_name) ||
+          (typeof meta?.name === "string" && meta.name) ||
+          null;
+        if (displayName) {
+          await supabase
+            .from("profiles")
+            .update({ display_name: displayName })
+            .eq("id", data.session.user.id);
+        }
+        navigate({ to: "/", replace: true });
+        return;
+      }
+
+      // If session not ready yet, listen briefly.
+      const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+        if (session) {
+          sub.subscription.unsubscribe();
+          navigate({ to: "/", replace: true });
+        }
+      });
+      // Timeout fallback
+      setTimeout(() => {
+        if (!cancelled) {
+          sub.subscription.unsubscribe();
+          setError("Не удалось войти. Запросите ссылку ещё раз.");
+        }
+      }, 5000);
+    }
+
+    finish();
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
 
   return (
     <main className="relative flex min-h-screen items-center justify-center px-6">
