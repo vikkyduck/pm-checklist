@@ -426,6 +426,8 @@ function CategoryCard({
   open,
   onToggle,
   index,
+  progress,
+  onItemToggle,
 }: {
   stage: Stage;
   title: string;
@@ -434,7 +436,10 @@ function CategoryCard({
   open: boolean;
   onToggle: () => void;
   index: number;
+  progress: Record<string, boolean>;
+  onItemToggle: (id: string) => void;
 }) {
+  const doneCount = items.filter((_, i) => progress[itemId(stage.id, title, i)]).length;
   return (
     <div
       className={[
@@ -466,12 +471,19 @@ function CategoryCard({
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+            className="rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums"
             style={{
-              background: "oklch(1 0 0 / 0.08)",
+              background:
+                doneCount === items.length && items.length > 0
+                  ? `oklch(from var(--${stage.color}) l c h / 0.25)`
+                  : "oklch(1 0 0 / 0.08)",
+              color:
+                doneCount === items.length && items.length > 0
+                  ? `var(--${stage.color})`
+                  : undefined,
             }}
           >
-            {items.length}
+            {doneCount}/{items.length}
           </span>
           <Chevron open={open} />
         </div>
