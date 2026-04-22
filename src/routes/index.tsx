@@ -167,6 +167,7 @@ function MindMapPage() {
                     key={key}
                     stage={stage}
                     title={cat.title}
+                    intro={cat.intro}
                     items={cat.items}
                     open={isOpen}
                     onToggle={() => setOpenCategory(isOpen ? null : key)}
@@ -180,6 +181,31 @@ function MindMapPage() {
                 </div>
               )}
             </div>
+          </div>
+        </section>
+
+        {/* How to use */}
+        <section className="mt-10">
+          <div className="glass rounded-3xl p-6 lg:p-8">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+              <h2 className="text-sm font-medium uppercase tracking-wider text-foreground/80">
+                Как пользоваться
+              </h2>
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-3">
+              {META.usage.map((u, i) => (
+                <li
+                  key={i}
+                  className="glass-soft rounded-2xl p-4 text-sm leading-relaxed text-foreground/85"
+                >
+                  <span className="mb-2 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {u}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
