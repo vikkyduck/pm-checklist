@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+// Auth hook backed by Lovable Cloud (magic link).
 
 export type PMUser = {
   id: string;
