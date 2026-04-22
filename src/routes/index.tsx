@@ -173,6 +173,7 @@ function MindMapPage() {
         <StageRail
           activeStage={activeStage}
           onSelect={setActiveStage}
+          progress={progress}
         />
 
         {/* Detail */}
