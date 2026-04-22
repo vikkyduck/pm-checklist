@@ -19,6 +19,14 @@ export const Route = createFileRoute("/")({
 });
 
 function MindMapPage() {
+  const navigate = useNavigate();
+  const { user, ready, logout } = useAuth();
+  const { progress, toggle } = useChecklistProgress();
+
+  useEffect(() => {
+    if (ready && !user) navigate({ to: "/login", replace: true });
+  }, [ready, user, navigate]);
+
   const [activeStage, setActiveStage] = useState<string>(ROADMAP[0].id);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [query, setQuery] = useState("");
