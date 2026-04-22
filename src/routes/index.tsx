@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
+import { useAuth } from "@/hooks/use-auth";
+import { useChecklistProgress, itemId } from "@/hooks/use-checklist-progress";
 
 export const Route = createFileRoute("/")({
   component: MindMapPage,
