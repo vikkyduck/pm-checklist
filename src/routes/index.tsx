@@ -179,7 +179,7 @@ function MindMapPage() {
         <section className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-12">
           {/* Stage summary */}
           <aside className="lg:col-span-4">
-            <StageSummary stage={stage} />
+            <StageSummary stage={stage} progress={progress} />
           </aside>
 
           {/* Categories */}
@@ -198,6 +198,8 @@ function MindMapPage() {
                     open={isOpen}
                     onToggle={() => setOpenCategory(isOpen ? null : key)}
                     index={idx}
+                    progress={progress}
+                    onItemToggle={toggle}
                   />
                 );
               })}
