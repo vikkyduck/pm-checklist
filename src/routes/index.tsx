@@ -317,8 +317,13 @@ function StageRail({
 
 /* ─────────────────────────────────────── Stage Summary */
 
-function StageSummary({ stage }: { stage: Stage }) {
+function StageSummary({ stage, progress }: { stage: Stage; progress: Record<string, boolean> }) {
   const itemCount = stage.categories.reduce((s, c) => s + c.items.length, 0);
+  const doneCount = stage.categories.reduce(
+    (s, c) => s + c.items.filter((_, i) => progress[itemId(stage.id, c.title, i)]).length,
+    0,
+  );
+  const pct = itemCount ? Math.round((doneCount / itemCount) * 100) : 0;
   return (
     <div
       className="glass specular relative overflow-hidden rounded-3xl p-7 animate-fade-up"
@@ -344,7 +349,7 @@ function StageSummary({ stage }: { stage: Stage }) {
             {stage.index}
           </span>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            Этап {stage.index} · {stage.categories.length} блоков · {itemCount} шагов
+            Этап {stage.index} · {doneCount}/{itemCount} выполнено
           </div>
         </div>
 
@@ -370,24 +375,41 @@ function StageSummary({ stage }: { stage: Stage }) {
           </details>
         )}
 
-        <div className="grid gap-2 pt-2">
-          {stage.categories.map((c) => (
+        {/* Progress bar */}
+        <div className="space-y-1.5 pt-1">
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
+            <span>Прогресс этапа</span>
+            <span className="font-medium" style={{ color: `var(--${stage.color})` }}>{pct}%</span>
+          </div>
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
             <div
-              key={c.title}
-              className="glass-soft flex items-center justify-between rounded-xl px-3.5 py-2.5"
-            >
-              <span className="text-sm text-foreground/90">{c.title}</span>
-              <span
-                className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                style={{
-                  background: `oklch(from var(--${stage.color}) l c h / 0.2)`,
-                  color: `var(--${stage.color})`,
-                }}
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${pct}%`, background: `var(--${stage.color})` }}
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-2 pt-2">
+          {stage.categories.map((c) => {
+            const done = c.items.filter((_, i) => progress[itemId(stage.id, c.title, i)]).length;
+            return (
+              <div
+                key={c.title}
+                className="glass-soft flex items-center justify-between rounded-xl px-3.5 py-2.5"
               >
-                {c.items.length}
-              </span>
-            </div>
-          ))}
+                <span className="text-sm text-foreground/90">{c.title}</span>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums"
+                  style={{
+                    background: `oklch(from var(--${stage.color}) l c h / 0.2)`,
+                    color: `var(--${stage.color})`,
+                  }}
+                >
+                  {done}/{c.items.length}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
