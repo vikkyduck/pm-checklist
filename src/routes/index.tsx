@@ -99,22 +99,24 @@ function MindMapPage() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
         {/* Header */}
-        <header className="mb-10 flex flex-col gap-6 lg:mb-14 lg:flex-row lg:items-end lg:justify-between">
+        <header className="mb-8 flex flex-col gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide text-foreground/80">
               <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              Project Manager · интерактивный чек-лист
+              {META.subtitle}
             </div>
             <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Сопровождающие задачи PM
+              {META.title}
               <span className="block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
                 от первого дня до закрытия
               </span>
             </h1>
-            <p className="max-w-xl text-base text-muted-foreground">
-              Шесть этапов, {ROADMAP.reduce((s, x) => s + x.categories.length, 0)}{" "}
-              блоков и {totalItems} конкретных шагов. Выберите этап слева, раскройте
-              блок — увидите чек-лист.
+            <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
+              {META.description}
+            </p>
+            <p className="max-w-xl text-xs text-muted-foreground/80">
+              Шесть этапов · {ROADMAP.reduce((s, x) => s + x.categories.length, 0)}{" "}
+              блоков · {totalItems} конкретных шагов
             </p>
           </div>
 
