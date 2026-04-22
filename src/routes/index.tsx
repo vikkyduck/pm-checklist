@@ -255,15 +255,22 @@ function MindMapPage() {
 function StageRail({
   activeStage,
   onSelect,
+  progress,
 }: {
   activeStage: string;
   onSelect: (id: string) => void;
+  progress: Record<string, boolean>;
 }) {
   return (
     <div className="glass relative rounded-3xl p-3 sm:p-4">
       <div className="flex gap-2 overflow-x-auto sm:gap-3">
         {ROADMAP.map((s) => {
           const active = s.id === activeStage;
+          const total = s.categories.reduce((sum, c) => sum + c.items.length, 0);
+          const done = s.categories.reduce(
+            (sum, c) => sum + c.items.filter((_, i) => progress[itemId(s.id, c.title, i)]).length,
+            0,
+          );
           return (
             <button
               key={s.id}
@@ -299,9 +306,9 @@ function StageRail({
                 >
                   {s.index}
                 </span>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                    Этап {s.index}
+                    Этап {s.index} · {done}/{total}
                   </div>
                   <div className="truncate text-sm font-medium text-foreground">
                     {s.title}
