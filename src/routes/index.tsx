@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useEffect, useRef } from "react";
-import { ROADMAP, type Stage } from "@/lib/pm-roadmap";
+import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
 
 export const Route = createFileRoute("/")({
   component: MindMapPage,
