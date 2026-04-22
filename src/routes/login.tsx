@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { api, auth, isApiConfigured } from "@/lib/api";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -18,7 +18,9 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (auth.getUser()) navigate({ to: "/" });
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) navigate({ to: "/", replace: true });
+    });
   }, [navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -26,16 +28,18 @@ function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      if (!isApiConfigured()) {
-        // Демо-режим: без сервера сохраняем имя локально
-        auth.setSession("demo-token", { email: email.trim(), name: name.trim() });
-        navigate({ to: "/" });
-        return;
-      }
-      await api.requestMagicLink(email.trim(), name.trim());
+      const redirectTo = `${window.location.origin}/auth/callback`;
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          emailRedirectTo: redirectTo,
+          data: { display_name: name.trim() },
+        },
+      });
+      if (error) throw error;
       setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ошибка");
+      setError(err instanceof Error ? err.message : "Не удалось отправить письмо");
     } finally {
       setLoading(false);
     }
@@ -70,17 +74,20 @@ function LoginPage() {
 
         {sent ? (
           <div className="space-y-4">
-            <div
-              className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-relaxed text-foreground/90"
-            >
-              <p className="font-medium">Письмо отправлено на <span className="text-foreground">{email}</span></p>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-relaxed text-foreground/90">
+              <p className="font-medium">
+                Письмо отправлено на <span className="text-foreground">{email}</span>
+              </p>
               <p className="mt-2 text-muted-foreground">
-                Откройте почту и нажмите кнопку «Войти». Ссылка действует 15 минут.
+                Откройте почту и нажмите кнопку «Войти». Ссылка действует около часа.
               </p>
             </div>
             <button
               type="button"
-              onClick={() => { setSent(false); setEmail(""); }}
+              onClick={() => {
+                setSent(false);
+                setEmail("");
+              }}
               className="w-full rounded-xl px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-white/[0.04] hover:text-foreground"
             >
               Войти под другим email
@@ -116,13 +123,11 @@ function LoginPage() {
               disabled={loading || !email || !name}
               className="w-full rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-[oklch(0.18_0.03_255)] shadow-[0_8px_24px_-8px_var(--accent)] transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Отправляем…" : isApiConfigured() ? "Получить ссылку на почту" : "Войти (демо-режим)"}
+              {loading ? "Отправляем…" : "Получить ссылку на почту"}
             </button>
-            {!isApiConfigured() && (
-              <p className="text-center text-[11px] leading-relaxed text-muted-foreground/70">
-                Бэкенд ещё не подключён. Сейчас прогресс сохраняется только в этом браузере.
-              </p>
-            )}
+            <p className="text-center text-[11px] leading-relaxed text-muted-foreground/70">
+              Без паролей. Ссылка приходит на корпоративный email и открывает чек-лист сразу.
+            </p>
           </form>
         )}
       </div>
@@ -131,7 +136,13 @@ function LoginPage() {
 }
 
 function Field({
-  label, type, value, onChange, placeholder, autoComplete, required,
+  label,
+  type,
+  value,
+  onChange,
+  placeholder,
+  autoComplete,
+  required,
 }: {
   label: string;
   type: string;
