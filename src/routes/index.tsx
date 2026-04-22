@@ -371,6 +371,7 @@ function StageSummary({ stage }: { stage: Stage }) {
 function CategoryCard({
   stage,
   title,
+  intro,
   items,
   open,
   onToggle,
@@ -378,7 +379,8 @@ function CategoryCard({
 }: {
   stage: Stage;
   title: string;
-  items: string[];
+  intro?: string;
+  items: Item[];
   open: boolean;
   onToggle: () => void;
   index: number;
@@ -408,9 +410,11 @@ function CategoryCard({
               boxShadow: `0 0 12px var(--${stage.color})`,
             }}
           />
-          <h3 className="text-base font-medium text-foreground">{title}</h3>
+          <h3 className="text-base font-medium leading-snug text-foreground">
+            {title}
+          </h3>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <span
             className="rounded-full px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
             style={{
@@ -429,20 +433,44 @@ function CategoryCard({
       >
         <div className="overflow-hidden">
           <div className="border-t border-white/10 px-5 py-4">
-            <ul className="space-y-2.5">
+            {intro && (
+              <p
+                className="mb-4 rounded-xl border-l-2 px-3 py-2 text-xs leading-relaxed text-muted-foreground"
+                style={{
+                  borderColor: `var(--${stage.color})`,
+                  background: "oklch(1 0 0 / 0.03)",
+                }}
+              >
+                {intro}
+              </p>
+            )}
+            <ul className="space-y-3">
               {items.map((item, i) => (
                 <li
                   key={i}
-                  className="group flex items-start gap-3 rounded-lg px-2 py-1.5 text-sm text-foreground/90 transition-colors hover:bg-white/5"
+                  className="group rounded-xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
                 >
-                  <span
-                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{
-                      background: `var(--${stage.color})`,
-                      opacity: 0.7,
-                    }}
-                  />
-                  <span className="leading-relaxed">{item}</span>
+                  <div className="flex items-start gap-3">
+                    <span
+                      className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border text-[10px]"
+                      style={{
+                        borderColor: `oklch(from var(--${stage.color}) l c h / 0.5)`,
+                        color: `var(--${stage.color})`,
+                        background: `oklch(from var(--${stage.color}) l c h / 0.08)`,
+                      }}
+                      aria-hidden
+                    >
+                      ☐
+                    </span>
+                    <div className="space-y-1.5">
+                      <p className="text-sm font-medium leading-snug text-foreground">
+                        {item.title}
+                      </p>
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        {item.detail}
+                      </p>
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>
