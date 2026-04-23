@@ -6,7 +6,6 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
   Link,
   Preview,
@@ -27,73 +26,56 @@ export const InviteEmail = ({
   confirmationUrl,
   recipientName,
 }: InviteEmailProps) => {
-  const greetingName = recipientName?.trim() || 'привет'
-  const isNamed = Boolean(recipientName?.trim())
+  const name = recipientName?.trim()
 
   return (
     <Html lang="ru" dir="ltr">
       <Head />
       <Preview>
-        Приглашение в PM Чек-лист — ваш помощник для запуска проектов
+        {name
+          ? `${name}, вас приглашают в PM Чек-лист`
+          : 'Вас приглашают в PM Чек-лист'}
       </Preview>
       <Body style={main}>
-        <Container style={outer}>
+        <Container style={shell}>
           <Section style={card}>
-            <Text style={brand}>PM Чек-лист</Text>
-
-            <Heading style={h1}>
-              {isNamed ? `${greetingName}, рады вас видеть 👋` : 'Рады вас видеть 👋'}
+            <Text style={eyebrow}>PM Чек-лист</Text>
+            <Heading style={title}>
+              {name ? `${name}, добро пожаловать 👋` : 'Добро пожаловать 👋'}
             </Heading>
-
-            <Text style={text}>
-              Вас приглашают присоединиться к{' '}
+            <Text style={lead}>
+              Вас пригласили в{' '}
               <Link href={siteUrl} style={link}>
                 {siteName}
-              </Link>{' '}
-              — это интерактивный чек-лист для&nbsp;продакт-менеджеров,
-              который ведёт вас по&nbsp;этапам запуска продукта: от&nbsp;идеи
-              до&nbsp;первых пользователей.
+              </Link>
+              . Это рабочее пространство с понятным пошаговым чек-листом,
+              который помогает запускать продукт без хаоса и потерь по пути.
             </Text>
 
-            <Section style={featuresWrap}>
-              <Text style={featureItem}>
-                <span style={dot}>•</span> Пошаговые задачи по&nbsp;6&nbsp;этапам
-                продуктового цикла
-              </Text>
-              <Text style={featureItem}>
-                <span style={dot}>•</span> Прогресс сохраняется автоматически
-                в&nbsp;вашем аккаунте
-              </Text>
-              <Text style={featureItem}>
-                <span style={dot}>•</span> Доступ с&nbsp;любого устройства
-              </Text>
+            <Section style={panel}>
+              <Text style={panelTitle}>Что вас ждёт внутри</Text>
+              <Text style={bullet}>• этапы запуска продукта в правильной последовательности</Text>
+              <Text style={bullet}>• сохранение прогресса и быстрый возврат к работе</Text>
+              <Text style={bullet}>• единая точка входа для задач, решений и следующих шагов</Text>
             </Section>
 
-            <Text style={text}>
-              Чтобы начать, подтвердите аккаунт по&nbsp;кнопке ниже&nbsp;—
-              это&nbsp;займёт меньше минуты:
+            <Text style={bodyText}>
+              Нажмите кнопку ниже, чтобы принять приглашение и перейти в платформу.
             </Text>
 
-            <Section style={buttonWrap}>
-              <Button style={button} href={confirmationUrl}>
+            <Section style={ctaWrap}>
+              <Button href={confirmationUrl} style={button}>
                 Принять приглашение
               </Button>
             </Section>
 
-            <Text style={hint}>
-              Если кнопка не&nbsp;работает, скопируйте эту ссылку
-              в&nbsp;браузер:
+            <Text style={secondaryText}>
+              Если кнопка не открывается, скопируйте ссылку в браузер:
             </Text>
-            <Text style={linkFallback}>{confirmationUrl}</Text>
-
-            <Hr style={divider} />
+            <Text style={fallbackLink}>{confirmationUrl}</Text>
 
             <Text style={footer}>
-              Если приглашение пришло вам по&nbsp;ошибке&nbsp;— просто
-              проигнорируйте письмо, ничего не&nbsp;произойдёт.
-            </Text>
-            <Text style={footerSmall}>
-              С&nbsp;уважением, команда {siteName}
+              Если это письмо пришло вам по ошибке, просто проигнорируйте его.
             </Text>
           </Section>
         </Container>
@@ -104,146 +86,136 @@ export const InviteEmail = ({
 
 export default InviteEmail
 
-// ─── Brand-aligned styles (PM Чек-лист: deep ocean + aqua accent) ───
-// Email clients require hex/rgb — these are sRGB approximations of the
-// app's oklch tokens (--background, --primary, --accent, glass surfaces).
-
-const COLORS = {
-  bg: '#ffffff', // email body must stay white per platform guidelines
-  surface: '#0f1729', // deep oceanic dusk — approx oklch(0.18 0.03 255)
-  surfaceSoft: '#1a2440',
-  border: 'rgba(255,255,255,0.14)',
-  text: '#e8edf5',
-  textMuted: '#9aa6bf',
-  accent: '#5ed3e8', // aqua — approx oklch(0.78 0.16 195)
-  accentDeep: '#2bb8d1',
-  primaryFg: '#0f1729',
+const palette = {
+  white: '#ffffff',
+  ink: '#0f172a',
+  inkSoft: '#172033',
+  line: 'rgba(255,255,255,0.14)',
+  text: '#ecf3ff',
+  muted: '#a8b5cb',
+  aqua: '#5ed3e8',
+  aquaDeep: '#1fb8d4',
 }
 
 const main = {
-  backgroundColor: COLORS.bg,
-  fontFamily:
-    '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
+  backgroundColor: palette.white,
   margin: 0,
   padding: '32px 16px',
+  fontFamily:
+    'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif',
 }
 
-const outer = {
+const shell = {
   maxWidth: '560px',
   margin: '0 auto',
 }
 
 const card = {
-  background: COLORS.surface,
-  backgroundImage: `radial-gradient(ellipse 80% 60% at 20% 0%, rgba(94,211,232,0.18), transparent 60%), radial-gradient(ellipse 60% 50% at 100% 100%, rgba(168,120,255,0.14), transparent 60%)`,
-  borderRadius: '20px',
+  backgroundColor: palette.ink,
+  backgroundImage:
+    'radial-gradient(circle at top left, rgba(94,211,232,0.22), transparent 34%), radial-gradient(circle at bottom right, rgba(121,100,255,0.18), transparent 38%)',
+  border: `1px solid ${palette.line}`,
+  borderRadius: '22px',
   padding: '36px 32px',
-  border: `1px solid ${COLORS.border}`,
-  color: COLORS.text,
 }
 
-const brand = {
-  fontSize: '13px',
-  fontWeight: 600 as const,
-  color: COLORS.accent,
-  letterSpacing: '2px',
-  textTransform: 'uppercase' as const,
-  margin: '0 0 24px',
-}
-
-const h1 = {
-  fontSize: '26px',
-  lineHeight: '1.25',
+const eyebrow = {
+  margin: '0 0 16px',
+  color: palette.aqua,
+  fontSize: '12px',
   fontWeight: 700 as const,
-  color: COLORS.text,
-  margin: '0 0 20px',
-  letterSpacing: '-0.01em',
+  letterSpacing: '1.8px',
+  textTransform: 'uppercase' as const,
 }
 
-const text = {
+const title = {
+  margin: '0 0 16px',
+  color: palette.text,
+  fontSize: '28px',
+  lineHeight: '1.2',
+  fontWeight: 700 as const,
+}
+
+const lead = {
+  margin: '0 0 20px',
+  color: palette.text,
   fontSize: '15px',
-  color: COLORS.text,
-  lineHeight: '1.65',
+  lineHeight: '1.7',
+}
+
+const bodyText = {
   margin: '0 0 18px',
+  color: palette.text,
+  fontSize: '15px',
+  lineHeight: '1.7',
 }
 
 const link = {
-  color: COLORS.accent,
+  color: palette.aqua,
   textDecoration: 'none',
   fontWeight: 600 as const,
 }
 
-const featuresWrap = {
-  background: 'rgba(255,255,255,0.04)',
-  border: `1px solid ${COLORS.border}`,
-  borderRadius: '14px',
-  padding: '16px 18px',
-  margin: '8px 0 24px',
+const panel = {
+  margin: '0 0 24px',
+  padding: '18px 18px 12px',
+  borderRadius: '16px',
+  backgroundColor: palette.inkSoft,
+  border: `1px solid ${palette.line}`,
 }
 
-const featureItem = {
+const panelTitle = {
+  margin: '0 0 10px',
+  color: palette.text,
   fontSize: '14px',
-  color: COLORS.text,
-  lineHeight: '1.6',
-  margin: '6px 0',
-}
-
-const dot = {
-  color: COLORS.accent,
   fontWeight: 700 as const,
-  marginRight: '8px',
 }
 
-const buttonWrap = {
+const bullet = {
+  margin: '0 0 8px',
+  color: palette.muted,
+  fontSize: '14px',
+  lineHeight: '1.6',
+}
+
+const ctaWrap = {
   textAlign: 'center' as const,
-  margin: '8px 0 24px',
+  margin: '0 0 22px',
 }
 
 const button = {
-  background: COLORS.accent,
-  color: COLORS.primaryFg,
+  backgroundColor: palette.aqua,
+  color: palette.ink,
   fontSize: '15px',
   fontWeight: 700 as const,
-  borderRadius: '12px',
-  padding: '14px 28px',
+  borderRadius: '14px',
+  padding: '14px 24px',
   textDecoration: 'none',
   display: 'inline-block',
-  letterSpacing: '0.01em',
-  boxShadow: '0 8px 24px -8px rgba(94,211,232,0.5)',
 }
 
-const hint = {
-  fontSize: '13px',
-  color: COLORS.textMuted,
-  lineHeight: '1.5',
-  margin: '0 0 6px',
-}
-
-const linkFallback = {
-  fontSize: '12px',
-  color: COLORS.accentDeep,
-  wordBreak: 'break-all' as const,
+const secondaryText = {
   margin: '0 0 8px',
-  background: 'rgba(255,255,255,0.04)',
-  padding: '10px 12px',
-  borderRadius: '8px',
-  border: `1px solid ${COLORS.border}`,
+  color: palette.muted,
+  fontSize: '13px',
+  lineHeight: '1.5',
 }
 
-const divider = {
-  borderColor: COLORS.border,
-  margin: '28px 0 20px',
+const fallbackLink = {
+  margin: '0 0 20px',
+  color: palette.aquaDeep,
+  fontSize: '12px',
+  lineHeight: '1.6',
+  wordBreak: 'break-all' as const,
+  backgroundColor: 'rgba(255,255,255,0.05)',
+  border: `1px solid ${palette.line}`,
+  borderRadius: '10px',
+  padding: '10px 12px',
 }
 
 const footer = {
-  fontSize: '13px',
-  color: COLORS.textMuted,
-  lineHeight: '1.6',
-  margin: '0 0 12px',
-}
-
-const footerSmall = {
-  fontSize: '12px',
-  color: COLORS.textMuted,
   margin: 0,
+  color: palette.muted,
+  fontSize: '13px',
+  lineHeight: '1.6',
 }
