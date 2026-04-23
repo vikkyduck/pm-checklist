@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { renderAsync } from '@react-email/components'
+import { render } from '@react-email/components'
 import { createFileRoute } from '@tanstack/react-router'
 import { SignupEmail } from '@/lib/email-templates/signup'
 import { InviteEmail } from '@/lib/email-templates/invite'
@@ -17,17 +17,11 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
   reauthentication: ReauthenticationEmail,
 }
 
-// Configuration
-const SITE_NAME = "pm-checklist"
-const ROOT_DOMAIN = "vi-utkina.ru"
+const SITE_NAME = 'PM Чек-лист'
+const SAMPLE_PROJECT_URL = 'https://pm-checklist.lovable.app'
+const SAMPLE_EMAIL = 'user@example.test'
+const SAMPLE_NAME = 'Вика'
 
-// Sample data for preview mode ONLY (not used in actual email sending).
-// URLs are baked in at scaffold time from the project's real data.
-// The sample email uses a fixed placeholder (RFC 6761 .test TLD) so the Go backend
-// can always find-and-replace it with the actual recipient when sending test emails,
-// even if the project's domain has changed since the template was scaffolded.
-const SAMPLE_PROJECT_URL = "https://pm-checklist.lovable.app"
-const SAMPLE_EMAIL = "user@example.test"
 const SAMPLE_DATA: Record<string, object> = {
   signup: {
     siteName: SITE_NAME,
@@ -38,6 +32,7 @@ const SAMPLE_DATA: Record<string, object> = {
   magiclink: {
     siteName: SITE_NAME,
     confirmationUrl: SAMPLE_PROJECT_URL,
+    recipientName: SAMPLE_NAME,
   },
   recovery: {
     siteName: SITE_NAME,
@@ -47,6 +42,7 @@ const SAMPLE_DATA: Record<string, object> = {
     siteName: SITE_NAME,
     siteUrl: SAMPLE_PROJECT_URL,
     confirmationUrl: SAMPLE_PROJECT_URL,
+    recipientName: SAMPLE_NAME,
   },
   email_change: {
     siteName: SITE_NAME,
@@ -59,7 +55,7 @@ const SAMPLE_DATA: Record<string, object> = {
   },
 }
 
-export const Route = createFileRoute("/lovable/email/auth/preview")({
+export const Route = createFileRoute('/lovable/email/auth/preview')({
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -68,11 +64,10 @@ export const Route = createFileRoute("/lovable/email/auth/preview")({
         if (!apiKey) {
           return Response.json(
             { error: 'Server configuration error' },
-            { status: 500 }
+            { status: 500 },
           )
         }
 
-        // Verify the caller is authorized with LOVABLE_API_KEY
         const authHeader = request.headers.get('Authorization')
         if (!authHeader || authHeader !== `Bearer ${apiKey}`) {
           return Response.json({ error: 'Unauthorized' }, { status: 401 })
@@ -85,21 +80,20 @@ export const Route = createFileRoute("/lovable/email/auth/preview")({
         } catch {
           return Response.json(
             { error: 'Invalid JSON in request body' },
-            { status: 400 }
+            { status: 400 },
           )
         }
 
         const EmailTemplate = EMAIL_TEMPLATES[type]
-
         if (!EmailTemplate) {
           return Response.json(
             { error: `Unknown email type: ${type}` },
-            { status: 400 }
+            { status: 400 },
           )
         }
 
         const sampleData = SAMPLE_DATA[type] || {}
-        const html = await renderAsync(React.createElement(EmailTemplate, sampleData))
+        const html = await render(React.createElement(EmailTemplate, sampleData))
 
         return new Response(html, {
           status: 200,
