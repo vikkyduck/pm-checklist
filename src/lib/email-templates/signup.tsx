@@ -25,29 +25,31 @@ export const SignupEmail = ({
   recipient,
   confirmationUrl,
 }: SignupEmailProps) => (
-  <Html lang="ru" dir="ltr">
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Подтвердите email для {siteName}</Preview>
+    <Preview>Confirm your email for {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Добро пожаловать! 🎉</Heading>
+        <Heading style={h1}>Confirm your email</Heading>
         <Text style={text}>
-          Спасибо, что присоединились к{' '}
+          Thanks for signing up for{' '}
           <Link href={siteUrl} style={link}>
             <strong>{siteName}</strong>
           </Link>
-          ! Очень рады вам.
+          !
         </Text>
         <Text style={text}>
-          Осталось подтвердить адрес <strong>{recipient}</strong> — нажмите
-          кнопку, и можно начинать работу с чек-листом.
+          Please confirm your email address (
+          <Link href={`mailto:${recipient}`} style={link}>
+            {recipient}
+          </Link>
+          ) by clicking the button below:
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Подтвердить email
+          Verify Email
         </Button>
         <Text style={footer}>
-          Если вы не регистрировались в {siteName}, просто проигнорируйте
-          это письмо. Удачного дня! ☀️
+          If you didn't create an account, you can safely ignore this email.
         </Text>
       </Container>
     </Body>
@@ -57,34 +59,26 @@ export const SignupEmail = ({
 export default SignupEmail
 
 const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '24px 28px', maxWidth: '560px' }
+const container = { padding: '20px 25px' }
 const h1 = {
   fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#111111',
+  color: '#000000',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '15px',
-  color: '#444444',
-  lineHeight: '1.6',
-  margin: '0 0 20px',
-}
-const link = { color: '#111111', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#111111',
-  color: '#ffffff',
-  fontSize: '15px',
-  fontWeight: 'bold' as const,
-  borderRadius: '10px',
-  padding: '14px 24px',
-  textDecoration: 'none',
-  display: 'inline-block',
-  margin: '0 0 24px',
-}
-const footer = {
-  fontSize: '13px',
-  color: '#999999',
+  fontSize: '14px',
+  color: '#55575d',
   lineHeight: '1.5',
-  margin: '32px 0 0',
+  margin: '0 0 25px',
 }
+const link = { color: 'inherit', textDecoration: 'underline' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

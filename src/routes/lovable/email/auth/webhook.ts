@@ -1,6 +1,5 @@
-// Auth email webhook — renders branded RU templates and enqueues to pgmq.
 import * as React from 'react'
-import { render } from '@react-email/components'
+import { renderAsync } from '@react-email/components'
 import { parseEmailWebhookPayload } from '@lovable.dev/email-js'
 import { WebhookError, verifyWebhookRequest } from '@lovable.dev/webhooks-js'
 import { createClient } from '@supabase/supabase-js'
@@ -13,12 +12,12 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Подтвердите почту в PM Чек-листе',
-  invite: 'Вас приглашают в PM Чек-лист 👋',
-  magiclink: 'Ваша ссылка для входа в PM Чек-лист',
-  recovery: 'Сброс пароля в PM Чек-листе',
-  email_change: 'Подтвердите новый email',
-  reauthentication: 'Код подтверждения для входа',
+  signup: 'Confirm your email',
+  invite: "You've been invited",
+  magiclink: 'Your login link',
+  recovery: 'Reset your password',
+  email_change: 'Confirm your new email',
+  reauthentication: 'Your verification code',
 }
 
 // Template mapping
@@ -32,7 +31,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "PM Чек-лист"
+const SITE_NAME = "pm-checklist"
 const SENDER_DOMAIN = "notify.vi-utkina.ru"
 const ROOT_DOMAIN = "vi-utkina.ru"
 const FROM_DOMAIN = "vi-utkina.ru"
@@ -133,17 +132,10 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
         }
 
         // Build template props from payload.data (HookData structure)
-        const userMeta = (payload.data.user_metadata ?? payload.data.user?.user_metadata ?? {}) as Record<string, unknown>
-        const recipientName =
-          (typeof userMeta.display_name === 'string' && userMeta.display_name) ||
-          (typeof userMeta.name === 'string' && userMeta.name) ||
-          undefined
-
         const templateProps = {
           siteName: SITE_NAME,
           siteUrl: `https://${ROOT_DOMAIN}`,
           recipient: payload.data.email,
-          recipientName,
           confirmationUrl: payload.data.url,
           token: payload.data.token,
           email: payload.data.email,
@@ -152,8 +144,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
 
         // Render React Email to HTML and plain text
         const element = React.createElement(EmailTemplate, templateProps)
-        const html = await render(element)
-        const text = await render(element, { plainText: true })
+        const html = await renderAsync(element)
+        const text = await renderAsync(element, { plainText: true })
 
         // Enqueue email for async processing by the dispatcher (process-email-queue).
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
