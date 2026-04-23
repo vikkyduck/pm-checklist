@@ -13,12 +13,12 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Подтвердите email · PM Чек-лист',
-  invite: 'Вас приглашают в PM Чек-лист',
-  magiclink: 'Ваша ссылка для входа · PM Чек-лист',
-  recovery: 'Сброс пароля · PM Чек-лист',
-  email_change: 'Подтвердите новый email · PM Чек-лист',
-  reauthentication: 'Код подтверждения · PM Чек-лист',
+  signup: 'Подтвердите почту в PM Чек-листе',
+  invite: 'Вас приглашают в PM Чек-лист 👋',
+  magiclink: 'Ваша ссылка для входа в PM Чек-лист',
+  recovery: 'Сброс пароля в PM Чек-листе',
+  email_change: 'Подтвердите новый email',
+  reauthentication: 'Код подтверждения для входа',
 }
 
 // Template mapping
