@@ -13,12 +13,12 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Подтвердите email · PM Чек-лист',
-  invite: 'Вас приглашают в PM Чек-лист',
-  magiclink: 'Ваша ссылка для входа · PM Чек-лист',
-  recovery: 'Сброс пароля · PM Чек-лист',
-  email_change: 'Подтвердите новый email · PM Чек-лист',
-  reauthentication: 'Код подтверждения · PM Чек-лист',
+  signup: 'Подтвердите почту в PM Чек-листе',
+  invite: 'Вас приглашают в PM Чек-лист 👋',
+  magiclink: 'Ваша ссылка для входа в PM Чек-лист',
+  recovery: 'Сброс пароля в PM Чек-листе',
+  email_change: 'Подтвердите новый email',
+  reauthentication: 'Код подтверждения для входа',
 }
 
 // Template mapping
@@ -32,7 +32,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "pm-checklist"
+const SITE_NAME = "PM Чек-лист"
 const SENDER_DOMAIN = "notify.vi-utkina.ru"
 const ROOT_DOMAIN = "vi-utkina.ru"
 const FROM_DOMAIN = "vi-utkina.ru"
@@ -133,10 +133,17 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
         }
 
         // Build template props from payload.data (HookData structure)
+        const userMeta = (payload.data.user_metadata ?? payload.data.user?.user_metadata ?? {}) as Record<string, unknown>
+        const recipientName =
+          (typeof userMeta.display_name === 'string' && userMeta.display_name) ||
+          (typeof userMeta.name === 'string' && userMeta.name) ||
+          undefined
+
         const templateProps = {
           siteName: SITE_NAME,
           siteUrl: `https://${ROOT_DOMAIN}`,
           recipient: payload.data.email,
+          recipientName,
           confirmationUrl: payload.data.url,
           token: payload.data.token,
           email: payload.data.email,
