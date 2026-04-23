@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useChecklistProgress, itemId } from "@/hooks/use-checklist-progress";
 
 export const Route = createFileRoute("/")({
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/")({
 function MindMapPage() {
   const navigate = useNavigate();
   const { user, ready, logout } = useAuth();
+  const { isAdmin } = useIsAdmin(user?.id);
   const { progress, toggle } = useChecklistProgress();
 
   useEffect(() => {
@@ -115,12 +117,22 @@ function MindMapPage() {
               Привет, <span className="font-medium text-foreground">{user.name}</span>
               <span className="ml-2 hidden text-muted-foreground sm:inline">· {user.email}</span>
             </span>
-            <button
-              onClick={logout}
-              className="shrink-0 rounded-full px-3 py-1 text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-foreground"
-            >
-              Выйти
-            </button>
+            <div className="flex shrink-0 items-center gap-1">
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="rounded-full bg-accent/15 px-3 py-1 font-medium text-accent transition-colors hover:bg-accent/25"
+                >
+                  Админка
+                </Link>
+              )}
+              <button
+                onClick={logout}
+                className="rounded-full px-3 py-1 text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-foreground"
+              >
+                Выйти
+              </button>
+            </div>
           </div>
         )}
 
