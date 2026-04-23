@@ -32,7 +32,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "pm-checklist"
+const SITE_NAME = "PM Чек-лист"
 const SENDER_DOMAIN = "notify.vi-utkina.ru"
 const ROOT_DOMAIN = "vi-utkina.ru"
 const FROM_DOMAIN = "vi-utkina.ru"
