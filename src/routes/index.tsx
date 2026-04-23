@@ -118,6 +118,12 @@ function MindMapPage() {
               <span className="ml-2 hidden text-muted-foreground sm:inline">· {user.email}</span>
             </span>
             <div className="flex shrink-0 items-center gap-1">
+              <Link
+                to="/negotiations"
+                className="rounded-full px-3 py-1 font-medium text-foreground/85 transition-colors hover:bg-white/[0.06] hover:text-foreground"
+              >
+                Переговоры
+              </Link>
               {isAdmin && (
                 <Link
                   to="/admin"
