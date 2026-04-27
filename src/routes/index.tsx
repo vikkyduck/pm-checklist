@@ -477,7 +477,10 @@ function CategoryCard({
               opacity: complete ? 1 : 0.6,
             }}
           />
-          <h3 className="truncate text-[15px] font-medium leading-snug text-foreground">
+          <h3
+            className="truncate text-[14.5px] font-medium leading-snug text-foreground"
+            style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.012em" }}
+          >
             {title}
           </h3>
         </div>
