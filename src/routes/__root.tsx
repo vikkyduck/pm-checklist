@@ -32,16 +32,16 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Lovable App" },
-      { name: "description", content: "Liquid Future Map is an interactive infographic application for project management." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Liquid Future Map is an interactive infographic application for project management." },
+      { name: "theme-color", content: "#1a1f2e" },
+      { title: "Practice — навигатор PM" },
+      { name: "description", content: "Спокойный, сфокусированный навигатор для руководителя проекта: митигирование рисков, ресурсное состояние, переговоры с заказчиком." },
+      { name: "author", content: "Practice" },
+      { property: "og:title", content: "Practice — навигатор PM" },
+      { property: "og:description", content: "Спокойный, сфокусированный навигатор для руководителя проекта." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "Liquid Future Map is an interactive infographic application for project management." },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Practice — навигатор PM" },
+      { name: "twitter:description", content: "Спокойный, сфокусированный навигатор для руководителя проекта." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a659cc7-f5ad-42f1-beb5-c2ef9a6323b1/id-preview-4f3f2b1c--db999886-97fc-4aea-9c57-c50604f0f95a.lovable.app-1776849755133.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a659cc7-f5ad-42f1-beb5-c2ef9a6323b1/id-preview-4f3f2b1c--db999886-97fc-4aea-9c57-c50604f0f95a.lovable.app-1776849755133.png" },
     ],
@@ -78,7 +78,7 @@ function RootComponent() {
         <DevNavSidebar />
         <div className="relative min-w-0 flex-1">
           <SidebarTrigger
-            className="fixed left-2 top-[max(0.5rem,env(safe-area-inset-top))] z-50 h-9 w-9 border bg-background/80 shadow-md backdrop-blur-sm sm:left-3 sm:top-3"
+            className="fixed left-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 h-9 w-9 rounded-full border border-[var(--hairline)] bg-background/70 text-foreground/80 shadow-sm backdrop-blur-md transition-colors hover:bg-background/90 hover:text-foreground sm:left-4 sm:top-4"
             aria-label="Открыть навигацию"
           />
           <Outlet />

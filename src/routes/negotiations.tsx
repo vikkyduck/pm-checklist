@@ -119,72 +119,50 @@ function NegotiationsPage() {
   }, [progress]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full blur-3xl opacity-40 animate-float-slow"
-          style={{ background: "var(--stage-3)" }}
-        />
-        <div
-          className="absolute bottom-0 right-0 h-[460px] w-[460px] rounded-full blur-3xl opacity-30 animate-float-slow"
-          style={{ background: "var(--stage-5)", animationDelay: "-6s" }}
-        />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-10 lg:py-20">
+    <main className="relative min-h-screen">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
         {/* Hero */}
-        <header className="mb-8 space-y-4 sm:mb-10 lg:mb-14">
+        <header className="mb-10 sm:mb-14 lg:mb-20">
           <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              Чек-лист оценки PM в ролевой игре
-            </div>
-            <h1 className="mt-3 text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
-              Переговоры с заказчиком
-              <span className="mt-2 block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
-                что должен сделать игрок
-              </span>
+            <div className="eyebrow mb-5">Переговоры с заказчиком</div>
+            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+              Что должен сделать игрок
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p className="mt-4 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
               Пять блоков наблюдаемого поведения PM: от запуска встречи до
               фиксации результата. Отмечайте по ходу разбора — прогресс
-              сохраняется локально.
+              сохраняется автоматически.
             </p>
           </div>
 
-          {/* Progress */}
-          <div className="glass mt-5 flex flex-col gap-3 rounded-2xl p-3.5 sm:mt-6 sm:flex-row sm:items-center sm:justify-between sm:p-4">
-            <div className="flex items-center gap-3">
-              <div className="text-xl font-semibold tabular-nums text-foreground sm:text-2xl">
+          {/* Progress — single hairline */}
+          <div className="mt-10 sm:mt-12">
+            <div className="mb-2 flex items-baseline justify-between">
+              <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
                 {totals.done}
                 <span className="text-muted-foreground">/{totals.total}</span>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                выполнено по чек-листу
-              </div>
-            </div>
-            <div className="flex items-center gap-3 sm:w-1/2">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-[var(--stage-3)] to-[var(--stage-5)] transition-all duration-500"
-                  style={{ width: `${totals.pct}%` }}
-                />
-              </div>
-              <div className="text-xs font-medium tabular-nums text-foreground/80">
+              </span>
+              <span className="text-sm font-medium tabular-nums text-accent">
                 {totals.pct}%
-              </div>
+              </span>
+            </div>
+            <div className="h-px w-full overflow-hidden bg-[var(--hairline)]">
+              <div
+                className="h-full bg-accent transition-all duration-700 ease-out"
+                style={{ width: `${totals.pct}%` }}
+              />
             </div>
           </div>
 
           {/* Quick nav */}
-          <nav className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+          <nav className="-mx-4 mt-8 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
             {SECTIONS.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="glass-soft shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:text-foreground sm:px-3.5 sm:text-xs"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--hairline)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:text-foreground sm:text-xs"
               >
-                <span className="mr-1.5 text-muted-foreground">{s.number}</span>
+                <span className="text-muted-foreground">{s.number}</span>
                 {s.title}
               </a>
             ))}
@@ -192,136 +170,112 @@ function NegotiationsPage() {
         </header>
 
         {/* Sections */}
-        <div className="grid gap-5 sm:gap-6 lg:gap-8">
+        <div className="space-y-12 sm:space-y-16">
           <a
             href="#guide"
-            className="glass-soft inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:text-foreground sm:text-xs"
+            className="inline-flex w-fit items-center gap-2 text-xs font-medium text-foreground/70 transition-colors hover:text-foreground sm:text-sm"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-            Перейти к руководству по аргументации →
+            <span>Перейти к руководству по аргументации</span>
+            <span aria-hidden>→</span>
           </a>
-          {SECTIONS.map((section, idx) => {
+          {SECTIONS.map((section) => {
             const doneInSection = section.items.filter(
               (_, i) => progress[negotiationItemId(section.id, i)],
             ).length;
+            const allDone =
+              doneInSection === section.items.length && section.items.length > 0;
             return (
-              <article
+              <section
                 key={section.id}
                 id={section.id}
-                className="glass stage-glow relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-9"
-                style={
-                  {
-                    "--stage-color": `var(${section.stageVar})`,
-                    animationDelay: `${idx * 60}ms`,
-                  } as React.CSSProperties
-                }
+                className="relative animate-fade-up scroll-mt-20"
               >
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -right-3 -top-4 select-none text-[90px] font-semibold leading-none tracking-tighter opacity-[0.06] sm:-right-4 sm:-top-6 sm:text-[120px] lg:text-[170px]"
-                  style={{ color: `var(${section.stageVar})` }}
-                >
-                  {section.number}
-                </span>
-
-                <div className="relative space-y-4 sm:space-y-5">
-                  <div className="flex flex-wrap items-end justify-between gap-3">
+                <header className="mb-5 sm:mb-6">
+                  <div className="flex items-baseline gap-4 sm:gap-5">
+                    <span
+                      className="text-sm font-semibold tabular-nums tracking-tight"
+                      style={{ color: `var(${section.stageVar})` }}
+                    >
+                      {section.number}
+                    </span>
                     <div className="min-w-0 flex-1">
-                      <div
-                        className="mb-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:px-3 sm:text-[11px]"
-                        style={{
-                          background: `color-mix(in oklab, var(${section.stageVar}) 18%, transparent)`,
-                          color: `var(${section.stageVar})`,
-                        }}
-                      >
-                        <span
-                          className="h-1.5 w-1.5 rounded-full"
-                          style={{
-                            background: `var(${section.stageVar})`,
-                            boxShadow: `0 0 10px var(${section.stageVar})`,
-                          }}
-                        />
-                        Блок {section.number}
-                      </div>
-                      <h2 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
+                      <h2 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
                         {section.title}
                       </h2>
-                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                        {section.subtitle}
-                      </p>
+                      <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
+                        <span>{section.subtitle}</span>
+                        <span className="h-3 w-px bg-[var(--hairline-strong)]" />
+                        <span
+                          className="tabular-nums"
+                          style={
+                            allDone
+                              ? { color: `var(${section.stageVar})` }
+                              : undefined
+                          }
+                        >
+                          {doneInSection}/{section.items.length}
+                        </span>
+                      </div>
                     </div>
-                    <span
-                      className="rounded-full px-2.5 py-1 text-[11px] font-medium tabular-nums"
-                      style={{
-                        background: `color-mix(in oklab, var(${section.stageVar}) 18%, transparent)`,
-                        color: `var(${section.stageVar})`,
-                      }}
-                    >
-                      {doneInSection}/{section.items.length}
-                    </span>
                   </div>
+                </header>
 
-                  <ul className="grid gap-2 sm:gap-2.5">
-                    {section.items.map((text, i) => {
-                      const id = negotiationItemId(section.id, i);
-                      const checked = !!progress[id];
-                      return (
-                        <li key={id}>
-                          <button
-                            type="button"
-                            onClick={() => toggle(id)}
+                <ul className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+                  {section.items.map((text, i) => {
+                    const id = negotiationItemId(section.id, i);
+                    const checked = !!progress[id];
+                    return (
+                      <li key={id}>
+                        <button
+                          type="button"
+                          onClick={() => toggle(id)}
+                          className="group flex w-full items-start gap-3.5 px-1 py-3.5 text-left transition-colors hover:bg-[var(--surface)] sm:gap-4 sm:px-2 sm:py-4"
+                        >
+                          <span
+                            className="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md border transition-all duration-200"
+                            style={
+                              checked
+                                ? {
+                                    borderColor: `var(${section.stageVar})`,
+                                    background: `var(${section.stageVar})`,
+                                  }
+                                : {
+                                    borderColor: "var(--hairline-strong)",
+                                    background: "transparent",
+                                  }
+                            }
+                            aria-hidden
+                          >
+                            {checked && (
+                              <svg
+                                viewBox="0 0 24 24"
+                                className="h-3 w-3"
+                                fill="none"
+                                stroke="oklch(0.16 0.012 255)"
+                                strokeWidth="3.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M20 6 9 17l-5-5" />
+                              </svg>
+                            )}
+                          </span>
+                          <span
                             className={[
-                              "group flex w-full items-start gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-left transition-all sm:px-4 sm:py-3",
-                              "hover:border-white/[0.12] hover:bg-white/[0.05]",
-                              checked ? "opacity-70" : "",
+                              "text-[14.5px] leading-relaxed transition-colors sm:text-[15px]",
+                              checked
+                                ? "text-muted-foreground line-through decoration-muted-foreground/30"
+                                : "text-foreground/90",
                             ].join(" ")}
                           >
-                            <span
-                              className={[
-                                "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all",
-                                checked
-                                  ? "border-transparent"
-                                  : "border-white/20 group-hover:border-white/40",
-                              ].join(" ")}
-                              style={
-                                checked
-                                  ? {
-                                      background: `var(${section.stageVar})`,
-                                      boxShadow: `0 0 14px color-mix(in oklab, var(${section.stageVar}) 60%, transparent)`,
-                                    }
-                                  : undefined
-                              }
-                              aria-hidden
-                            >
-                              {checked && (
-                                <svg
-                                  viewBox="0 0 16 16"
-                                  className="h-3 w-3"
-                                  fill="none"
-                                  stroke="oklch(0.18 0.03 255)"
-                                  strokeWidth="3"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M3 8.5l3 3 7-7" />
-                                </svg>
-                              )}
-                            </span>
-                            <span
-                              className={[
-                                "text-sm leading-relaxed text-foreground/90",
-                                checked ? "line-through decoration-foreground/30" : "",
-                              ].join(" ")}
-                            >
-                              {text}
-                            </span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </article>
+                            {text}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
             );
           })}
         </div>
@@ -554,70 +508,46 @@ function GuideCard({
   children: React.ReactNode;
 }) {
   return (
-    <article
-      id={block.id}
-      className="glass stage-glow relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-9"
-      style={{ "--stage-color": `var(${block.stageVar})` } as React.CSSProperties}
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-3 -top-4 select-none text-[90px] font-semibold leading-none tracking-tighter opacity-[0.06] sm:-right-4 sm:-top-6 sm:text-[120px] lg:text-[170px]"
-        style={{ color: `var(${block.stageVar})` }}
-      >
-        {block.number}
-      </span>
-      <div className="relative space-y-4 sm:space-y-5">
-        <div>
-          <div
-            className="mb-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:px-3 sm:text-[11px]"
-            style={{
-              background: `color-mix(in oklab, var(${block.stageVar}) 18%, transparent)`,
-              color: `var(${block.stageVar})`,
-            }}
+    <section id={block.id} className="scroll-mt-20">
+      <header className="mb-5 sm:mb-6">
+        <div className="flex items-baseline gap-4 sm:gap-5">
+          <span
+            className="text-sm font-semibold tabular-nums tracking-tight"
+            style={{ color: `var(${block.stageVar})` }}
           >
-            <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{
-                background: `var(${block.stageVar})`,
-                boxShadow: `0 0 10px var(${block.stageVar})`,
-              }}
-            />
-            Раздел {block.number}
+            {block.number}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
+              {block.title}
+            </h3>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              {block.lead}
+            </p>
           </div>
-          <h3 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
-            {block.title}
-          </h3>
-          <p className="mt-1.5 max-w-3xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
-            {block.lead}
-          </p>
         </div>
-        {children}
-      </div>
-    </article>
+      </header>
+      <div className="pl-0 sm:pl-9">{children}</div>
+    </section>
   );
 }
 
 function GuideSection() {
   return (
-    <section id="guide" className="mt-10 sm:mt-14 lg:mt-20">
-      <header className="mb-6 space-y-3 sm:mb-8 lg:mb-10">
-        <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-          Руководство для руководителей проектов
-        </div>
-        <h2 className="text-balance text-2xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl">
-          Аргументация и взаимодействие
-          <span className="mt-1 block bg-gradient-to-r from-[var(--stage-1)] via-[var(--stage-3)] to-[var(--stage-5)] bg-clip-text text-transparent">
-            со стейкхолдерами
-          </span>
+    <section id="guide" className="mt-20 sm:mt-28 lg:mt-36 scroll-mt-20">
+      <div className="hairline mb-10 sm:mb-14" />
+      <header className="mb-12 sm:mb-16 lg:mb-20">
+        <div className="eyebrow mb-5">Руководство для руководителей проектов</div>
+        <h2 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+          Аргументация и взаимодействие со стейкхолдерами
         </h2>
-        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        <p className="mt-5 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
           Шесть осей анализа: от классификации стейкхолдеров до выбора метода
           аргументации.
         </p>
       </header>
 
-      <div className="grid gap-5 sm:gap-6 lg:gap-8">
+      <div className="space-y-12 sm:space-y-16 lg:space-y-20">
         {/* 01 — Тип стейкхолдера */}
         <GuideCard block={GUIDE_BLOCKS[0]}>
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -873,19 +803,8 @@ function GuideSection() {
         </GuideCard>
 
         {/* Принцип */}
-        <div
-          className="glass relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-8"
-          style={
-            {
-              "--stage-color": "var(--accent)",
-              background:
-                "linear-gradient(135deg, color-mix(in oklab, var(--accent) 14%, transparent), transparent 60%)",
-            } as React.CSSProperties
-          }
-        >
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-accent">
-            Ключевой принцип
-          </div>
+        <div className="mt-4 border-l-2 border-accent pl-5">
+          <div className="eyebrow mb-2 text-accent">Ключевой принцип</div>
           <p className="text-sm leading-relaxed text-foreground/90 sm:text-base">
             Подбирайте метод и тип аргумента под{" "}
             <span className="font-semibold text-foreground">
