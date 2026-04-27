@@ -373,6 +373,43 @@ function buildHtml(data: PrintRadarData): string {
     margin-bottom: 3pt; line-height: 1.45;
   }
 
+  .tools-list {
+    display: flex; flex-direction: column; gap: 6pt; margin-top: 4pt;
+  }
+  .tool-card {
+    background: #f9fafb; border: 1px solid #f3f4f6;
+    border-left: 2pt solid var(--accent);
+    border-radius: 4pt; padding: 7pt 9pt;
+    page-break-inside: avoid;
+  }
+  .tool-name {
+    font-size: 9.5pt; font-weight: 600;
+    margin: 0 0 3pt 0; color: var(--accent);
+  }
+  .tool-author {
+    font-size: 8.5pt; font-weight: 400;
+    color: #6b7280; font-style: italic;
+  }
+  .tool-desc {
+    font-size: 9pt; color: #374151; margin: 0;
+    line-height: 1.45;
+  }
+  .tool-steps {
+    margin: 4pt 0 0 0; padding-left: 14pt;
+  }
+  .tool-steps li {
+    font-size: 8.5pt; color: #4b5563;
+    margin-bottom: 2pt; line-height: 1.4;
+  }
+  .tool-effect {
+    margin: 5pt 0 0 0; padding: 4pt 7pt;
+    background: #fff; border-left: 2pt solid var(--accent);
+    font-size: 8.5pt; color: #4b5563; line-height: 1.45;
+  }
+  .tool-effect-label {
+    font-weight: 600; color: #111827;
+  }
+
   .footer-note {
     margin-top: 24pt; padding-top: 10pt;
     border-top: 1px solid #e5e7eb;
