@@ -146,37 +146,42 @@ function NegotiationsPage() {
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
         {/* Hero */}
         <header className="mb-10 sm:mb-14 lg:mb-20">
-          <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="eyebrow">Переговоры с заказчиком</div>
-              <button
-                type="button"
-                onClick={handleDownload}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)] hover:text-foreground"
-                title="Открыть для печати или сохранения в PDF"
-              >
-                <Download className="h-3.5 w-3.5" aria-hidden />
-                Скачать чек-лист
-              </button>
-            </div>
-            <h1 className="mt-5 text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
-              Что должен сделать игрок
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
-              Пять блоков наблюдаемого поведения PM: от запуска встречи до
-              фиксации результата. Отмечайте по ходу разбора — прогресс
-              сохраняется автоматически.
-            </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="eyebrow">Раздел 04 · Переговоры</div>
+            <button
+              type="button"
+              onClick={handleDownload}
+              className="btn-ghost"
+              title="Открыть для печати или сохранения в PDF"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden />
+              Скачать PDF
+            </button>
           </div>
+          <h1 className="mt-7 text-balance text-foreground display text-[2.25rem] sm:text-5xl md:text-6xl lg:text-[5rem]">
+            Что должен{" "}
+            <em className="display-italic" style={{ color: "var(--accent)" }}>
+              сделать
+            </em>{" "}
+            игрок
+          </h1>
+          <p className="lede mt-6 max-w-2xl">
+            Пять блоков наблюдаемого поведения PM: от запуска встречи до
+            фиксации результата. Отмечайте по ходу разбора — прогресс
+            сохраняется автоматически.
+          </p>
 
           {/* Progress — single hairline */}
           <div className="mt-10 sm:mt-12">
             <div className="mb-2 flex items-baseline justify-between">
-              <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+              <span
+                className="num text-3xl text-foreground sm:text-4xl"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 400, letterSpacing: "-0.03em", lineHeight: 1 }}
+              >
                 {totals.done}
                 <span className="text-muted-foreground">/{totals.total}</span>
               </span>
-              <span className="text-sm font-medium tabular-nums text-accent">
+              <span className="num text-sm font-medium text-accent">
                 {totals.pct}%
               </span>
             </div>
@@ -189,18 +194,22 @@ function NegotiationsPage() {
           </div>
 
           {/* Quick nav */}
-          <nav className="-mx-4 mt-8 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
-            {SECTIONS.map((s) => (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
-                className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--hairline)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:text-foreground sm:text-xs"
-              >
-                <span className="text-muted-foreground">{s.number}</span>
-                {s.title}
-              </a>
-            ))}
-          </nav>
+          <div className="hairline mt-10" />
+          <div className="mt-6">
+            <div className="eyebrow mb-3">Содержание</div>
+            <nav className="-mx-4 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+              {SECTIONS.map((s) => (
+                <a
+                  key={s.id}
+                  href={`#${s.id}`}
+                  className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--hairline)] px-3 py-1.5 text-[12px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:text-foreground"
+                >
+                  <span className="num text-muted-foreground">{s.number}</span>
+                  {s.title}
+                </a>
+              ))}
+            </nav>
+          </div>
         </header>
 
         {/* Sections */}
