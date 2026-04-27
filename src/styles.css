@@ -126,6 +126,11 @@
     font-family: var(--font-display);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html {
+    overflow-x: hidden;
   }
 
   body {
@@ -133,6 +138,9 @@
     background-attachment: fixed;
     background-size: cover;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 }
 
