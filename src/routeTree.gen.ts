@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResourceStateRouteImport } from './routes/resource-state'
 import { Route as ResourceRadarRouteImport } from './routes/resource-radar'
+import { Route as PmChecklistRouteImport } from './routes/pm-checklist'
 import { Route as NegotiationsRouteImport } from './routes/negotiations'
-import { Route as IndexRouteImport } from './routes/index'
 
 const ResourceStateRoute = ResourceStateRouteImport.update({
   id: '/resource-state',
@@ -24,47 +24,56 @@ const ResourceRadarRoute = ResourceRadarRouteImport.update({
   path: '/resource-radar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PmChecklistRoute = PmChecklistRouteImport.update({
+  id: '/pm-checklist',
+  path: '/pm-checklist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NegotiationsRoute = NegotiationsRouteImport.update({
   id: '/negotiations',
   path: '/negotiations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/pm-checklist': typeof PmChecklistRoute
   '/resource-radar': typeof ResourceRadarRoute
   '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/pm-checklist': typeof PmChecklistRoute
   '/resource-radar': typeof ResourceRadarRoute
   '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/pm-checklist': typeof PmChecklistRoute
   '/resource-radar': typeof ResourceRadarRoute
   '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/negotiations' | '/resource-radar' | '/resource-state'
+  fullPaths:
+    | '/negotiations'
+    | '/pm-checklist'
+    | '/resource-radar'
+    | '/resource-state'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/negotiations' | '/resource-radar' | '/resource-state'
-  id: '__root__' | '/' | '/negotiations' | '/resource-radar' | '/resource-state'
+  to: '/negotiations' | '/pm-checklist' | '/resource-radar' | '/resource-state'
+  id:
+    | '__root__'
+    | '/negotiations'
+    | '/pm-checklist'
+    | '/resource-radar'
+    | '/resource-state'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   NegotiationsRoute: typeof NegotiationsRoute
+  PmChecklistRoute: typeof PmChecklistRoute
   ResourceRadarRoute: typeof ResourceRadarRoute
   ResourceStateRoute: typeof ResourceStateRoute
 }
@@ -85,6 +94,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResourceRadarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pm-checklist': {
+      id: '/pm-checklist'
+      path: '/pm-checklist'
+      fullPath: '/pm-checklist'
+      preLoaderRoute: typeof PmChecklistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/negotiations': {
       id: '/negotiations'
       path: '/negotiations'
@@ -92,22 +108,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NegotiationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   NegotiationsRoute: NegotiationsRoute,
+  PmChecklistRoute: PmChecklistRoute,
   ResourceRadarRoute: ResourceRadarRoute,
   ResourceStateRoute: ResourceStateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
