@@ -373,7 +373,7 @@ function ResourceRadarPage() {
             })}
 
             {/* Mobile radar toggle */}
-            <div className="lg:hidden">
+            <div className="md:hidden">
               <button
                 type="button"
                 onClick={() => setShowMobileRadar((v) => !v)}
