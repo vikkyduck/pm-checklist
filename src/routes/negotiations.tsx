@@ -803,19 +803,8 @@ function GuideSection() {
         </GuideCard>
 
         {/* Принцип */}
-        <div
-          className="glass relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-8"
-          style={
-            {
-              "--stage-color": "var(--accent)",
-              background:
-                "linear-gradient(135deg, color-mix(in oklab, var(--accent) 14%, transparent), transparent 60%)",
-            } as React.CSSProperties
-          }
-        >
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-accent">
-            Ключевой принцип
-          </div>
+        <div className="mt-4 border-l-2 border-accent pl-5">
+          <div className="eyebrow mb-2 text-accent">Ключевой принцип</div>
           <p className="text-sm leading-relaxed text-foreground/90 sm:text-base">
             Подбирайте метод и тип аргумента под{" "}
             <span className="font-semibold text-foreground">
