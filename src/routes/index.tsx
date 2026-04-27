@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
 import { useChecklistProgress, itemId } from "@/hooks/use-checklist-progress";
+import { printChecklist } from "@/lib/print-checklist";
 
 export const Route = createFileRoute("/")({
   component: MindMapPage,
