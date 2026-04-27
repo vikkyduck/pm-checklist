@@ -78,7 +78,7 @@ function RootComponent() {
         <DevNavSidebar />
         <div className="relative min-w-0 flex-1">
           <SidebarTrigger
-            className="fixed left-2 top-[max(0.5rem,env(safe-area-inset-top))] z-50 h-9 w-9 border bg-background/80 shadow-md backdrop-blur-sm sm:left-3 sm:top-3"
+            className="fixed left-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 h-9 w-9 rounded-full border border-[var(--hairline)] bg-background/70 text-foreground/80 shadow-sm backdrop-blur-md transition-colors hover:bg-background/90 hover:text-foreground sm:left-4 sm:top-4"
             aria-label="Открыть навигацию"
           />
           <Outlet />
