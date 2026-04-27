@@ -210,9 +210,9 @@ function ResourceRadarPage() {
           </div>
         </header>
 
-        <div className="grid gap-5 lg:grid-cols-[1fr_2.2fr] lg:gap-8">
+        <div className="grid gap-5 md:grid-cols-[1fr_2fr] md:gap-6 lg:grid-cols-[1fr_2.2fr] lg:gap-8">
           {/* Sticky sidebar with radar */}
-          <aside className="hidden self-start lg:sticky lg:top-10 lg:block">
+          <aside className="hidden self-start md:sticky md:top-10 md:block">
             <div className="surface h-[20rem] rounded-2xl p-4">
               <ResourceRadarChart scores={scores} />
             </div>
