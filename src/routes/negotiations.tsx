@@ -119,6 +119,27 @@ function NegotiationsPage() {
     return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
   }, [progress]);
 
+  function handleDownload() {
+    printChecklist({
+      title: "Переговоры с заказчиком",
+      subtitle: "Чек-лист оценки PM в ролевой игре переговоров",
+      description:
+        "Пять блоков наблюдаемого поведения PM: от запуска встречи до фиксации результата. Отмечайте по ходу разбора каждый пункт.",
+      sections: SECTIONS.map((s) => ({
+        number: s.number,
+        title: s.title,
+        subtitle: s.subtitle,
+        accentColor: cssVar(s.stageVar),
+        groups: [
+          {
+            title: "Наблюдаемое поведение",
+            items: s.items.map((text) => ({ title: text })),
+          },
+        ],
+      })),
+    });
+  }
+
   return (
     <main className="relative min-h-screen">
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
