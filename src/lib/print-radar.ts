@@ -144,70 +144,72 @@ function renderArchetypeBlock(a: PrintRadarArchetype, idx: number, hasDual: bool
             </div>`
           : ""
       }
-      <div class="arch-section">
-        <h3 class="arch-h3">Ваша уникальность</h3>
-        <p class="arch-text">${escapeHtml(a.uniqueness)}</p>
-      </div>
-      <div class="arch-section">
-        <h3 class="arch-h3">Почему вы «гаснете»</h3>
-        <p class="arch-text">${escapeHtml(a.whyDrains)}</p>
-      </div>
-      <div class="arch-section">
-        <h3 class="arch-h3">Экологичное восстановление</h3>
-        <div class="recovery-grid">
-          ${a.recovery
-            .map(
-              (r) => `
-            <div class="recovery-card">
-              <p class="recovery-title">${escapeHtml(r.title)}</p>
-              <p class="recovery-text">${escapeHtml(r.text)}</p>
-            </div>
-          `,
-            )
-            .join("")}
+      <div class="arch-body">
+        <div class="arch-section">
+          <h3 class="arch-h3">Ваша уникальность</h3>
+          <p class="arch-text">${escapeHtml(a.uniqueness)}</p>
         </div>
-      </div>
-      <div class="arch-section">
-        <h3 class="arch-h3">Карта сигналов: пора восстановиться</h3>
-        <p class="arch-meta">Маркеры раннего оповещения · ${escapeHtml(a.earlyWarnings.level)}</p>
-        <ul class="signals">
-          ${a.earlyWarnings.signals
-            .map((s) => `<li>${escapeHtml(s)}</li>`)
-            .join("")}
-        </ul>
-      </div>
-      ${
-        a.tools
-          ? `<div class="arch-section">
-              <h3 class="arch-h3">${escapeHtml(a.tools.title)}</h3>
-              ${a.tools.intro ? `<p class="arch-meta">${escapeHtml(a.tools.intro)}</p>` : ""}
-              <div class="tools-list">
-                ${a.tools.tools
-                  .map(
-                    (t) => `
-                  <div class="tool-card">
-                    <p class="tool-name">
-                      ${escapeHtml(t.name)}${t.author ? ` <span class="tool-author">· ${escapeHtml(t.author)}</span>` : ""}
-                    </p>
-                    <p class="tool-desc">${escapeHtml(t.description)}</p>
-                    ${
-                      t.steps && t.steps.length
-                        ? `<ul class="tool-steps">${t.steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>`
-                        : ""
-                    }
-                    ${
-                      t.effect
-                        ? `<p class="tool-effect"><span class="tool-effect-label">Эффект:</span> ${escapeHtml(t.effect)}</p>`
-                        : ""
-                    }
-                  </div>
-                `,
-                  )
-                  .join("")}
+        <div class="arch-section">
+          <h3 class="arch-h3">Почему вы «гаснете»</h3>
+          <p class="arch-text">${escapeHtml(a.whyDrains)}</p>
+        </div>
+        <div class="arch-section">
+          <h3 class="arch-h3">Экологичное восстановление</h3>
+          <div class="recovery-grid">
+            ${a.recovery
+              .map(
+                (r) => `
+              <div class="recovery-card">
+                <p class="recovery-title">${escapeHtml(r.title)}</p>
+                <p class="recovery-text">${escapeHtml(r.text)}</p>
               </div>
-            </div>`
-          : ""
-      }
+            `,
+              )
+              .join("")}
+          </div>
+        </div>
+        <div class="arch-section">
+          <h3 class="arch-h3">Карта сигналов: пора восстановиться</h3>
+          <p class="arch-meta">Маркеры раннего оповещения · ${escapeHtml(a.earlyWarnings.level)}</p>
+          <ul class="signals">
+            ${a.earlyWarnings.signals
+              .map((s) => `<li>${escapeHtml(s)}</li>`)
+              .join("")}
+          </ul>
+        </div>
+        ${
+          a.tools
+            ? `<div class="arch-section">
+                <h3 class="arch-h3">${escapeHtml(a.tools.title)}</h3>
+                ${a.tools.intro ? `<p class="arch-meta">${escapeHtml(a.tools.intro)}</p>` : ""}
+                <div class="tools-list">
+                  ${a.tools.tools
+                    .map(
+                      (t) => `
+                    <div class="tool-card">
+                      <p class="tool-name">
+                        ${escapeHtml(t.name)}${t.author ? ` <span class="tool-author">· ${escapeHtml(t.author)}</span>` : ""}
+                      </p>
+                      <p class="tool-desc">${escapeHtml(t.description)}</p>
+                      ${
+                        t.steps && t.steps.length
+                          ? `<ul class="tool-steps">${t.steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>`
+                          : ""
+                      }
+                      ${
+                        t.effect
+                          ? `<p class="tool-effect"><span class="tool-effect-label">Эффект:</span> ${escapeHtml(t.effect)}</p>`
+                          : ""
+                      }
+                    </div>
+                  `,
+                    )
+                    .join("")}
+                </div>
+              </div>`
+            : ""
+        }
+      </div>
     </section>
   `;
 }
@@ -268,16 +270,25 @@ function buildHtml(data: PrintRadarData): string {
     background: #fff;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     margin: 0 auto;
-    padding: 8mm;
+    padding: 0;
     transform-origin: top left;
     overflow: hidden;
+    display: flex;
   }
   @media print {
     body { background: #fff; padding: 0; }
     .sheet { box-shadow: none; padding: 0; margin: 0; height: 281mm; overflow: hidden; }
   }
 
-  .doc { font-size: 8pt; }
+  .doc {
+    font-size: 8pt;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    padding: 8mm;
+  }
 
   /* Шапка — компактная одностроковая */
   .cover {
@@ -315,6 +326,20 @@ function buildHtml(data: PrintRadarData): string {
     grid-template-columns: 38% 1fr;
     gap: 8pt;
     align-items: start;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .left-col,
+  #arch-col {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .left-col {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 5pt;
   }
 
   .panel {
@@ -323,6 +348,7 @@ function buildHtml(data: PrintRadarData): string {
     padding: 5pt 6pt;
     page-break-inside: avoid;
     break-inside: avoid;
+    min-height: 0;
   }
   .panel-title {
     font-size: 7pt;
@@ -334,7 +360,14 @@ function buildHtml(data: PrintRadarData): string {
   }
 
   /* Радар */
-  .radar-wrap { text-align: center; padding: 2pt; }
+  .radar-wrap {
+    text-align: center;
+    padding: 2pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
   .radar-wrap svg { width: 100%; height: auto; max-width: 180pt; }
 
   /* Бары */
@@ -378,6 +411,9 @@ function buildHtml(data: PrintRadarData): string {
     margin-bottom: 5pt;
     page-break-inside: avoid;
     break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
   .archetype:last-child { margin-bottom: 0; }
   .arch-head {
@@ -401,11 +437,13 @@ function buildHtml(data: PrintRadarData): string {
     font-size: 6.5pt; color: #6b7280; font-style: italic;
   }
 
-  /* Внутренние под-блоки архетипа — двухколоночные */
-  .arch-cols {
-    column-count: 2;
-    column-gap: 6pt;
-    column-fill: balance;
+  .arch-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 3pt;
   }
   .arch-section {
     break-inside: avoid;
@@ -515,7 +553,7 @@ function buildHtml(data: PrintRadarData): string {
   <div class="sheet">
     <div class="doc" id="doc">
       <header class="cover">
-        <div>
+         <div class="left-col">
           <h1 class="doc-title">${escapeHtml(titleText)}</h1>
           ${primary ? `<p class="doc-subtitle">${escapeHtml(data.hasDual ? "Двойной источник ресурса — оба профиля важны для восстановления" : primary.tagline)}</p>` : ""}
         </div>
@@ -571,13 +609,11 @@ function buildHtml(data: PrintRadarData): string {
     (function () {
       var sheet = document.querySelector('.sheet');
       var doc = document.getElementById('doc');
-      if (!sheet || !doc) return;
+      var archCol = document.getElementById('arch-col');
+      if (!sheet || !doc || !archCol) return;
 
       // 281мм в пикселях при 96dpi
       var maxHeightPx = 281 * 3.7795;
-      // Целимся в заполнение листа на 96-99%
-      var targetMin = maxHeightPx * 0.96;
-
       var contentLen = ${archetypeContentLength};
       var fontPt = contentLen > 2500 ? 7.5 : 8.0;
       var minFontPt = 5.0;
@@ -585,31 +621,40 @@ function buildHtml(data: PrintRadarData): string {
       var step = 0.2;
 
       function fits() { return doc.scrollHeight <= maxHeightPx + 1; }
-      function tooSmall() { return doc.scrollHeight < targetMin; }
       function setFont(pt) { doc.style.fontSize = pt.toFixed(2) + 'pt'; }
+      function archetypesFit() {
+        var items = Array.from(archCol.querySelectorAll('.archetype'));
+        return items.every(function (item) {
+          return item.scrollHeight <= item.clientHeight + 2;
+        });
+      }
+      function layoutFill() {
+        var grid = doc.querySelector('.grid');
+        return grid ? grid.scrollHeight / Math.max(grid.clientHeight, 1) : 1;
+      }
       setFont(fontPt);
 
       var safety = 300;
 
       // 1) Уменьшаем шрифт, пока не влезет
-      while (!fits() && fontPt > minFontPt && safety-- > 0) {
+      while ((!fits() || !archetypesFit()) && fontPt > minFontPt && safety-- > 0) {
         fontPt -= step;
         setFont(fontPt);
       }
       // Финальный микро-жим вниз
       safety = 50;
-      while (!fits() && fontPt > 4 && safety-- > 0) {
+      while ((!fits() || !archetypesFit()) && fontPt > 4 && safety-- > 0) {
         fontPt -= 0.15;
         setFont(fontPt);
       }
 
-      // 2) Если контент сильно меньше листа — РАСТЯГИВАЕМ шрифт,
-      //    чтобы заполнить страницу полностью без пустоты снизу.
+      // 2) Если лист заполнен слабо — растягиваем всё вверх,
+      //    но не допускаем выхода за 1 страницу.
       safety = 300;
-      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+      while (layoutFill() < 0.88 && fits() && archetypesFit() && fontPt < maxFontPt && safety-- > 0) {
         fontPt += step;
         setFont(fontPt);
-        if (!fits()) {
+        if (!fits() || !archetypesFit()) {
           fontPt -= step;
           setFont(fontPt);
           break;
@@ -617,10 +662,10 @@ function buildHtml(data: PrintRadarData): string {
       }
       // Микро-подгонка вверх
       safety = 50;
-      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+      while (layoutFill() < 0.94 && fits() && archetypesFit() && fontPt < maxFontPt && safety-- > 0) {
         fontPt += 0.1;
         setFont(fontPt);
-        if (!fits()) {
+        if (!fits() || !archetypesFit()) {
           fontPt -= 0.1;
           setFont(fontPt);
           break;
