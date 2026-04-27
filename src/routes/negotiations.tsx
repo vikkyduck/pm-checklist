@@ -535,24 +535,19 @@ function GuideCard({
 function GuideSection() {
   return (
     <section id="guide" className="mt-20 sm:mt-28 lg:mt-36 scroll-mt-20">
-      <header className="mb-6 space-y-3 sm:mb-8 lg:mb-10">
-        <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-          Руководство для руководителей проектов
-        </div>
-        <h2 className="text-balance text-2xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl">
-          Аргументация и взаимодействие
-          <span className="mt-1 block bg-gradient-to-r from-[var(--stage-1)] via-[var(--stage-3)] to-[var(--stage-5)] bg-clip-text text-transparent">
-            со стейкхолдерами
-          </span>
+      <div className="hairline mb-10 sm:mb-14" />
+      <header className="mb-12 sm:mb-16 lg:mb-20">
+        <div className="eyebrow mb-5">Руководство для руководителей проектов</div>
+        <h2 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+          Аргументация и взаимодействие со стейкхолдерами
         </h2>
-        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        <p className="mt-5 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
           Шесть осей анализа: от классификации стейкхолдеров до выбора метода
           аргументации.
         </p>
       </header>
 
-      <div className="grid gap-5 sm:gap-6 lg:gap-8">
+      <div className="space-y-12 sm:space-y-16 lg:space-y-20">
         {/* 01 — Тип стейкхолдера */}
         <GuideCard block={GUIDE_BLOCKS[0]}>
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
