@@ -1,8 +1,6 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
-import { useAuth } from "@/hooks/use-auth";
-import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useChecklistProgress, itemId } from "@/hooks/use-checklist-progress";
 
 export const Route = createFileRoute("/")({
