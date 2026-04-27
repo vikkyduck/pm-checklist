@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState, useEffect, useRef } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState, useEffect } from "react";
 import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
 import { useChecklistProgress, itemId } from "@/hooks/use-checklist-progress";
 
@@ -7,11 +7,11 @@ export const Route = createFileRoute("/")({
   component: MindMapPage,
   head: () => ({
     meta: [
-      { title: "PM Roadmap · Liquid Glass Mind Map" },
+      { title: "Митигирование рисков · Practice" },
       {
         name: "description",
         content:
-          "Интерактивная инфографическая карта чек-листа Project Manager в эстетике liquid glass.",
+          "Чек-лист руководителя проекта от первого дня до закрытия. Шесть этапов, конкретные шаги, прогресс — всё в одном спокойном пространстве.",
       },
     ],
   }),
