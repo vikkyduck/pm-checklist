@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DevNavSidebar } from "@/components/dev-nav-sidebar";
@@ -72,20 +72,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const [showDevNav, setShowDevNav] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const host = window.location.hostname;
-    const isDev = import.meta.env.DEV;
-    const isLovablePreview = host.includes("lovable.app") || host.includes("lovable.dev");
-    setShowDevNav(isDev || isLovablePreview);
-  }, []);
-
-  if (!showDevNav) {
-    return <Outlet />;
-  }
-
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full">
@@ -93,7 +79,7 @@ function RootComponent() {
         <div className="relative flex-1">
           <SidebarTrigger
             className="fixed left-3 top-3 z-50 bg-background/80 backdrop-blur-sm shadow-md border"
-            aria-label="Открыть dev-навигацию"
+            aria-label="Открыть навигацию"
           />
           <Outlet />
         </div>
