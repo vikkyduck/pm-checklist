@@ -119,72 +119,50 @@ function NegotiationsPage() {
   }, [progress]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full blur-3xl opacity-40 animate-float-slow"
-          style={{ background: "var(--stage-3)" }}
-        />
-        <div
-          className="absolute bottom-0 right-0 h-[460px] w-[460px] rounded-full blur-3xl opacity-30 animate-float-slow"
-          style={{ background: "var(--stage-5)", animationDelay: "-6s" }}
-        />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-10 lg:py-20">
+    <main className="relative min-h-screen">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
         {/* Hero */}
-        <header className="mb-8 space-y-4 sm:mb-10 lg:mb-14">
+        <header className="mb-10 sm:mb-14 lg:mb-20">
           <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              Чек-лист оценки PM в ролевой игре
-            </div>
-            <h1 className="mt-3 text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
-              Переговоры с заказчиком
-              <span className="mt-2 block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
-                что должен сделать игрок
-              </span>
+            <div className="eyebrow mb-5">Переговоры с заказчиком</div>
+            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+              Что должен сделать игрок
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p className="mt-4 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
               Пять блоков наблюдаемого поведения PM: от запуска встречи до
               фиксации результата. Отмечайте по ходу разбора — прогресс
-              сохраняется локально.
+              сохраняется автоматически.
             </p>
           </div>
 
-          {/* Progress */}
-          <div className="glass mt-5 flex flex-col gap-3 rounded-2xl p-3.5 sm:mt-6 sm:flex-row sm:items-center sm:justify-between sm:p-4">
-            <div className="flex items-center gap-3">
-              <div className="text-xl font-semibold tabular-nums text-foreground sm:text-2xl">
+          {/* Progress — single hairline */}
+          <div className="mt-10 sm:mt-12">
+            <div className="mb-2 flex items-baseline justify-between">
+              <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
                 {totals.done}
                 <span className="text-muted-foreground">/{totals.total}</span>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                выполнено по чек-листу
-              </div>
-            </div>
-            <div className="flex items-center gap-3 sm:w-1/2">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-[var(--stage-3)] to-[var(--stage-5)] transition-all duration-500"
-                  style={{ width: `${totals.pct}%` }}
-                />
-              </div>
-              <div className="text-xs font-medium tabular-nums text-foreground/80">
+              </span>
+              <span className="text-sm font-medium tabular-nums text-accent">
                 {totals.pct}%
-              </div>
+              </span>
+            </div>
+            <div className="h-px w-full overflow-hidden bg-[var(--hairline)]">
+              <div
+                className="h-full bg-accent transition-all duration-700 ease-out"
+                style={{ width: `${totals.pct}%` }}
+              />
             </div>
           </div>
 
           {/* Quick nav */}
-          <nav className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+          <nav className="-mx-4 mt-8 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
             {SECTIONS.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="glass-soft shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:text-foreground sm:px-3.5 sm:text-xs"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--hairline)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:text-foreground sm:text-xs"
               >
-                <span className="mr-1.5 text-muted-foreground">{s.number}</span>
+                <span className="text-muted-foreground">{s.number}</span>
                 {s.title}
               </a>
             ))}
