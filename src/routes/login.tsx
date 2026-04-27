@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+const PUBLISHED_AUTH_CALLBACK_URL = "https://pm-checklist.lovable.app/auth/callback";
+
 export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
@@ -28,7 +30,13 @@ function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const redirectTo = `${window.location.origin}/auth/callback`;
+      const isPreviewHost =
+        window.location.hostname.includes("lovable.app") &&
+        window.location.hostname.includes("preview");
+      const redirectTo = isPreviewHost
+        ? PUBLISHED_AUTH_CALLBACK_URL
+        : `${window.location.origin}/auth/callback`;
+
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: {
