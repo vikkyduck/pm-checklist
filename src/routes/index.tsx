@@ -101,37 +101,15 @@ function MindMapPage() {
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
-        {/* User bar */}
-        {user && (
-          <div className="glass-pill mb-6 flex items-center justify-between gap-3 rounded-full px-4 py-2 text-xs">
-            <span className="truncate text-foreground/80">
-              Привет, <span className="font-medium text-foreground">{user.name}</span>
-              <span className="ml-2 hidden text-muted-foreground sm:inline">· {user.email}</span>
-            </span>
-            <div className="flex shrink-0 items-center gap-1">
-              <Link
-                to="/negotiations"
-                className="rounded-full px-3 py-1 font-medium text-foreground/85 transition-colors hover:bg-white/[0.06] hover:text-foreground"
-              >
-                Переговоры
-              </Link>
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  className="rounded-full bg-accent/15 px-3 py-1 font-medium text-accent transition-colors hover:bg-accent/25"
-                >
-                  Админка
-                </Link>
-              )}
-              <button
-                onClick={logout}
-                className="rounded-full px-3 py-1 text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-foreground"
-              >
-                Выйти
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Nav */}
+        <div className="mb-6 flex justify-end">
+          <Link
+            to="/negotiations"
+            className="glass-pill rounded-full px-4 py-2 text-xs font-medium text-foreground/85 transition-colors hover:bg-white/[0.06] hover:text-foreground"
+          >
+            Переговоры →
+          </Link>
+        </div>
 
         {/* Header */}
         <header className="mb-8 flex flex-col gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
