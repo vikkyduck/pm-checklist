@@ -151,33 +151,35 @@ function ResourceStatePage() {
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-6 py-10 lg:px-10 lg:py-14">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-14">
         {/* Hero */}
-        <header className="mb-12 space-y-4 lg:mb-16">
-          <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide text-foreground/80">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-            Ресурсное состояние
+        <header className="mb-8 space-y-4 sm:mb-12 lg:mb-16">
+          <div className="pl-12 sm:pl-14 lg:pl-0">
+            <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+              Ресурсное состояние
+            </div>
+            <h1 className="mt-3 text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+              Переговоры в&nbsp;ресурсном состоянии
+              <span className="mt-2 block bg-gradient-to-r from-[var(--stage-4)] via-[var(--stage-3)] to-[var(--stage-5)] bg-clip-text text-transparent">
+                четыре уровня ассертивности
+              </span>
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Чтобы вернуть ассертивность — способность уверенно и экологично
+              отстаивать свои границы и позицию — нужно восстановить ресурс.
+              Энергия — это способность выполнять работу, и ассертивность
+              требует высокого её уровня сразу на четырёх уровнях.
+            </p>
           </div>
-          <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Переговоры в&nbsp;ресурсном состоянии
-            <span className="mt-2 block bg-gradient-to-r from-[var(--stage-4)] via-[var(--stage-3)] to-[var(--stage-5)] bg-clip-text text-transparent">
-              четыре уровня ассертивности
-            </span>
-          </h1>
-          <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Чтобы вернуть ассертивность — способность уверенно и экологично
-            отстаивать свои границы и позицию — нужно восстановить ресурс.
-            Энергия — это способность выполнять работу, и ассертивность требует
-            высокого её уровня сразу на четырёх уровнях.
-          </p>
 
           {/* Quick nav */}
-          <nav className="mt-6 flex flex-wrap gap-2">
+          <nav className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:mt-6 sm:flex-wrap sm:px-0">
             {LEVELS.map((l) => (
               <a
                 key={l.id}
                 href={`#${l.id}`}
-                className="glass-soft rounded-full px-3.5 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:text-foreground"
+                className="glass-soft shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:text-foreground sm:px-3.5 sm:text-xs"
               >
                 <span className="mr-1.5 text-muted-foreground">{l.number}</span>
                 {l.title}
@@ -187,12 +189,12 @@ function ResourceStatePage() {
         </header>
 
         {/* Levels */}
-        <div className="grid gap-6 lg:gap-8">
+        <div className="grid gap-5 sm:gap-6 lg:gap-8">
           {LEVELS.map((level, idx) => (
             <article
               key={level.id}
               id={level.id}
-              className="glass stage-glow relative overflow-hidden rounded-3xl p-6 lg:p-10"
+              className="glass stage-glow relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-10"
               style={
                 {
                   "--stage-color": `var(${level.stageVar})`,
@@ -202,16 +204,16 @@ function ResourceStatePage() {
             >
               <span
                 aria-hidden
-                className="pointer-events-none absolute -right-4 -top-6 select-none text-[120px] font-semibold leading-none tracking-tighter opacity-[0.06] lg:text-[180px]"
+                className="pointer-events-none absolute -right-3 -top-4 select-none text-[90px] font-semibold leading-none tracking-tighter opacity-[0.06] sm:-right-4 sm:-top-6 sm:text-[120px] lg:text-[180px]"
                 style={{ color: `var(${level.stageVar})` }}
               >
                 {level.number}
               </span>
 
-              <div className="relative grid gap-8 lg:grid-cols-12">
+              <div className="relative grid gap-5 sm:gap-8 lg:grid-cols-12">
                 <div className="lg:col-span-4">
                   <div
-                    className="mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-wider"
+                    className="mb-3 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:px-3 sm:text-[11px]"
                     style={{
                       background: `color-mix(in oklab, var(${level.stageVar}) 18%, transparent)`,
                       color: `var(${level.stageVar})`,
@@ -226,16 +228,16 @@ function ResourceStatePage() {
                     />
                     Уровень {level.number}
                   </div>
-                  <h2 className="text-2xl font-semibold leading-tight tracking-tight text-foreground lg:text-3xl">
+                  <h2 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
                     {level.title}
                   </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                     {level.subtitle}
                   </p>
                 </div>
 
-                <div className="space-y-5 lg:col-span-8">
-                  <p className="text-base leading-relaxed text-foreground/90">
+                <div className="space-y-4 sm:space-y-5 lg:col-span-8">
+                  <p className="text-sm leading-relaxed text-foreground/90 sm:text-base">
                     {level.intro}
                   </p>
 
@@ -261,11 +263,11 @@ function ResourceStatePage() {
         </div>
 
         {/* Footer summary */}
-        <section className="mt-12">
-          <div className="glass rounded-3xl p-6 lg:p-8">
+        <section className="mt-8 sm:mt-12">
+          <div className="glass rounded-2xl p-5 sm:rounded-3xl sm:p-6 lg:p-8">
             <div className="mb-3 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              <h2 className="text-sm font-medium uppercase tracking-wider text-foreground/80">
+              <h2 className="text-xs font-medium uppercase tracking-wider text-foreground/80 sm:text-sm">
                 Памятка
               </h2>
             </div>
