@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Sparkles,
   TriangleAlert,
+  Wrench,
 } from "lucide-react";
 import {
   ARCHETYPES,
