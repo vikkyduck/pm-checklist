@@ -39,6 +39,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
         const apiKey = process.env.LOVABLE_API_KEY
         const requestUrl = new URL(request.url)
         const previewToken = requestUrl.searchParams.get('__lovable_token')
+        const isPreviewHost = requestUrl.hostname.includes('preview') || requestUrl.hostname.includes('lovableproject.com')
 
         if (!apiKey) {
           console.error('LOVABLE_API_KEY not configured')
@@ -51,7 +52,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
         let payload: any
         let run_id = ''
         try {
-          if (previewToken) {
+          if (previewToken && isPreviewHost) {
             const rawBody = await request.text()
             payload = parseEmailWebhookPayload(rawBody)
             run_id = payload.run_id ?? crypto.randomUUID()
