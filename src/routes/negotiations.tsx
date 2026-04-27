@@ -162,14 +162,6 @@ function NegotiationsPage() {
             <span aria-hidden>←</span>
             <span>К чек-листу</span>
           </Link>
-          {user && (
-            <button
-              onClick={logout}
-              className="glass-pill rounded-full px-3.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Выйти
-            </button>
-          )}
         </div>
 
         {/* Hero */}
