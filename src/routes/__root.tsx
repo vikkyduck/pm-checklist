@@ -31,7 +31,7 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "Lovable App" },
       { name: "description", content: "Liquid Future Map is an interactive infographic application for project management." },
       { name: "author", content: "Lovable" },
