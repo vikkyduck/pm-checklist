@@ -264,16 +264,17 @@ function buildHtml(data: PrintRadarData): string {
   body { background: #f3f4f6; padding: 16px; }
   .sheet {
     width: 194mm;
-    min-height: 281mm;
+    height: 281mm;
     background: #fff;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     margin: 0 auto;
     padding: 8mm;
     transform-origin: top left;
+    overflow: hidden;
   }
   @media print {
     body { background: #fff; padding: 0; }
-    .sheet { box-shadow: none; padding: 0; margin: 0; min-height: 281mm; }
+    .sheet { box-shadow: none; padding: 0; margin: 0; height: 281mm; overflow: hidden; }
   }
 
   .doc { font-size: 8pt; }
@@ -574,31 +575,56 @@ function buildHtml(data: PrintRadarData): string {
 
       // 281мм в пикселях при 96dpi
       var maxHeightPx = 281 * 3.7795;
+      // Целимся в заполнение листа на 96-99%
+      var targetMin = maxHeightPx * 0.96;
 
-      // Эвристика: если контента много — стартуем сразу с меньшего шрифта
       var contentLen = ${archetypeContentLength};
       var fontPt = contentLen > 2500 ? 7.5 : 8.0;
       var minFontPt = 5.0;
+      var maxFontPt = 12.0;
       var step = 0.2;
 
-      function fits() {
-        return doc.scrollHeight <= maxHeightPx + 1;
-      }
-      function setFont(pt) {
-        doc.style.fontSize = pt.toFixed(2) + 'pt';
-      }
+      function fits() { return doc.scrollHeight <= maxHeightPx + 1; }
+      function tooSmall() { return doc.scrollHeight < targetMin; }
+      function setFont(pt) { doc.style.fontSize = pt.toFixed(2) + 'pt'; }
       setFont(fontPt);
 
-      var safety = 200;
+      var safety = 300;
+
+      // 1) Уменьшаем шрифт, пока не влезет
       while (!fits() && fontPt > minFontPt && safety-- > 0) {
         fontPt -= step;
         setFont(fontPt);
       }
-      // Финальный микро-жим
+      // Финальный микро-жим вниз
       safety = 50;
       while (!fits() && fontPt > 4 && safety-- > 0) {
         fontPt -= 0.15;
         setFont(fontPt);
+      }
+
+      // 2) Если контент сильно меньше листа — РАСТЯГИВАЕМ шрифт,
+      //    чтобы заполнить страницу полностью без пустоты снизу.
+      safety = 300;
+      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+        fontPt += step;
+        setFont(fontPt);
+        if (!fits()) {
+          fontPt -= step;
+          setFont(fontPt);
+          break;
+        }
+      }
+      // Микро-подгонка вверх
+      safety = 50;
+      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+        fontPt += 0.1;
+        setFont(fontPt);
+        if (!fits()) {
+          fontPt -= 0.1;
+          setFont(fontPt);
+          break;
+        }
       }
     })();
 
