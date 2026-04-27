@@ -41,7 +41,18 @@ export function Breadcrumbs() {
   const { pathname } = useLocation();
   const trail = buildTrail(pathname);
 
-  if (trail.length <= 1) return null;
+  if (trail.length <= 1) {
+    return (
+      <nav aria-label="Хлебные крошки" className="min-w-0">
+        <span
+          className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground"
+          style={{ fontFamily: "var(--font-mono)" }}
+        >
+          Practice · навигатор PM
+        </span>
+      </nav>
+    );
+  }
 
   return (
     <nav aria-label="Хлебные крошки" className="min-w-0">
