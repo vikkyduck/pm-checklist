@@ -1,6 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
-import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/negotiations")({
   component: NegotiationsPage,
@@ -114,13 +113,6 @@ const LEVELS: Level[] = [
 ];
 
 function NegotiationsPage() {
-  const navigate = useNavigate();
-  const { user, ready, logout } = useAuth();
-
-  useEffect(() => {
-    if (ready && !user) navigate({ to: "/login", replace: true });
-  }, [ready, user, navigate]);
-
   const ambientRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -169,14 +161,6 @@ function NegotiationsPage() {
             <span aria-hidden>←</span>
             <span>К чек-листу</span>
           </Link>
-          {user && (
-            <button
-              onClick={logout}
-              className="glass-pill rounded-full px-3.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Выйти
-            </button>
-          )}
         </div>
 
         {/* Hero */}
