@@ -176,6 +176,38 @@ function renderArchetypeBlock(a: PrintRadarArchetype, idx: number, hasDual: bool
             .join("")}
         </ul>
       </div>
+      ${
+        a.tools
+          ? `<div class="arch-section">
+              <h3 class="arch-h3">${escapeHtml(a.tools.title)}</h3>
+              ${a.tools.intro ? `<p class="arch-meta">${escapeHtml(a.tools.intro)}</p>` : ""}
+              <div class="tools-list">
+                ${a.tools.tools
+                  .map(
+                    (t) => `
+                  <div class="tool-card">
+                    <p class="tool-name">
+                      ${escapeHtml(t.name)}${t.author ? ` <span class="tool-author">· ${escapeHtml(t.author)}</span>` : ""}
+                    </p>
+                    <p class="tool-desc">${escapeHtml(t.description)}</p>
+                    ${
+                      t.steps && t.steps.length
+                        ? `<ul class="tool-steps">${t.steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>`
+                        : ""
+                    }
+                    ${
+                      t.effect
+                        ? `<p class="tool-effect"><span class="tool-effect-label">Эффект:</span> ${escapeHtml(t.effect)}</p>`
+                        : ""
+                    }
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </div>`
+          : ""
+      }
     </section>
   `;
 }
