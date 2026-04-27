@@ -226,197 +226,272 @@ function buildHtml(data: PrintRadarData): string {
       : primary.name
     : "Карта ресурсов";
 
+  // Подсчёт суммарного объёма для эвристики колонок
+  const archetypeContentLength = data.dominantArchetypes.reduce((sum, a) => {
+    return (
+      sum +
+      a.uniqueness.length +
+      a.whyDrains.length +
+      a.recovery.reduce((s, r) => s + r.text.length, 0) +
+      a.earlyWarnings.signals.reduce((s, x) => s + x.length, 0) +
+      (a.tools?.tools.reduce(
+        (s, t) =>
+          s +
+          t.description.length +
+          (t.steps?.reduce((ss, x) => ss + x.length, 0) ?? 0) +
+          (t.effect?.length ?? 0),
+        0,
+      ) ?? 0)
+    );
+  }, 0);
+
   return `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8" />
 <title>Радар ресурсности · ${escapeHtml(titleText)}</title>
 <style>
-  @page { size: A4; margin: 14mm; }
+  /* Одна страница A4 — узкие поля, динамический fit */
+  @page { size: A4; margin: 8mm; }
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0; background: #fff; color: #111827;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 10.5pt; line-height: 1.45;
+    line-height: 1.3;
     -webkit-print-color-adjust: exact; print-color-adjust: exact;
   }
-  .eyebrow {
-    text-transform: uppercase; letter-spacing: 0.12em;
-    font-size: 8pt; color: #6b7280; margin: 0 0 8pt 0;
+
+  body { background: #f3f4f6; padding: 16px; }
+  .sheet {
+    width: 194mm;
+    min-height: 281mm;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    margin: 0 auto;
+    padding: 8mm;
+    transform-origin: top left;
   }
-  .cover {
-    border-bottom: 2px solid ${radarColor};
-    padding-bottom: 14pt; margin-bottom: 18pt;
-  }
-  .doc-title {
-    font-size: 24pt; font-weight: 700; letter-spacing: -0.01em;
-    margin: 0 0 6pt 0; line-height: 1.1;
-  }
-  .doc-subtitle {
-    font-size: 12pt; color: #4b5563; margin: 0 0 0 0;
-    font-weight: 400;
+  @media print {
+    body { background: #fff; padding: 0; }
+    .sheet { box-shadow: none; padding: 0; margin: 0; min-height: 281mm; }
   }
 
-  .summary {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 18pt; margin-bottom: 18pt;
+  .doc { font-size: 8pt; }
+
+  /* Шапка — компактная одностроковая */
+  .cover {
+    border-bottom: 1.4pt solid ${radarColor};
+    padding-bottom: 4pt;
+    margin-bottom: 6pt;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12pt;
+  }
+  .doc-title {
+    font-size: 14pt; font-weight: 700;
+    margin: 0; line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .doc-subtitle {
+    font-size: 8pt; color: #4b5563;
+    margin: 2pt 0 0 0; font-weight: 400;
+  }
+  .cover-meta {
+    text-align: right;
+    font-size: 6.8pt;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .cover-meta b { color: #111827; font-weight: 700; }
+
+  /* Двухколоночный layout: левая 38% (радар+бары), правая — архетип */
+  .grid {
+    display: grid;
+    grid-template-columns: 38% 1fr;
+    gap: 8pt;
+    align-items: start;
+  }
+
+  .panel {
+    border: 0.5pt solid #e5e7eb;
+    border-radius: 2.5pt;
+    padding: 5pt 6pt;
     page-break-inside: avoid;
+    break-inside: avoid;
   }
-  .stats-card {
-    border: 1px solid ${radarColor}55;
-    border-radius: 6pt;
-    padding: 14pt;
-    background: ${radarColor}08;
+  .panel-title {
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #374151;
+    margin: 0 0 3pt 0;
   }
+
+  /* Радар */
+  .radar-wrap { text-align: center; padding: 2pt; }
+  .radar-wrap svg { width: 100%; height: auto; max-width: 180pt; }
+
+  /* Бары */
+  .bars-panel { margin-top: 5pt; }
+  .bar-row { margin-bottom: 2.5pt; }
+  .bar-head {
+    display: flex; justify-content: space-between;
+    font-size: 6.8pt; margin-bottom: 0.8pt;
+  }
+  .bar-track {
+    height: 3pt; background: #f3f4f6;
+    border-radius: 1.5pt; overflow: hidden;
+  }
+  .bar-fill { height: 100%; border-radius: 1.5pt; }
+
+  /* Stats строка */
   .stats-row {
-    display: flex; gap: 18pt;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 10pt; margin-top: 10pt;
+    display: flex; gap: 8pt;
+    margin-top: 4pt;
+    padding-top: 4pt;
+    border-top: 0.5pt solid #f3f4f6;
   }
-  .stats-block { flex: 1; }
+  .stats-block { flex: 1; text-align: center; }
   .stats-label {
-    text-transform: uppercase; letter-spacing: 0.1em;
-    font-size: 7.5pt; color: #6b7280; margin: 0 0 3pt 0;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 6pt; color: #6b7280; margin: 0;
   }
   .stats-value {
-    font-size: 20pt; font-weight: 600; margin: 0;
+    font-size: 11pt; font-weight: 700; margin: 0;
+    line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
   .stats-value.accent { color: ${radarColor}; }
 
-  .radar-card {
-    border: 1px solid #e5e7eb; border-radius: 6pt;
-    padding: 10pt; display: flex; align-items: center; justify-content: center;
-  }
-
-  /* Bars */
-  .bars { margin-bottom: 18pt; page-break-inside: avoid; }
-  .bars-title {
-    font-size: 13pt; font-weight: 600; margin: 0 0 4pt 0;
-  }
-  .bars-sub {
-    font-size: 9pt; color: #6b7280; margin: 0 0 10pt 0;
-  }
-  .bar-row { margin-bottom: 8pt; }
-  .bar-head {
-    display: flex; justify-content: space-between;
-    font-size: 9.5pt; margin-bottom: 3pt;
-  }
-  .bar-track {
-    height: 6pt; background: #f3f4f6;
-    border-radius: 3pt; overflow: hidden;
-  }
-  .bar-fill { height: 100%; border-radius: 3pt; }
-
-  /* Archetype */
+  /* Правая колонка — архетипы в стопке коробочек */
   .archetype {
-    margin-top: 14pt; padding: 14pt;
-    border: 1px solid var(--accent)44;
-    border-radius: 6pt;
+    border: 0.5pt solid var(--accent, #111827)44;
+    border-left: 1.6pt solid var(--accent, #111827);
+    border-radius: 2.5pt;
+    padding: 4pt 6pt;
+    margin-bottom: 5pt;
     page-break-inside: avoid;
+    break-inside: avoid;
   }
+  .archetype:last-child { margin-bottom: 0; }
   .arch-head {
-    display: flex; align-items: baseline; gap: 8pt;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 6pt; margin-bottom: 8pt;
+    display: flex; align-items: baseline; gap: 5pt;
+    border-bottom: 0.5pt solid #f3f4f6;
+    padding-bottom: 2pt; margin-bottom: 3pt;
+    flex-wrap: wrap;
   }
   .arch-num {
     background: var(--accent); color: #fff;
-    font-weight: 700; font-size: 9pt;
-    padding: 2pt 7pt; border-radius: 3pt;
+    font-weight: 700; font-size: 6.5pt;
+    padding: 0.5pt 3pt; border-radius: 1.5pt;
+    line-height: 1.3;
   }
   .arch-name {
-    font-size: 13pt; font-weight: 700;
+    font-size: 9.5pt; font-weight: 700;
     margin: 0; color: var(--accent);
+    line-height: 1.15;
   }
   .arch-tag {
-    font-size: 9pt; color: #6b7280; font-style: italic;
-  }
-  .arch-section {
-    margin-top: 10pt; padding-top: 8pt;
-    border-top: 1px solid #f3f4f6;
-  }
-  .arch-section:first-of-type {
-    margin-top: 0; padding-top: 0; border-top: none;
-  }
-  .arch-h3 {
-    font-size: 10pt; font-weight: 600;
-    margin: 0 0 4pt 0; color: var(--accent);
-  }
-  .arch-text {
-    font-size: 9.5pt; color: #374151; margin: 0;
-    line-height: 1.5;
-  }
-  .arch-meta {
-    font-size: 8.5pt; color: #9ca3af; margin: 0 0 5pt 0;
-  }
-  .recovery-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 6pt; margin-top: 4pt;
-  }
-  .recovery-card {
-    background: #f9fafb; border: 1px solid #f3f4f6;
-    border-radius: 4pt; padding: 7pt 9pt;
-    page-break-inside: avoid;
-  }
-  .recovery-title {
-    font-size: 9.5pt; font-weight: 600;
-    margin: 0 0 2pt 0; color: #111827;
-  }
-  .recovery-text {
-    font-size: 8.5pt; color: #4b5563;
-    margin: 0; line-height: 1.4;
-  }
-  .signals { margin: 0; padding-left: 14pt; }
-  .signals li {
-    font-size: 9.5pt; color: #374151;
-    margin-bottom: 3pt; line-height: 1.45;
+    font-size: 6.5pt; color: #6b7280; font-style: italic;
   }
 
+  /* Внутренние под-блоки архетипа — двухколоночные */
+  .arch-cols {
+    column-count: 2;
+    column-gap: 6pt;
+    column-fill: balance;
+  }
+  .arch-section {
+    break-inside: avoid;
+    margin-bottom: 3pt;
+  }
+  .arch-h3 {
+    font-size: 7pt; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin: 0 0 1pt 0; color: var(--accent);
+  }
+  .arch-text {
+    font-size: 6.8pt; color: #374151; margin: 0;
+    line-height: 1.35;
+  }
+  .arch-meta {
+    font-size: 6pt; color: #9ca3af; margin: 0 0 1pt 0;
+    font-style: italic;
+  }
+  .recovery-grid { display: flex; flex-direction: column; gap: 2pt; }
+  .recovery-card {
+    background: #fafafa; border-radius: 1.5pt;
+    padding: 2pt 4pt;
+    break-inside: avoid;
+  }
+  .recovery-title {
+    font-size: 6.8pt; font-weight: 600;
+    margin: 0; color: #111827; line-height: 1.25;
+  }
+  .recovery-text {
+    font-size: 6.3pt; color: #4b5563;
+    margin: 0.5pt 0 0 0; line-height: 1.3;
+  }
+  .signals { margin: 0; padding-left: 9pt; }
+  .signals li {
+    font-size: 6.5pt; color: #374151;
+    margin-bottom: 0.5pt; line-height: 1.3;
+  }
   .tools-list {
-    display: flex; flex-direction: column; gap: 6pt; margin-top: 4pt;
+    display: flex; flex-direction: column; gap: 2pt;
   }
   .tool-card {
-    background: #f9fafb; border: 1px solid #f3f4f6;
-    border-left: 2pt solid var(--accent);
-    border-radius: 4pt; padding: 7pt 9pt;
-    page-break-inside: avoid;
+    background: #fafafa;
+    border-left: 1pt solid var(--accent);
+    border-radius: 1.5pt; padding: 2pt 4pt;
+    break-inside: avoid;
   }
   .tool-name {
-    font-size: 9.5pt; font-weight: 600;
-    margin: 0 0 3pt 0; color: var(--accent);
+    font-size: 6.8pt; font-weight: 600;
+    margin: 0; color: var(--accent); line-height: 1.2;
   }
   .tool-author {
-    font-size: 8.5pt; font-weight: 400;
+    font-size: 6pt; font-weight: 400;
     color: #6b7280; font-style: italic;
   }
   .tool-desc {
-    font-size: 9pt; color: #374151; margin: 0;
-    line-height: 1.45;
+    font-size: 6.3pt; color: #374151; margin: 0.5pt 0 0 0;
+    line-height: 1.3;
   }
-  .tool-steps {
-    margin: 4pt 0 0 0; padding-left: 14pt;
-  }
+  .tool-steps { margin: 1pt 0 0 0; padding-left: 8pt; }
   .tool-steps li {
-    font-size: 8.5pt; color: #4b5563;
-    margin-bottom: 2pt; line-height: 1.4;
+    font-size: 6pt; color: #4b5563;
+    margin-bottom: 0.3pt; line-height: 1.25;
   }
   .tool-effect {
-    margin: 5pt 0 0 0; padding: 4pt 7pt;
-    background: #fff; border-left: 2pt solid var(--accent);
-    font-size: 8.5pt; color: #4b5563; line-height: 1.45;
+    margin: 1pt 0 0 0; padding: 1pt 3pt;
+    background: #fff;
+    border-left: 1pt solid var(--accent);
+    font-size: 6pt; color: #4b5563; line-height: 1.3;
   }
-  .tool-effect-label {
-    font-weight: 600; color: #111827;
-  }
+  .tool-effect-label { font-weight: 700; color: #111827; }
 
   .footer-note {
-    margin-top: 24pt; padding-top: 10pt;
-    border-top: 1px solid #e5e7eb;
-    font-size: 8pt; color: #9ca3af; text-align: center;
+    margin-top: 5pt; padding-top: 3pt;
+    border-top: 0.5pt solid #e5e7eb;
+    font-size: 6pt; color: #9ca3af; text-align: center;
+    text-transform: uppercase; letter-spacing: 0.05em;
   }
 
-  @media print { .no-print { display: none !important; } }
+  @media print {
+    .no-print { display: none !important; }
+    .doc, .grid, .panel, .archetype, .arch-section,
+    .recovery-card, .tool-card {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+  }
+
   .print-bar {
     position: fixed; top: 16px; right: 16px;
     display: flex; gap: 8px; z-index: 100;
@@ -436,61 +511,99 @@ function buildHtml(data: PrintRadarData): string {
     <button class="secondary" onclick="window.close()">Закрыть</button>
   </div>
 
-  <header class="cover">
-    <p class="eyebrow">Радар ресурсности · ${escapeHtml(today)}</p>
-    <h1 class="doc-title">${escapeHtml(titleText)}</h1>
-    ${primary ? `<p class="doc-subtitle">${escapeHtml(data.hasDual ? "Двойной источник ресурса — оба профиля важны для восстановления." : primary.tagline)}</p>` : ""}
-  </header>
-
-  <section class="summary">
-    <div class="stats-card">
-      <p class="eyebrow">${data.hasDual ? "Архетипы" : "Архетип восстановления"}</p>
-      <p style="margin:0;font-size:9.5pt;color:#374151;">
-        Доминирующий блок определяет, что вернёт вам энергию быстрее всего.
-      </p>
-      <div class="stats-row">
-        <div class="stats-block">
-          <p class="stats-label">Отмечено</p>
-          <p class="stats-value">${data.totalChecked}<span style="font-size:10pt;color:#9ca3af;font-weight:400;">/${data.totalCriteria}</span></p>
+  <div class="sheet">
+    <div class="doc" id="doc">
+      <header class="cover">
+        <div>
+          <h1 class="doc-title">${escapeHtml(titleText)}</h1>
+          ${primary ? `<p class="doc-subtitle">${escapeHtml(data.hasDual ? "Двойной источник ресурса — оба профиля важны для восстановления" : primary.tagline)}</p>` : ""}
         </div>
-        <div class="stats-block">
-          <p class="stats-label">Сила сигнала</p>
-          <p class="stats-value accent">${data.overallPct}%</p>
+        <div class="cover-meta">
+          <div><b>${data.totalChecked}</b>/${data.totalCriteria} отмечено</div>
+          <div><b>${data.overallPct}%</b> сила сигнала</div>
+          <div>${escapeHtml(today)}</div>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- Левая колонка: радар + бары + статы -->
+        <div>
+          <div class="panel radar-wrap">
+            ${renderRadarSvg(data.blocks, radarColor)}
+          </div>
+          <div class="panel bars-panel">
+            <p class="panel-title">Источники энергии по блокам</p>
+            ${data.blocks
+              .map(
+                (b) => `
+              <div class="bar-row">
+                <div class="bar-head">
+                  <span style="font-weight:500;">${escapeHtml(b.label)}</span>
+                  <span style="color:#6b7280;font-variant-numeric:tabular-nums;">${b.checked}/${b.total} · ${b.pct}%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:${b.pct}%;background:${b.color};"></div>
+                </div>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        </div>
+
+        <!-- Правая колонка: архетип целиком -->
+        <div id="arch-col">
+          ${data.dominantArchetypes.map((a, i) => renderArchetypeBlock(a, i, data.hasDual)).join("")}
         </div>
       </div>
+
+      <p class="footer-note">Practice · pm-resourse.site · ${escapeHtml(today)} · вся карта на одной странице</p>
     </div>
-    <div class="radar-card">
-      ${renderRadarSvg(data.blocks, radarColor)}
-    </div>
-  </section>
-
-  <section class="bars">
-    <h2 class="bars-title">Источники энергии по блокам</h2>
-    <p class="bars-sub">Чем выше процент — тем сильнее блок влияет на ваш ресурс.</p>
-    ${data.blocks
-      .map(
-        (b) => `
-      <div class="bar-row">
-        <div class="bar-head">
-          <span style="font-weight:500;">${escapeHtml(b.label)}</span>
-          <span style="color:#6b7280;font-variant-numeric:tabular-nums;">${b.checked}/${b.total} · ${b.pct}%</span>
-        </div>
-        <div class="bar-track">
-          <div class="bar-fill" style="width:${b.pct}%;background:${b.color};"></div>
-        </div>
-      </div>
-    `,
-      )
-      .join("")}
-  </section>
-
-  ${data.dominantArchetypes.map((a, i) => renderArchetypeBlock(a, i, data.hasDual)).join("")}
-
-  <p class="footer-note">Practice · pm-resourse.site · ${escapeHtml(today)}</p>
+  </div>
 
   <script>
+    /**
+     * Авто-подгонка под одну страницу A4.
+     * Если архетип содержит много инструментов и сигналов — JS уменьшает шрифт,
+     * пока всё не влезет в высоту листа.
+     */
+    (function () {
+      var sheet = document.querySelector('.sheet');
+      var doc = document.getElementById('doc');
+      if (!sheet || !doc) return;
+
+      // 281мм в пикселях при 96dpi
+      var maxHeightPx = 281 * 3.7795;
+
+      // Эвристика: если контента много — стартуем сразу с меньшего шрифта
+      var contentLen = ${archetypeContentLength};
+      var fontPt = contentLen > 2500 ? 7.5 : 8.0;
+      var minFontPt = 5.0;
+      var step = 0.2;
+
+      function fits() {
+        return doc.scrollHeight <= maxHeightPx + 1;
+      }
+      function setFont(pt) {
+        doc.style.fontSize = pt.toFixed(2) + 'pt';
+      }
+      setFont(fontPt);
+
+      var safety = 200;
+      while (!fits() && fontPt > minFontPt && safety-- > 0) {
+        fontPt -= step;
+        setFont(fontPt);
+      }
+      // Финальный микро-жим
+      safety = 50;
+      while (!fits() && fontPt > 4 && safety-- > 0) {
+        fontPt -= 0.15;
+        setFont(fontPt);
+      }
+    })();
+
     window.addEventListener("load", function () {
-      setTimeout(function () { window.print(); }, 350);
+      setTimeout(function () { window.print(); }, 500);
     });
   </script>
 </body>
@@ -503,7 +616,7 @@ export function printRadar(data: PrintRadarData) {
     return;
   }
   const html = buildHtml(data);
-  const w = window.open("", "_blank", "width=900,height=1100");
+  const w = window.open("", "_blank", "width=1100,height=1300");
   if (!w) {
     alert("Не удалось открыть окно печати. Разрешите всплывающие окна.");
     return;
@@ -512,3 +625,4 @@ export function printRadar(data: PrintRadarData) {
   w.document.write(html);
   w.document.close();
 }
+
