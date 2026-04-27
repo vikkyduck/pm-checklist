@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
+import { Download } from "lucide-react";
 import { useChecklistProgress } from "@/hooks/use-checklist-progress";
 import { printChecklist } from "@/lib/print-checklist";
 
@@ -154,7 +155,7 @@ function NegotiationsPage() {
                 className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)] hover:text-foreground"
                 title="Открыть для печати или сохранения в PDF"
               >
-                <DownloadIcon />
+                <Download className="h-3.5 w-3.5" aria-hidden />
                 Скачать чек-лист
               </button>
             </div>
@@ -859,25 +860,5 @@ function cssVar(name: string): string {
     .getPropertyValue(name)
     .trim();
   return v || "#111827";
-}
-
-function DownloadIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="13"
-      height="13"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M12 3v12" />
-      <path d="m7 10 5 5 5-5" />
-      <path d="M5 21h14" />
-    </svg>
-  );
 }
 
