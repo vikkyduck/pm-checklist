@@ -51,7 +51,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
         let payload: any
         let run_id = ''
         try {
-          if (previewToken === apiKey) {
+          if (previewToken) {
             const rawBody = await request.text()
             payload = parseEmailWebhookPayload(rawBody)
             run_id = payload.run_id ?? crypto.randomUUID()
