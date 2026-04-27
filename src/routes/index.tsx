@@ -158,39 +158,44 @@ function MindMapPage() {
         </section>
 
         {/* How to use */}
-        <section className="mt-8 sm:mt-10">
-          <div className="glass rounded-2xl p-5 sm:rounded-3xl sm:p-6 lg:p-8">
-            <div className="mb-3 flex items-center gap-2 sm:mb-4">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              <h2 className="text-xs font-medium uppercase tracking-wider text-foreground/80 sm:text-sm">
-                Как пользоваться
-              </h2>
-            </div>
-            <ul className="grid gap-3 sm:grid-cols-3">
-              {META.usage.map((u, i) => (
-                <li
-                  key={i}
-                  className="glass-soft rounded-2xl p-3.5 text-sm leading-relaxed text-foreground/85 sm:p-4"
-                >
-                  <span className="mb-2 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {u}
-                </li>
-              ))}
-            </ul>
-          </div>
+        <section className="mt-12 sm:mt-16 lg:mt-20">
+          <div className="hairline mb-8" />
+          <div className="eyebrow mb-5">Как пользоваться</div>
+          <ol className="grid gap-x-10 gap-y-6 sm:grid-cols-3">
+            {META.usage.map((u, i) => (
+              <li key={i} className="flex gap-4">
+                <span className="text-sm font-medium tabular-nums text-muted-foreground">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p className="text-sm leading-relaxed text-foreground/85">{u}</p>
+              </li>
+            ))}
+          </ol>
         </section>
 
         {/* Footer */}
-        <footer className="mt-12 flex flex-col items-center gap-2 text-center text-xs text-muted-foreground/70 sm:mt-16">
-          <div className="glass-pill rounded-full px-3 py-1">
-            Liquid Glass · 2026
+        <footer className="mt-16 sm:mt-24">
+          <div className="hairline mb-6" />
+          <div className="flex flex-col items-start justify-between gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center">
+            <span className="font-medium tracking-tight text-foreground">Practice</span>
+            <span>навигатор PM · 2026</span>
           </div>
-          <p>Designed with the restraint Steve & Jony would approve.</p>
         </footer>
       </div>
     </main>
+  );
+}
+
+/* ─────────────────────────────────────── Stat */
+
+function Stat({ value, label, offset }: { value: number | string; label: string; offset?: boolean }) {
+  return (
+    <div className={offset ? "pl-4 sm:pl-6" : ""}>
+      <div className="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+        {value}
+      </div>
+      <div className="eyebrow mt-1">{label}</div>
+    </div>
   );
 }
 
