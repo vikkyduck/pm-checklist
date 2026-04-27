@@ -1,6 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
-
 export const Route = createFileRoute("/resource-state")({
   component: ResourceStatePage,
   head: () => ({
