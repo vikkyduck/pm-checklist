@@ -183,6 +183,12 @@ function MindMapPage() {
 
           {/* Categories */}
           <div className="lg:col-span-8">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="eyebrow">Блоки этапа · нажмите, чтобы раскрыть</div>
+              <div className="text-[11px] text-muted-foreground">
+                {stage.categories.length} {stage.categories.length === 1 ? "блок" : "блоков"}
+              </div>
+            </div>
             <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-2">
               {filteredCategories.map((cat, idx) => {
                 const key = `${stage.id}-${cat.title}`;
