@@ -511,6 +511,7 @@ function ResultsView({
         whyDrains: a.whyDrains,
         recovery: a.recovery,
         earlyWarnings: a.earlyWarnings,
+        tools: a.tools,
         color: cssVar(
           BLOCKS.find((b) => b.id === a.id)?.stageVar ?? "--accent",
         ),
