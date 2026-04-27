@@ -113,12 +113,6 @@ const LEVELS: Level[] = [
 ];
 
 function NegotiationsPage() {
-  const navigate = useNavigate();
-  const { user, ready, logout } = useAuth();
-
-  useEffect(() => {
-    if (ready && !user) navigate({ to: "/login", replace: true });
-  }, [ready, user, navigate]);
 
   const ambientRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
