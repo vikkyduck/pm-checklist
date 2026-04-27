@@ -292,68 +292,90 @@ function StageSummary({ stage, progress }: { stage: Stage; progress: Record<stri
   const pct = itemCount ? Math.round((doneCount / itemCount) * 100) : 0;
   return (
     <div
-      className="glass specular relative overflow-hidden rounded-2xl p-5 animate-fade-up sm:rounded-3xl sm:p-7"
-      style={{ "--stage-color": `var(--${stage.color})` } as React.CSSProperties}
+      className="animate-fade-up sticky top-6 space-y-7"
       key={stage.id}
     >
-      {/* Stage chromatic wash */}
-      <div
-        className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full blur-3xl opacity-40"
-        style={{ background: `var(--${stage.color})` }}
-      />
-
-      <div className="relative space-y-4 sm:space-y-5">
-        <div className="flex items-center gap-3">
-          <span
-            className="flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-semibold"
-            style={{
-              background: `var(--${stage.color})`,
-              color: "oklch(0.18 0.03 255)",
-              boxShadow: `0 8px 24px -8px var(--${stage.color})`,
-            }}
-          >
-            {stage.index}
-          </span>
-          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            Этап {stage.index} · {doneCount}/{itemCount} выполнено
-          </div>
+      <div>
+        <div className="eyebrow mb-3">
+          Этап {stage.index} · {doneCount}/{itemCount}
         </div>
-
-        <h2 className="text-2xl font-semibold leading-tight text-foreground">
+        <h2 className="text-balance text-2xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-3xl">
           {stage.title}
         </h2>
-
-        <p className="text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
           {stage.subtitle}
         </p>
+      </div>
 
-        {stage.intro && (
-          <details className="group rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-xs leading-relaxed text-muted-foreground transition-colors hover:bg-white/[0.05]">
-            <summary className="cursor-pointer list-none text-[11px] font-medium uppercase tracking-wider text-foreground/80">
-              <span className="inline-flex items-center gap-1.5">
-                Контекст этапа
-                <span className="opacity-50 transition-transform group-open:rotate-180">▾</span>
-              </span>
-            </summary>
-            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-              {stage.intro}
-            </p>
-          </details>
-        )}
-
-        {/* Progress bar */}
-        <div className="space-y-1.5 pt-1">
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
-            <span>Прогресс этапа</span>
-            <span className="font-medium" style={{ color: `var(--${stage.color})` }}>{pct}%</span>
-          </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${pct}%`, background: `var(--${stage.color})` }}
-            />
-          </div>
+      {/* Progress — single hairline bar */}
+      <div>
+        <div className="mb-2 flex items-baseline justify-between">
+          <span className="eyebrow">Прогресс</span>
+          <span
+            className="text-sm font-medium tabular-nums"
+            style={{ color: `var(--${stage.color})` }}
+          >
+            {pct}%
+          </span>
         </div>
+        <div className="h-px w-full overflow-hidden bg-[var(--hairline)]">
+          <div
+            className="h-full transition-all duration-700 ease-out"
+            style={{
+              width: `${pct}%`,
+              background: `var(--${stage.color})`,
+            }}
+          />
+        </div>
+      </div>
+
+      {stage.intro && (
+        <details className="group">
+          <summary className="cursor-pointer list-none">
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground/80 transition-colors hover:text-foreground">
+              Контекст этапа
+              <span className="opacity-50 transition-transform group-open:rotate-180">
+                ▾
+              </span>
+            </span>
+          </summary>
+          <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+            {stage.intro}
+          </p>
+        </details>
+      )}
+
+      {/* Category list — quiet rows */}
+      <div>
+        <div className="eyebrow mb-3">Блоки этапа</div>
+        <ul className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+          {stage.categories.map((c) => {
+            const done = c.items.filter(
+              (_, i) => progress[itemId(stage.id, c.title, i)],
+            ).length;
+            const complete = done === c.items.length && c.items.length > 0;
+            return (
+              <li
+                key={c.title}
+                className="flex items-center justify-between gap-3 py-2.5"
+              >
+                <span className="text-sm text-foreground/90">{c.title}</span>
+                <span
+                  className="text-xs tabular-nums"
+                  style={{
+                    color: complete
+                      ? `var(--${stage.color})`
+                      : "var(--muted-foreground)",
+                  }}
+                >
+                  {done}/{c.items.length}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
 
         <div className="grid gap-2 pt-2">
           {stage.categories.map((c) => {
