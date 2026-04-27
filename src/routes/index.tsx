@@ -60,47 +60,9 @@ function MindMapPage() {
     setOpenCategory(null);
   }, [activeStage]);
 
-  // Cursor-following ambient light
-  const ambientRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      if (!ambientRef.current) return;
-      ambientRef.current.style.setProperty("--mx", `${e.clientX}px`);
-      ambientRef.current.style.setProperty("--my", `${e.clientY}px`);
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
-
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      {/* Aurora blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full blur-3xl opacity-50 animate-float-slow"
-          style={{ background: "var(--stage-0)" }}
-        />
-        <div
-          className="absolute top-1/3 -right-32 h-[520px] w-[520px] rounded-full blur-3xl opacity-40 animate-float-slow"
-          style={{ background: "var(--stage-3)", animationDelay: "-4s" }}
-        />
-        <div
-          className="absolute bottom-0 left-1/3 h-[460px] w-[460px] rounded-full blur-3xl opacity-40 animate-float-slow"
-          style={{ background: "var(--stage-4)", animationDelay: "-8s" }}
-        />
-      </div>
-
-      {/* Cursor ambient */}
-      <div
-        ref={ambientRef}
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), oklch(1 0 0 / 0.06), transparent 50%)",
-        }}
-      />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-10 lg:py-14">
+    <main className="relative min-h-screen">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
 
         {/* Header */}
         <header className="mb-6 flex flex-col gap-4 sm:mb-8 sm:gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
