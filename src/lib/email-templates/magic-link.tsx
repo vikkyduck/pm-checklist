@@ -14,27 +14,30 @@ import {
 interface MagicLinkEmailProps {
   siteName: string
   confirmationUrl: string
+  recipientName?: string
 }
 
 export const MagicLinkEmail = ({
   siteName,
   confirmationUrl,
+  recipientName,
 }: MagicLinkEmailProps) => (
-  <Html lang="en" dir="ltr">
+  <Html lang="ru" dir="ltr">
     <Head />
-    <Preview>Your login link for {siteName}</Preview>
+    <Preview>{recipientName ? `${recipientName}, ` : ''}ваша ссылка для входа в {siteName}</Preview>
     <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>Your login link</Heading>
+      <Container style={shell}>
+        <Text style={eyebrow}>PM ЧЕК-ЛИСТ</Text>
+        <Heading style={h1}>{recipientName ? `${recipientName}, вход почти готов` : 'Вход почти готов'}</Heading>
         <Text style={text}>
-          Click the button below to log in to {siteName}. This link will expire
-          shortly.
+          Нажмите на кнопку ниже, чтобы безопасно войти в <strong>{siteName}</strong> без пароля.
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Log In
+          Войти в платформу
         </Button>
+        <Text style={note}>Ссылка одноразовая и действует ограниченное время.</Text>
         <Text style={footer}>
-          If you didn't request this link, you can safely ignore this email.
+          Если вы не запрашивали вход, просто проигнорируйте это письмо.
         </Text>
       </Container>
     </Body>
@@ -43,26 +46,40 @@ export const MagicLinkEmail = ({
 
 export default MagicLinkEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', padding: '24px 12px' }
+const shell = {
+  padding: '32px 28px',
+  border: '1px solid #e7ecf3',
+  borderRadius: '24px',
+  backgroundColor: '#f8fafc',
+}
+const eyebrow = {
+  margin: '0 0 12px',
+  fontSize: '11px',
+  fontWeight: 700,
+  letterSpacing: '0.08em',
+  color: '#5b6b83',
+}
 const h1 = {
-  fontSize: '22px',
+  fontSize: '28px',
   fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
+  color: '#101828',
+  margin: '0 0 16px',
 }
 const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
+  fontSize: '16px',
+  color: '#475467',
+  lineHeight: '1.65',
+  margin: '0 0 24px',
 }
 const button = {
-  backgroundColor: '#000000',
+  backgroundColor: '#111827',
   color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
+  fontSize: '15px',
+  fontWeight: 700,
+  borderRadius: '14px',
+  padding: '14px 22px',
   textDecoration: 'none',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const note = { fontSize: '13px', color: '#667085', margin: '18px 0 0' }
+const footer = { fontSize: '12px', color: '#98a2b3', margin: '28px 0 0' }
