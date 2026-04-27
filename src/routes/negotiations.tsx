@@ -508,46 +508,27 @@ function GuideCard({
   children: React.ReactNode;
 }) {
   return (
-    <article
-      id={block.id}
-      className="glass stage-glow relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-9"
-      style={{ "--stage-color": `var(${block.stageVar})` } as React.CSSProperties}
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-3 -top-4 select-none text-[90px] font-semibold leading-none tracking-tighter opacity-[0.06] sm:-right-4 sm:-top-6 sm:text-[120px] lg:text-[170px]"
-        style={{ color: `var(${block.stageVar})` }}
-      >
-        {block.number}
-      </span>
-      <div className="relative space-y-4 sm:space-y-5">
-        <div>
-          <div
-            className="mb-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:px-3 sm:text-[11px]"
-            style={{
-              background: `color-mix(in oklab, var(${block.stageVar}) 18%, transparent)`,
-              color: `var(${block.stageVar})`,
-            }}
+    <section id={block.id} className="scroll-mt-20">
+      <header className="mb-5 sm:mb-6">
+        <div className="flex items-baseline gap-4 sm:gap-5">
+          <span
+            className="text-sm font-semibold tabular-nums tracking-tight"
+            style={{ color: `var(${block.stageVar})` }}
           >
-            <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{
-                background: `var(${block.stageVar})`,
-                boxShadow: `0 0 10px var(${block.stageVar})`,
-              }}
-            />
-            Раздел {block.number}
+            {block.number}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
+              {block.title}
+            </h3>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              {block.lead}
+            </p>
           </div>
-          <h3 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
-            {block.title}
-          </h3>
-          <p className="mt-1.5 max-w-3xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
-            {block.lead}
-          </p>
         </div>
-        {children}
-      </div>
-    </article>
+      </header>
+      <div className="pl-0 sm:pl-9">{children}</div>
+    </section>
   );
 }
 
