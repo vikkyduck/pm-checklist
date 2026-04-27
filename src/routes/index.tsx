@@ -239,10 +239,13 @@ function MindMapPage() {
 function Stat({ value, label, offset }: { value: number | string; label: string; offset?: boolean }) {
   return (
     <div className={offset ? "pl-4 sm:pl-6" : ""}>
-      <div className="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+      <div
+        className="num text-3xl text-foreground sm:text-4xl"
+        style={{ fontFamily: "var(--font-display)", fontWeight: 400, letterSpacing: "-0.03em", lineHeight: 1 }}
+      >
         {value}
       </div>
-      <div className="eyebrow mt-1">{label}</div>
+      <div className="eyebrow mt-2">{label}</div>
     </div>
   );
 }
