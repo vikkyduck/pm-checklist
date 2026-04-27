@@ -3,6 +3,7 @@ import { ShieldCheck, Battery, MessagesSquare, Radar } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -22,7 +23,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    title: "Митигирование рисков в проекте",
+    title: "Митигирование рисков",
     url: "/",
     icon: ShieldCheck,
     hint: "Чек-лист от первого дня до закрытия",
@@ -31,6 +32,7 @@ const NAV_ITEMS: NavItem[] = [
     title: "Ресурсное состояние",
     url: "/resource-state",
     icon: Battery,
+    hint: "Четыре уровня ассертивности",
   },
   {
     title: "Радар ресурсности",
@@ -42,6 +44,7 @@ const NAV_ITEMS: NavItem[] = [
     title: "Переговоры с заказчиком",
     url: "/negotiations",
     icon: MessagesSquare,
+    hint: "Оценка PM в ролевой игре",
   },
 ];
 
@@ -52,38 +55,50 @@ export function DevNavSidebar() {
   const currentPath = location.pathname;
 
   const isActive = (path: string) =>
-    path === "/" ? currentPath === "/" : currentPath === path || currentPath.startsWith(path + "/");
+    path === "/"
+      ? currentPath === "/"
+      : currentPath === path || currentPath.startsWith(path + "/");
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-[var(--hairline)]">
         {!collapsed ? (
-          <div className="flex items-center gap-2.5 px-2 py-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-[11px] font-semibold tracking-tight text-background">
+          <div className="flex items-center gap-3 px-2 py-3">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-md bg-foreground text-[13px] font-medium text-background"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
               P
             </span>
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium leading-tight text-foreground">
+              <p
+                className="truncate text-[15px] leading-tight text-foreground"
+                style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
+              >
                 Practice
               </p>
-              <p className="truncate text-[10px] leading-tight text-muted-foreground">
-                навигатор PM
-              </p>
+              <p className="eyebrow mt-1 truncate">Навигатор PM</p>
             </div>
           </div>
         ) : (
-          <div className="flex justify-center px-1 py-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-[11px] font-semibold tracking-tight text-background">
+          <div className="flex justify-center px-1 py-3">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-md bg-foreground text-[13px] font-medium text-background"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
               P
             </span>
           </div>
         )}
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
-            Направления
-          </SidebarGroupLabel>
+          {!collapsed && (
+            <SidebarGroupLabel className="eyebrow !text-[10px] !text-muted-foreground/80">
+              Разделы
+            </SidebarGroupLabel>
+          )}
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV_ITEMS.map((item) => {
@@ -93,21 +108,34 @@ export function DevNavSidebar() {
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
-                      className={
+                      className={[
+                        "group/nav h-auto items-start py-2.5 transition-colors",
                         active
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium h-auto py-2 items-start"
-                          : "h-auto py-2 items-start"
-                      }
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                          : "",
+                      ].join(" ")}
                     >
                       <Link to={item.url}>
-                        <item.icon className="h-4 w-4 mt-0.5 shrink-0" />
+                        <item.icon
+                          className={[
+                            "h-4 w-4 mt-0.5 shrink-0 transition-colors",
+                            active
+                              ? "text-accent"
+                              : "text-muted-foreground group-hover/nav:text-foreground",
+                          ].join(" ")}
+                        />
                         {!collapsed && (
                           <div className="flex-1 min-w-0">
-                            <div className="truncate text-sm leading-tight">
+                            <div
+                              className={[
+                                "truncate text-[13.5px] leading-tight",
+                                active ? "font-medium text-foreground" : "text-foreground/90",
+                              ].join(" ")}
+                            >
                               {item.title}
                             </div>
                             {item.hint && (
-                              <div className="truncate text-[10px] text-muted-foreground/80 mt-0.5">
+                              <div className="truncate text-[10.5px] leading-tight text-muted-foreground/80 mt-1">
                                 {item.hint}
                               </div>
                             )}
@@ -122,6 +150,14 @@ export function DevNavSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {!collapsed && (
+        <SidebarFooter className="border-t border-[var(--hairline)] px-3 py-3">
+          <p className="eyebrow !text-[9.5px] text-muted-foreground/70">
+            v.2026 · Practice
+          </p>
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }
