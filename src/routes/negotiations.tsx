@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { Download } from "lucide-react";
 import { useChecklistProgress } from "@/hooks/use-checklist-progress";
 import { printChecklist } from "@/lib/print-checklist";
+import { DisclosureBox } from "@/components/disclosure-box";
 
 export const Route = createFileRoute("/negotiations")({
   component: NegotiationsPage,
@@ -212,15 +213,15 @@ function NegotiationsPage() {
           </div>
         </header>
 
-        {/* Sections */}
-        <div className="space-y-12 sm:space-y-16">
-          <a
-            href="#guide"
-            className="inline-flex w-fit items-center gap-2 text-xs font-medium text-foreground/70 transition-colors hover:text-foreground sm:text-sm"
-          >
-            <span>Перейти к руководству по аргументации</span>
-            <span aria-hidden>→</span>
-          </a>
+        {/* Sections — каждая в раскрывающемся боксе */}
+        <a
+          href="#guide"
+          className="mb-5 inline-flex w-fit items-center gap-2 text-xs font-medium text-foreground/70 transition-colors hover:text-foreground sm:text-sm"
+        >
+          <span>Перейти к руководству по аргументации</span>
+          <span aria-hidden>→</span>
+        </a>
+        <div className="space-y-3">
           {SECTIONS.map((section) => {
             const doneInSection = section.items.filter(
               (_, i) => progress[negotiationItemId(section.id, i)],
@@ -228,42 +229,16 @@ function NegotiationsPage() {
             const allDone =
               doneInSection === section.items.length && section.items.length > 0;
             return (
-              <section
+              <DisclosureBox
                 key={section.id}
                 id={section.id}
-                className="relative animate-fade-up scroll-mt-20"
+                number={section.number}
+                accentVar={section.stageVar}
+                title={section.title}
+                subtitle={section.subtitle}
+                meta={`${doneInSection}/${section.items.length}${allDone ? " ✓" : ""}`}
               >
-                <header className="mb-5 sm:mb-6">
-                  <div className="flex items-baseline gap-4 sm:gap-5">
-                    <span
-                      className="text-sm font-semibold tabular-nums tracking-tight"
-                      style={{ color: `var(${section.stageVar})` }}
-                    >
-                      {section.number}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h2 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
-                        {section.title}
-                      </h2>
-                      <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
-                        <span>{section.subtitle}</span>
-                        <span className="h-3 w-px bg-[var(--hairline-strong)]" />
-                        <span
-                          className="tabular-nums"
-                          style={
-                            allDone
-                              ? { color: `var(${section.stageVar})` }
-                              : undefined
-                          }
-                        >
-                          {doneInSection}/{section.items.length}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </header>
-
-                <ul className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+                <ul className="-mx-1 divide-y divide-[var(--hairline)]">
                   {section.items.map((text, i) => {
                     const id = negotiationItemId(section.id, i);
                     const checked = !!progress[id];
@@ -272,7 +247,7 @@ function NegotiationsPage() {
                         <button
                           type="button"
                           onClick={() => toggle(id)}
-                          className="group flex w-full items-start gap-3.5 px-1 py-3.5 text-left transition-colors hover:bg-[var(--surface)] sm:gap-4 sm:px-2 sm:py-4"
+                          className="group flex w-full items-start gap-3.5 px-1 py-3 text-left transition-colors hover:bg-[var(--surface)] sm:gap-4 sm:px-2 sm:py-3.5"
                         >
                           <span
                             className="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md border transition-all duration-200"
@@ -318,7 +293,7 @@ function NegotiationsPage() {
                     );
                   })}
                 </ul>
-              </section>
+              </DisclosureBox>
             );
           })}
         </div>
@@ -551,27 +526,15 @@ function GuideCard({
   children: React.ReactNode;
 }) {
   return (
-    <section id={block.id} className="scroll-mt-20">
-      <header className="mb-5 sm:mb-6">
-        <div className="flex items-baseline gap-4 sm:gap-5">
-          <span
-            className="text-sm font-semibold tabular-nums tracking-tight"
-            style={{ color: `var(${block.stageVar})` }}
-          >
-            {block.number}
-          </span>
-          <div className="min-w-0 flex-1">
-            <h3 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
-              {block.title}
-            </h3>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              {block.lead}
-            </p>
-          </div>
-        </div>
-      </header>
-      <div className="pl-0 sm:pl-9">{children}</div>
-    </section>
+    <DisclosureBox
+      id={block.id}
+      number={block.number}
+      accentVar={block.stageVar}
+      title={block.title}
+      subtitle={block.lead}
+    >
+      {children}
+    </DisclosureBox>
   );
 }
 
@@ -590,7 +553,7 @@ function GuideSection() {
         </p>
       </header>
 
-      <div className="space-y-12 sm:space-y-16 lg:space-y-20">
+      <div className="space-y-3">
         {/* 01 — Тип стейкхолдера */}
         <GuideCard block={GUIDE_BLOCKS[0]}>
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
