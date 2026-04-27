@@ -254,7 +254,7 @@ function StageRail({
               key={s.id}
               onClick={() => onSelect(s.id)}
               className={[
-                "group relative flex-1 min-w-[180px] rounded-2xl px-4 py-4 text-left transition-all duration-500",
+                "group relative min-w-[150px] flex-1 rounded-2xl px-3 py-3 text-left transition-all duration-500 sm:min-w-[180px] sm:px-4 sm:py-4",
                 active
                   ? "bg-white/10 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] scale-[1.02]"
                   : "hover:bg-white/5",
@@ -312,7 +312,7 @@ function StageSummary({ stage, progress }: { stage: Stage; progress: Record<stri
   const pct = itemCount ? Math.round((doneCount / itemCount) * 100) : 0;
   return (
     <div
-      className="glass specular relative overflow-hidden rounded-3xl p-7 animate-fade-up"
+      className="glass specular relative overflow-hidden rounded-2xl p-5 animate-fade-up sm:rounded-3xl sm:p-7"
       style={{ "--stage-color": `var(--${stage.color})` } as React.CSSProperties}
       key={stage.id}
     >
@@ -322,7 +322,7 @@ function StageSummary({ stage, progress }: { stage: Stage; progress: Record<stri
         style={{ background: `var(--${stage.color})` }}
       />
 
-      <div className="relative space-y-5">
+      <div className="relative space-y-4 sm:space-y-5">
         <div className="flex items-center gap-3">
           <span
             className="flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-semibold"
