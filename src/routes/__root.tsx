@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DevNavSidebar } from "@/components/dev-nav-sidebar";
