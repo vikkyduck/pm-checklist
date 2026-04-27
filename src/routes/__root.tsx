@@ -76,9 +76,9 @@ function RootComponent() {
     <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full">
         <DevNavSidebar />
-        <div className="relative flex-1">
+        <div className="relative min-w-0 flex-1">
           <SidebarTrigger
-            className="fixed left-3 top-3 z-50 bg-background/80 backdrop-blur-sm shadow-md border"
+            className="fixed left-2 top-[max(0.5rem,env(safe-area-inset-top))] z-50 h-9 w-9 border bg-background/80 shadow-md backdrop-blur-sm sm:left-3 sm:top-3"
             aria-label="Открыть навигацию"
           />
           <Outlet />
