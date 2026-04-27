@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Radar, ArrowRight } from "lucide-react";
+import { DisclosureBox } from "@/components/disclosure-box";
 
 export const Route = createFileRoute("/resource-state")({
   component: ResourceStatePage,
@@ -167,69 +168,57 @@ function ResourceStatePage() {
           </div>
         </header>
 
-        {/* Levels */}
-        <div className="space-y-12 sm:space-y-16 lg:space-y-20">
+        {/* Levels — каждый в раскрывающемся боксе */}
+        <div className="space-y-3">
           {LEVELS.map((level) => (
-            <section
+            <DisclosureBox
               key={level.id}
               id={level.id}
-              className="relative animate-fade-up scroll-mt-20"
+              number={level.number}
+              accentVar={level.stageVar}
+              title={level.title}
+              subtitle={level.subtitle}
+              meta="3 раздела"
             >
-              <header className="mb-5 sm:mb-6">
-                <div className="flex items-baseline gap-4 sm:gap-5">
-                  <span
-                    className="text-sm font-semibold tabular-nums tracking-tight"
-                    style={{ color: `var(${level.stageVar})` }}
-                  >
-                    {level.number}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
-                      {level.title}
-                    </h2>
-                    <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
-                      {level.subtitle}
-                    </p>
-                  </div>
-                </div>
-              </header>
-
-              <div className="space-y-5 pl-0 sm:pl-9">
-                <p className="text-sm leading-relaxed text-foreground/90 sm:text-base">
+              <div className="space-y-4">
+                <p className="text-sm leading-relaxed text-foreground/90 sm:text-[15px]">
                   {level.intro}
                 </p>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="surface rounded-2xl p-4">
-                    <div className="eyebrow mb-2">Диагностика</div>
+
+                {/* Вложенные боксы — каждая рекомендация сворачивается */}
+                <div className="space-y-2">
+                  <DisclosureBox
+                    title="Диагностика"
+                    subtitle="Как понять, что вы здесь"
+                    accentVar={level.stageVar}
+                  >
                     <p className="text-sm leading-relaxed text-foreground/85">
                       {level.diagnosis}
                     </p>
-                  </div>
-                  <div
-                    className="surface rounded-2xl p-4"
-                    style={{
-                      borderColor: `color-mix(in oklab, var(${level.stageVar}) 30%, transparent)`,
-                    }}
+                  </DisclosureBox>
+
+                  <DisclosureBox
+                    title={`Инструмент · ${level.tool.name}`}
+                    subtitle="Что применить, чтобы вернуть ресурс"
+                    accentVar={level.stageVar}
                   >
-                    <div
-                      className="eyebrow mb-2"
-                      style={{ color: `var(${level.stageVar})` }}
-                    >
-                      Инструмент · {level.tool.name}
-                    </div>
                     <p className="text-sm leading-relaxed text-foreground/85">
                       {level.tool.body}
                     </p>
-                  </div>
-                  <div className="surface rounded-2xl p-4">
-                    <div className="eyebrow mb-2">Действие</div>
+                  </DisclosureBox>
+
+                  <DisclosureBox
+                    title="Действие"
+                    subtitle="Конкретный шаг прямо сейчас"
+                    accentVar={level.stageVar}
+                  >
                     <p className="text-sm leading-relaxed text-foreground/85">
                       {level.action}
                     </p>
-                  </div>
+                  </DisclosureBox>
                 </div>
               </div>
-            </section>
+            </DisclosureBox>
           ))}
         </div>
 
