@@ -19,6 +19,8 @@ type NavItem = {
   url: string;
   icon: React.ComponentType<{ className?: string }>;
   hint?: string;
+  /** Renders this item visually nested under the previous one */
+  nested?: boolean;
 };
 
 const NAV_ITEMS: NavItem[] = [
@@ -39,6 +41,7 @@ const NAV_ITEMS: NavItem[] = [
     url: "/resource-radar",
     icon: Radar,
     hint: "Опрос · ваш архетип восстановления",
+    nested: true,
   },
   {
     title: "Переговоры с заказчиком",
