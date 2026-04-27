@@ -376,31 +376,6 @@ function StageSummary({ stage, progress }: { stage: Stage; progress: Record<stri
         </ul>
       </div>
     </div>
-
-        <div className="grid gap-2 pt-2">
-          {stage.categories.map((c) => {
-            const done = c.items.filter((_, i) => progress[itemId(stage.id, c.title, i)]).length;
-            return (
-              <div
-                key={c.title}
-                className="glass-soft flex items-center justify-between rounded-xl px-3.5 py-2.5"
-              >
-                <span className="text-sm text-foreground/90">{c.title}</span>
-                <span
-                  className="rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums"
-                  style={{
-                    background: `oklch(from var(--${stage.color}) l c h / 0.2)`,
-                    color: `var(--${stage.color})`,
-                  }}
-                >
-                  {done}/{c.items.length}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
   );
 }
 
