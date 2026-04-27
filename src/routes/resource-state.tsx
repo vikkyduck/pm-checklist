@@ -113,52 +113,58 @@ function ResourceStatePage() {
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
         {/* Hero */}
         <header className="mb-10 sm:mb-14 lg:mb-20">
-          <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="eyebrow mb-5">Ресурсное состояние</div>
-            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
-              Четыре уровня ассертивности
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
-              Чтобы вернуть ассертивность — способность уверенно и экологично
-              отстаивать свои границы — нужно восстановить ресурс на четырёх
-              уровнях.
-            </p>
-          </div>
+          <div className="eyebrow mb-6">Раздел 02 · Ресурсное состояние</div>
+          <h1 className="text-balance text-foreground display text-[2.25rem] sm:text-5xl md:text-6xl lg:text-[5.25rem]">
+            Четыре уровня{" "}
+            <em className="display-italic" style={{ color: "var(--accent)" }}>
+              ассертивности
+            </em>
+          </h1>
+          <p className="lede mt-6 max-w-2xl">
+            Чтобы вернуть ассертивность — способность уверенно и экологично
+            отстаивать свои границы — нужно восстановить ресурс на четырёх
+            уровнях.
+          </p>
 
-          {/* Quick nav */}
-          <nav className="-mx-4 mt-8 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
-            {LEVELS.map((l) => (
-              <a
-                key={l.id}
-                href={`#${l.id}`}
-                className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--hairline)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:text-foreground sm:text-xs"
-              >
-                <span className="text-muted-foreground">{l.number}</span>
-                {l.title}
-              </a>
-            ))}
-          </nav>
-
-          {/* Radar CTA */}
+          {/* Radar CTA — hero card */}
           <Link
             to="/resource-radar"
-            className="surface mt-6 flex items-center justify-between gap-4 rounded-2xl p-4 transition-colors hover:bg-[var(--surface-strong)] sm:p-5"
+            className="surface group mt-10 flex items-center justify-between gap-4 rounded-xl p-4 transition-colors hover:bg-[var(--surface-strong)] sm:mt-12 sm:p-5"
           >
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--surface-strong)]">
+            <div className="flex min-w-0 items-center gap-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--surface-strong)] border border-[var(--hairline)]">
                 <Radar className="h-5 w-5 text-accent" />
               </span>
               <div className="min-w-0">
-                <div className="text-sm font-semibold text-foreground sm:text-base">
-                  Радар ресурсности
+                <div className="eyebrow mb-1.5">Шаг 1 · диагностика</div>
+                <div className="text-[15px] font-medium text-foreground sm:text-base" style={{ fontFamily: "var(--font-sans)" }}>
+                  Определите свой ведущий уровень
                 </div>
-                <p className="mt-0.5 text-xs text-muted-foreground sm:text-[13px]">
+                <p className="mt-1 text-[12.5px] text-muted-foreground sm:text-[13px]">
                   Опросник на 5 минут — узнайте свой архетип восстановления
                 </p>
               </div>
             </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-foreground" />
           </Link>
+
+          {/* Quick nav */}
+          <div className="hairline mt-10" />
+          <div className="mt-6">
+            <div className="eyebrow mb-3">Уровни</div>
+            <nav className="-mx-4 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+              {LEVELS.map((l) => (
+                <a
+                  key={l.id}
+                  href={`#${l.id}`}
+                  className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--hairline)] px-3 py-1.5 text-[12px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:text-foreground"
+                >
+                  <span className="num text-muted-foreground">{l.number}</span>
+                  {l.title}
+                </a>
+              ))}
+            </nav>
+          </div>
         </header>
 
         {/* Levels */}

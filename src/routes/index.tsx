@@ -90,34 +90,42 @@ function MindMapPage() {
     <main className="relative min-h-screen">
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
 
-        {/* Header */}
+        {/* Hero — editorial */}
         <header className="mb-10 sm:mb-14 lg:mb-20">
-          <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="eyebrow">{META.subtitle}</div>
-              <button
-                type="button"
-                onClick={handleDownload}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)] hover:text-foreground"
-                title="Открыть для печати или сохранения в PDF"
-              >
-                <Download className="h-3.5 w-3.5" aria-hidden />
-                Скачать чек-лист
-              </button>
-            </div>
-            <h1 className="mt-5 text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[5rem]">
-              {META.title}
-            </h1>
-            <p className="mt-3 text-base leading-snug text-muted-foreground sm:text-lg lg:text-xl">
-              от первого дня до закрытия проекта
-            </p>
-            <p className="mt-6 max-w-xl text-sm leading-relaxed text-foreground/75 sm:text-base">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="eyebrow">{META.subtitle} · 2026</div>
+            <button
+              type="button"
+              onClick={handleDownload}
+              className="btn-ghost"
+              title="Открыть для печати или сохранения в PDF"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden />
+              Скачать PDF
+            </button>
+          </div>
+
+          <h1 className="mt-7 text-balance text-foreground display text-[2.5rem] sm:text-6xl md:text-7xl lg:text-[6rem]">
+            {META.title.split(" ").slice(0, -1).join(" ")}{" "}
+            <em className="display-italic" style={{ color: "var(--accent)" }}>
+              {META.title.split(" ").slice(-1)[0]}
+            </em>
+          </h1>
+
+          <div className="mt-6 grid gap-6 sm:mt-8 sm:grid-cols-[2fr_1fr] sm:items-end sm:gap-12">
+            <p className="lede max-w-xl">
               {META.description}
+            </p>
+            <p
+              className="hidden text-right text-muted-foreground sm:block"
+              style={{ fontFamily: "var(--font-mono)", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase" }}
+            >
+              от первого дня<br />до закрытия проекта
             </p>
           </div>
 
-          {/* Meta strip — quiet stats + search, single row on desktop */}
-          <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-6">
+          {/* Meta strip */}
+          <div className="mt-10 grid gap-5 sm:mt-12 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-8">
             <dl className="grid grid-cols-3 divide-x divide-[var(--hairline)] text-left">
               <Stat value="6" label="этапов" />
               <Stat
@@ -136,6 +144,7 @@ function MindMapPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Поиск по чек-листу"
                 className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                style={{ fontFamily: "var(--font-sans)" }}
               />
               {query && (
                 <button
@@ -148,6 +157,8 @@ function MindMapPage() {
               )}
             </div>
           </div>
+
+          <div className="hairline mt-10 sm:mt-12" />
         </header>
 
         {/* Stage rail */}
@@ -228,10 +239,13 @@ function MindMapPage() {
 function Stat({ value, label, offset }: { value: number | string; label: string; offset?: boolean }) {
   return (
     <div className={offset ? "pl-4 sm:pl-6" : ""}>
-      <div className="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+      <div
+        className="num text-3xl text-foreground sm:text-4xl"
+        style={{ fontFamily: "var(--font-display)", fontWeight: 400, letterSpacing: "-0.03em", lineHeight: 1 }}
+      >
         {value}
       </div>
-      <div className="eyebrow mt-1">{label}</div>
+      <div className="eyebrow mt-2">{label}</div>
     </div>
   );
 }
@@ -336,7 +350,7 @@ function StageSummary({ stage, progress }: { stage: Stage; progress: Record<stri
         <div className="eyebrow mb-3">
           Этап {stage.index} · {doneCount}/{itemCount}
         </div>
-        <h2 className="text-balance text-2xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-3xl">
+        <h2 className="text-balance text-3xl leading-[1.04] text-foreground sm:text-4xl">
           {stage.title}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -463,7 +477,10 @@ function CategoryCard({
               opacity: complete ? 1 : 0.6,
             }}
           />
-          <h3 className="truncate text-[15px] font-medium leading-snug text-foreground">
+          <h3
+            className="truncate text-[14.5px] font-medium leading-snug text-foreground"
+            style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.012em" }}
+          >
             {title}
           </h3>
         </div>
