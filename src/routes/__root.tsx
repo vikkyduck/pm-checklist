@@ -10,17 +10,20 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+        <div className="eyebrow mb-4">Error 404</div>
+        <h1
+          className="text-foreground"
+          style={{ fontFamily: "var(--font-display)", fontSize: "5rem", lineHeight: 1, letterSpacing: "-0.04em" }}
+        >
+          Страница{" "}
+          <em style={{ fontStyle: "italic", color: "var(--accent)" }}>не найдена</em>
+        </h1>
+        <p className="mt-5 text-sm text-muted-foreground">
+          Возможно, страница была перемещена или адрес введён неверно.
         </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
+        <div className="mt-7">
+          <Link to="/" className="btn-primary">
+            На главную
           </Link>
         </div>
       </div>
@@ -35,14 +38,14 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#1a1f2e" },
       { title: "Practice — навигатор PM" },
-      { name: "description", content: "Yавигатор для руководителя проекта: митигирование рисков, ресурсное состояние, переговоры с заказчиком." },
+      { name: "description", content: "Навигатор для руководителя проекта: митигирование рисков, ресурсное состояние, переговоры с заказчиком." },
       { name: "author", content: "Practice" },
       { property: "og:title", content: "Practice — навигатор PM" },
-      { property: "og:description", content: "Yавигатор для руководителя проекта: митигирование рисков, ресурсное состояние, переговоры с заказчиком." },
+      { property: "og:description", content: "Навигатор для руководителя проекта: митигирование рисков, ресурсное состояние, переговоры с заказчиком." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Practice — навигатор PM" },
-      { name: "twitter:description", content: "Yавигатор для руководителя проекта: митигирование рисков, ресурсное состояние, переговоры с заказчиком." },
+      { name: "twitter:description", content: "Навигатор для руководителя проекта: митигирование рисков, ресурсное состояние, переговоры с заказчиком." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/659939e4-7216-443c-ac37-e24043447c90" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/659939e4-7216-443c-ac37-e24043447c90" },
     ],
@@ -60,7 +63,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <head>
         <HeadContent />
       </head>
@@ -78,11 +81,18 @@ function RootComponent() {
       <div className="flex min-h-screen w-full">
         <DevNavSidebar />
         <div className="relative min-w-0 flex-1">
-          <SidebarTrigger
-            className="fixed left-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 h-9 w-9 rounded-full border border-[var(--hairline)] bg-background/70 text-foreground/80 shadow-sm backdrop-blur-md transition-colors hover:bg-background/90 hover:text-foreground sm:left-4 sm:top-4"
-            aria-label="Открыть навигацию"
-          />
-          <Breadcrumbs />
+          {/* Top action bar — hosts trigger + breadcrumbs in flow, no overlap */}
+          <div className="sticky top-0 z-40 backdrop-blur-md bg-background/70 border-b border-[var(--hairline)]/60">
+            <div className="mx-auto flex w-full max-w-6xl items-center gap-2 px-3 py-2 sm:gap-3 sm:px-6 lg:px-10">
+              <SidebarTrigger
+                className="h-8 w-8 shrink-0 rounded-full border border-[var(--hairline)] bg-background/60 text-foreground/80 transition-colors hover:bg-background/90 hover:text-foreground"
+                aria-label="Открыть навигацию"
+              />
+              <div className="min-w-0 flex-1">
+                <Breadcrumbs />
+              </div>
+            </div>
+          </div>
           <Outlet />
         </div>
       </div>
