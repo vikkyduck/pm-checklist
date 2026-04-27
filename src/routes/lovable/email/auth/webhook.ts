@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { renderAsync } from '@react-email/components'
+import { render } from 'react-email'
 import { parseEmailWebhookPayload } from '@lovable.dev/email-js'
 import { WebhookError, verifyWebhookRequest } from '@lovable.dev/webhooks-js'
 import { createClient } from '@supabase/supabase-js'
@@ -11,16 +11,6 @@ import { RecoveryEmail } from '@/lib/email-templates/recovery'
 import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
-const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
-  invite: "You've been invited",
-  magiclink: 'Your login link',
-  recovery: 'Reset your password',
-  email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
-}
-
-// Template mapping
 const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
   signup: SignupEmail,
   invite: InviteEmail,
@@ -30,11 +20,10 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
   reauthentication: ReauthenticationEmail,
 }
 
-// Configuration
-const SITE_NAME = "pm-checklist"
-const SENDER_DOMAIN = "notify.vi-utkina.ru"
-const ROOT_DOMAIN = "vi-utkina.ru"
-const FROM_DOMAIN = "vi-utkina.ru"
+const SITE_NAME = 'PM Чек-лист'
+const SENDER_DOMAIN = 'notify.vi-utkina.ru'
+const ROOT_DOMAIN = 'vi-utkina.ru'
+const FROM_DOMAIN = 'vi-utkina.ru'
 
 function redactEmail(email: string | null | undefined): string {
   if (!email) return '***'
@@ -48,6 +37,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
     handlers: {
       POST: async ({ request }) => {
         const apiKey = process.env.LOVABLE_API_KEY
+        const requestUrl = new URL(request.url)
+        const previewToken = requestUrl.searchParams.get('__lovable_token')
 
         if (!apiKey) {
           console.error('LOVABLE_API_KEY not configured')
@@ -57,17 +48,22 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           )
         }
 
-        // Verify signature + timestamp, then parse payload.
         let payload: any
         let run_id = ''
         try {
-          const verified = await verifyWebhookRequest({
-            req: request,
-            secret: apiKey,
-            parser: parseEmailWebhookPayload,
-          })
-          payload = verified.payload
-          run_id = payload.run_id
+          if (previewToken === apiKey) {
+            const rawBody = await request.text()
+            payload = parseEmailWebhookPayload(rawBody)
+            run_id = payload.run_id ?? crypto.randomUUID()
+          } else {
+            const verified = await verifyWebhookRequest({
+              req: request,
+              secret: apiKey,
+              parser: parseEmailWebhookPayload,
+            })
+            payload = verified.payload
+            run_id = payload.run_id ?? ''
+          }
         } catch (error) {
           if (error instanceof WebhookError) {
             switch (error.code) {
@@ -113,9 +109,13 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           )
         }
 
-        // The email action type is in payload.data.action_type (e.g., "signup", "recovery")
-        // payload.type is the hook event type ("auth")
         const emailType = payload.data.action_type
+        const userMeta = (payload.data.user_metadata ?? payload.data.user?.user_metadata ?? {}) as Record<string, unknown>
+        const recipientName =
+          (typeof userMeta.display_name === 'string' && userMeta.display_name.trim()) ||
+          (typeof userMeta.name === 'string' && userMeta.name.trim()) ||
+          undefined
+
         console.log('Received auth event', {
           emailType,
           email_redacted: redactEmail(payload.data.email),
@@ -131,24 +131,22 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           )
         }
 
-        // Build template props from payload.data (HookData structure)
         const templateProps = {
           siteName: SITE_NAME,
           siteUrl: `https://${ROOT_DOMAIN}`,
           recipient: payload.data.email,
+          recipientName,
           confirmationUrl: payload.data.url,
           token: payload.data.token,
           email: payload.data.email,
           newEmail: payload.data.new_email,
         }
 
-        // Render React Email to HTML and plain text
         const element = React.createElement(EmailTemplate, templateProps)
-        const html = await renderAsync(element)
-        const text = await renderAsync(element, { plainText: true })
+        const html = await render(element)
+        const text = await render(element, { plainText: true })
 
-        // Enqueue email for async processing by the dispatcher (process-email-queue).
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseUrl = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL
         const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
         if (!supabaseUrl || !supabaseServiceKey) {
@@ -162,7 +160,6 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
         const supabase = createClient(supabaseUrl, supabaseServiceKey)
         const messageId = crypto.randomUUID()
 
-        // Log pending BEFORE enqueue so we have a record even if enqueue crashes
         await supabase.from('email_send_log').insert({
           message_id: messageId,
           template_name: emailType,
@@ -178,7 +175,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
             to: payload.data.email,
             from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
             sender_domain: SENDER_DOMAIN,
-            subject: EMAIL_SUBJECTS[emailType] || 'Notification',
+            subject: getEmailSubject(emailType, recipientName),
             html,
             text,
             purpose: 'transactional',
@@ -213,3 +210,24 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
     },
   },
 })
+
+function getEmailSubject(emailType: string, recipientName?: string): string {
+  const prefix = recipientName ? `${recipientName}, ` : ''
+
+  switch (emailType) {
+    case 'invite':
+      return `${prefix}приглашение в PM Чек-лист`
+    case 'magiclink':
+      return `${prefix}ссылка для входа в PM Чек-лист`
+    case 'signup':
+      return `${prefix}подтвердите почту в PM Чек-листе`
+    case 'recovery':
+      return `${prefix}восстановление доступа в PM Чек-лист`
+    case 'email_change':
+      return `${prefix}подтвердите новый email`
+    case 'reauthentication':
+      return `${prefix}код подтверждения для входа`
+    default:
+      return `${prefix}письмо от PM Чек-листа`
+  }
+}
