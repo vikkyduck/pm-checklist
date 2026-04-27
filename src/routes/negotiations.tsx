@@ -1,6 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
-import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/negotiations")({
   component: NegotiationsPage,
