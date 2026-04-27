@@ -121,7 +121,7 @@ function MindMapPage() {
         />
 
         {/* Detail */}
-        <section className="mt-6 grid gap-5 sm:mt-10 sm:gap-6 lg:mt-14 lg:grid-cols-12">
+        <section className="mt-10 grid gap-8 sm:mt-14 lg:mt-20 lg:grid-cols-12 lg:gap-12">
           {/* Stage summary */}
           <aside className="lg:col-span-4">
             <StageSummary stage={stage} progress={progress} />
@@ -129,7 +129,7 @@ function MindMapPage() {
 
           {/* Categories */}
           <div className="lg:col-span-8">
-            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
+            <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-2">
               {filteredCategories.map((cat, idx) => {
                 const key = `${stage.id}-${cat.title}`;
                 const isOpen = openCategory === key;
@@ -149,7 +149,7 @@ function MindMapPage() {
                 );
               })}
               {filteredCategories.length === 0 && (
-                <div className="glass col-span-full rounded-2xl p-6 text-center text-sm text-muted-foreground sm:p-8">
+                <div className="surface col-span-full rounded-2xl p-8 text-center text-sm text-muted-foreground">
                   Ничего не найдено по запросу «{query}»
                 </div>
               )}
