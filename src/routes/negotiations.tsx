@@ -534,7 +534,7 @@ function GuideCard({
 
 function GuideSection() {
   return (
-    <section id="guide" className="mt-10 sm:mt-14 lg:mt-20">
+    <section id="guide" className="mt-20 sm:mt-28 lg:mt-36 scroll-mt-20">
       <header className="mb-6 space-y-3 sm:mb-8 lg:mb-10">
         <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
           <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
