@@ -479,45 +479,64 @@ function CategoryCard({
     (_, i) => progress[itemId(stage.id, title, i)],
   ).length;
   const complete = doneCount === items.length && items.length > 0;
+  const pct = items.length > 0 ? Math.round((doneCount / items.length) * 100) : 0;
   return (
     <div
       className={[
-        "surface relative overflow-hidden rounded-2xl transition-all duration-300 animate-fade-up",
-        open ? "sm:col-span-2" : "",
+        "surface group/card relative overflow-hidden rounded-2xl transition-all duration-300 animate-fade-up",
+        open
+          ? "sm:col-span-2 border-[var(--hairline-strong)]"
+          : "hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)]/50",
       ].join(" ")}
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <button
         onClick={onToggle}
-        className="relative flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[var(--surface-strong)] sm:px-5 sm:py-4"
+        aria-expanded={open}
+        title={open ? "Свернуть блок" : `Открыть ${items.length} пунктов`}
+        className="relative flex w-full cursor-pointer flex-col gap-2.5 px-4 py-3.5 text-left transition-colors sm:px-5 sm:py-4"
       >
-        <div className="flex min-w-0 items-center gap-3">
-          <span
-            className="h-1.5 w-1.5 shrink-0 rounded-full transition-opacity"
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className="h-1.5 w-1.5 shrink-0 rounded-full transition-opacity"
+              style={{
+                background: `var(--${stage.color})`,
+                opacity: complete ? 1 : doneCount > 0 ? 0.8 : 0.35,
+              }}
+            />
+            <h3
+              className="truncate text-[14.5px] font-medium leading-snug text-foreground"
+              style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.012em" }}
+            >
+              {title}
+            </h3>
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <span
+              className="num text-xs"
+              style={{
+                color: complete
+                  ? `var(--${stage.color})`
+                  : "var(--muted-foreground)",
+              }}
+            >
+              {doneCount}/{items.length}
+            </span>
+            <Chevron open={open} />
+          </div>
+        </div>
+        {/* Mini progress bar — shows fill state at a glance */}
+        <div className="ml-[14px] h-px overflow-hidden bg-[var(--hairline)]">
+          <div
+            className="h-full transition-all duration-500"
             style={{
-              background: `var(--${stage.color})`,
-              opacity: complete ? 1 : 0.6,
+              width: `${pct}%`,
+              background: complete
+                ? `var(--${stage.color})`
+                : "var(--hairline-strong)",
             }}
           />
-          <h3
-            className="truncate text-[14.5px] font-medium leading-snug text-foreground"
-            style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.012em" }}
-          >
-            {title}
-          </h3>
-        </div>
-        <div className="flex shrink-0 items-center gap-3">
-          <span
-            className="text-xs tabular-nums"
-            style={{
-              color: complete
-                ? `var(--${stage.color})`
-                : "var(--muted-foreground)",
-            }}
-          >
-            {doneCount}/{items.length}
-          </span>
-          <Chevron open={open} />
         </div>
       </button>
 
