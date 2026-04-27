@@ -213,22 +213,22 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
 })
 
 function getEmailSubject(emailType: string, recipientName?: string): string {
-  const prefix = recipientName ? `${recipientName}, ` : ''
+  const suffix = recipientName ? `, ${recipientName}` : ''
 
   switch (emailType) {
     case 'invite':
-      return `${prefix}приглашение в PM Чек-лист`
+      return `Приглашение в PM Чек-лист${suffix}`
     case 'magiclink':
-      return `${prefix}ссылка для входа в PM Чек-лист`
+      return `Ваша ссылка для входа в PM Чек-лист${suffix}`
     case 'signup':
-      return `${prefix}подтвердите почту в PM Чек-листе`
+      return `Подтвердите почту в PM Чек-листе${suffix}`
     case 'recovery':
-      return `${prefix}восстановление доступа в PM Чек-лист`
+      return `Восстановление доступа в PM Чек-лист${suffix}`
     case 'email_change':
-      return `${prefix}подтвердите новый email`
+      return `Подтвердите новый адрес почты${suffix}`
     case 'reauthentication':
-      return `${prefix}код подтверждения для входа`
+      return `Код подтверждения для входа${suffix}`
     default:
-      return `${prefix}письмо от PM Чек-листа`
+      return `Письмо от PM Чек-листа${suffix}`
   }
 }
