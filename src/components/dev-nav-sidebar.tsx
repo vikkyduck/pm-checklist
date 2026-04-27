@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { ShieldCheck, Battery, MessagesSquare } from "lucide-react";
+import { ShieldCheck, Battery, MessagesSquare, Radar } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -31,6 +31,12 @@ const NAV_ITEMS: NavItem[] = [
     title: "Ресурсное состояние",
     url: "/resource-state",
     icon: Battery,
+  },
+  {
+    title: "Радар ресурсности",
+    url: "/resource-radar",
+    icon: Radar,
+    hint: "Опрос · ваш архетип восстановления",
   },
   {
     title: "Переговоры с заказчиком",
