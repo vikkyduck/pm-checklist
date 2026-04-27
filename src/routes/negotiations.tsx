@@ -650,8 +650,36 @@ function GuideSection() {
 
         {/* 02 — Тип интереса */}
         <GuideCard block={GUIDE_BLOCKS[1]}>
-          <div className="-mx-4 overflow-x-auto sm:mx-0">
-            <table className="w-full min-w-[640px] border-separate border-spacing-y-1.5 px-4 text-left text-sm sm:px-0">
+          {/* Mobile: stacked cards */}
+          <div className="grid gap-2.5 sm:hidden">
+            {INTEREST_ROWS.map((r) => (
+              <div
+                key={r.type}
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3.5"
+              >
+                <div className="text-sm font-semibold text-foreground">
+                  {r.type}
+                </div>
+                <dl className="mt-2 grid gap-1.5 text-sm">
+                  <div className="grid grid-cols-[auto_1fr] gap-x-2">
+                    <dt className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Кто
+                    </dt>
+                    <dd className="text-foreground/85">{r.who}</dd>
+                  </div>
+                  <div className="grid grid-cols-[auto_1fr] gap-x-2">
+                    <dt className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Аргументы
+                    </dt>
+                    <dd className="text-foreground/85">{r.args}</dd>
+                  </div>
+                </dl>
+              </div>
+            ))}
+          </div>
+          {/* Desktop: table */}
+          <div className="hidden sm:block">
+            <table className="w-full border-separate border-spacing-y-1.5 text-left text-sm">
               <thead>
                 <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
                   <th className="px-3 pb-1 font-medium">Тип интереса</th>
@@ -680,8 +708,36 @@ function GuideSection() {
 
         {/* 03 — Тип аргумента */}
         <GuideCard block={GUIDE_BLOCKS[2]}>
-          <div className="-mx-4 overflow-x-auto sm:mx-0">
-            <table className="w-full min-w-[640px] border-separate border-spacing-y-1.5 px-4 text-left text-sm sm:px-0">
+          {/* Mobile: grouped cards */}
+          <div className="grid gap-2.5 sm:hidden">
+            {ARGUMENT_ROWS.map((r, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3.5"
+              >
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider"
+                    style={{
+                      background: `color-mix(in oklab, var(${GUIDE_BLOCKS[2].stageVar}) 18%, transparent)`,
+                      color: `var(${GUIDE_BLOCKS[2].stageVar})`,
+                    }}
+                  >
+                    {r.type}
+                  </span>
+                  <span className="text-sm font-semibold text-foreground">
+                    {r.sub}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-sm leading-relaxed text-foreground/85">
+                  {r.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+          {/* Desktop: table */}
+          <div className="hidden sm:block">
+            <table className="w-full border-separate border-spacing-y-1.5 text-left text-sm">
               <thead>
                 <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
                   <th className="px-3 pb-1 font-medium">Тип</th>
