@@ -65,36 +65,40 @@ function MindMapPage() {
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
 
         {/* Header */}
-        <header className="mb-6 flex flex-col gap-4 sm:mb-8 sm:gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-2.5 sm:space-y-3 pl-12 sm:pl-14 lg:pl-0">
-            <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              {META.subtitle}
-            </div>
-            <h1 className="text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+        <header className="mb-10 sm:mb-14 lg:mb-20">
+          <div className="pl-12 sm:pl-14 lg:pl-0">
+            <div className="eyebrow mb-5">{META.subtitle}</div>
+            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[5rem]">
               {META.title}
-              <span className="block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
-                от первого дня до закрытия
-              </span>
             </h1>
-            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {META.description}
+            <p className="mt-3 text-base leading-snug text-muted-foreground sm:text-lg lg:text-xl">
+              от первого дня до закрытия проекта
             </p>
-            <p className="max-w-xl text-[11px] text-muted-foreground/80 sm:text-xs">
-              Шесть этапов · {ROADMAP.reduce((s, x) => s + x.categories.length, 0)}{" "}
-              блоков · {totalItems} конкретных шагов
+            <p className="mt-6 max-w-xl text-sm leading-relaxed text-foreground/75 sm:text-base">
+              {META.description}
             </p>
           </div>
 
-          {/* Search */}
-          <div className="glass relative w-full rounded-2xl px-3.5 py-2 sm:max-w-sm sm:px-4 sm:py-2.5">
-            <div className="flex items-center gap-3">
+          {/* Meta strip — quiet stats + search, single row on desktop */}
+          <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-6">
+            <dl className="grid grid-cols-3 divide-x divide-[var(--hairline)] text-left">
+              <Stat value="6" label="этапов" />
+              <Stat
+                value={ROADMAP.reduce((s, x) => s + x.categories.length, 0)}
+                label="блоков"
+                offset
+              />
+              <Stat value={totalItems} label="шагов" offset />
+            </dl>
+
+            {/* Search */}
+            <div className="surface-strong relative flex h-11 items-center gap-3 rounded-full px-4 sm:w-72">
               <SearchIcon />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Поиск по чек-листу…"
-                className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
+                placeholder="Поиск по чек-листу"
+                className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
               {query && (
                 <button
