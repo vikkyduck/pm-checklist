@@ -106,13 +106,31 @@ export function DevNavSidebar() {
             <SidebarMenu>
               {NAV_ITEMS.map((item) => {
                 const active = isActive(item.url);
+                const nested = item.nested && !collapsed;
                 return (
-                  <SidebarMenuItem key={item.url}>
+                  <SidebarMenuItem
+                    key={item.url}
+                    className={nested ? "relative" : ""}
+                  >
+                    {/* Connector line for nested items */}
+                    {nested && (
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute left-[18px] top-0 h-1/2 w-px bg-[var(--hairline-strong)]"
+                      />
+                    )}
+                    {nested && (
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute left-[18px] top-1/2 h-px w-2.5 bg-[var(--hairline-strong)]"
+                      />
+                    )}
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
                       className={[
                         "group/nav h-auto items-start py-2.5 transition-colors",
+                        nested ? "ml-7" : "",
                         active
                           ? "bg-sidebar-accent text-sidebar-accent-foreground"
                           : "",
@@ -131,7 +149,8 @@ export function DevNavSidebar() {
                           <div className="flex-1 min-w-0">
                             <div
                               className={[
-                                "truncate text-[13.5px] leading-tight",
+                                "truncate leading-tight",
+                                nested ? "text-[12.5px]" : "text-[13.5px]",
                                 active ? "font-medium text-foreground" : "text-foreground/90",
                               ].join(" ")}
                             >
