@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Radar, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/resource-state")({
   component: ResourceStatePage,
@@ -137,6 +138,27 @@ function ResourceStatePage() {
               </a>
             ))}
           </nav>
+
+          {/* Radar CTA */}
+          <Link
+            to="/resource-radar"
+            className="surface mt-6 flex items-center justify-between gap-4 rounded-2xl p-4 transition-colors hover:bg-[var(--surface-strong)] sm:p-5"
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--surface-strong)]">
+                <Radar className="h-5 w-5 text-accent" />
+              </span>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-foreground sm:text-base">
+                  Радар ресурсности
+                </div>
+                <p className="mt-0.5 text-xs text-muted-foreground sm:text-[13px]">
+                  Опросник на 5 минут — узнайте свой архетип восстановления
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </Link>
         </header>
 
         {/* Levels */}

@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResourceStateRouteImport } from './routes/resource-state'
+import { Route as ResourceRadarRouteImport } from './routes/resource-radar'
 import { Route as NegotiationsRouteImport } from './routes/negotiations'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ResourceStateRoute = ResourceStateRouteImport.update({
   id: '/resource-state',
   path: '/resource-state',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourceRadarRoute = ResourceRadarRouteImport.update({
+  id: '/resource-radar',
+  path: '/resource-radar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NegotiationsRoute = NegotiationsRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/resource-radar': typeof ResourceRadarRoute
   '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/resource-radar': typeof ResourceRadarRoute
   '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/resource-radar': typeof ResourceRadarRoute
   '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/negotiations' | '/resource-state'
+  fullPaths: '/' | '/negotiations' | '/resource-radar' | '/resource-state'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/negotiations' | '/resource-state'
-  id: '__root__' | '/' | '/negotiations' | '/resource-state'
+  to: '/' | '/negotiations' | '/resource-radar' | '/resource-state'
+  id: '__root__' | '/' | '/negotiations' | '/resource-radar' | '/resource-state'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NegotiationsRoute: typeof NegotiationsRoute
+  ResourceRadarRoute: typeof ResourceRadarRoute
   ResourceStateRoute: typeof ResourceStateRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/resource-state'
       fullPath: '/resource-state'
       preLoaderRoute: typeof ResourceStateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resource-radar': {
+      id: '/resource-radar'
+      path: '/resource-radar'
+      fullPath: '/resource-radar'
+      preLoaderRoute: typeof ResourceRadarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/negotiations': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NegotiationsRoute: NegotiationsRoute,
+  ResourceRadarRoute: ResourceRadarRoute,
   ResourceStateRoute: ResourceStateRoute,
 }
 export const routeTree = rootRouteImport
