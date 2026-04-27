@@ -402,48 +402,38 @@ function CategoryCard({
   progress: Record<string, boolean>;
   onItemToggle: (id: string) => void;
 }) {
-  const doneCount = items.filter((_, i) => progress[itemId(stage.id, title, i)]).length;
+  const complete = doneCount === items.length && items.length > 0;
   return (
     <div
       className={[
-        "glass specular relative overflow-hidden rounded-2xl transition-all duration-500 animate-fade-up",
+        "surface relative overflow-hidden rounded-2xl transition-all duration-300 animate-fade-up",
         open ? "sm:col-span-2" : "",
       ].join(" ")}
-      style={
-        {
-          "--stage-color": `var(--${stage.color})`,
-          animationDelay: `${index * 60}ms`,
-        } as React.CSSProperties
-      }
+      style={{ animationDelay: `${index * 60}ms` }}
     >
       <button
         onClick={onToggle}
-        className="relative flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
+        className="relative flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[var(--surface-strong)] sm:px-5 sm:py-4"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <span
-            className="h-2 w-2 rounded-full"
+            className="h-1.5 w-1.5 shrink-0 rounded-full transition-opacity"
             style={{
               background: `var(--${stage.color})`,
-              boxShadow: `0 0 12px var(--${stage.color})`,
+              opacity: complete ? 1 : 0.6,
             }}
           />
-          <h3 className="text-base font-medium leading-snug text-foreground">
+          <h3 className="truncate text-[15px] font-medium leading-snug text-foreground">
             {title}
           </h3>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-3">
           <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums"
+            className="text-xs tabular-nums"
             style={{
-              background:
-                doneCount === items.length && items.length > 0
-                  ? `oklch(from var(--${stage.color}) l c h / 0.25)`
-                  : "oklch(1 0 0 / 0.08)",
-              color:
-                doneCount === items.length && items.length > 0
-                  ? `var(--${stage.color})`
-                  : undefined,
+              color: complete
+                ? `var(--${stage.color})`
+                : "var(--muted-foreground)",
             }}
           >
             {doneCount}/{items.length}
@@ -453,23 +443,17 @@ function CategoryCard({
       </button>
 
       <div
-        className="grid transition-[grid-template-rows] duration-500 ease-out"
+        className="grid transition-[grid-template-rows] duration-400 ease-out"
         style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">
-          <div className="border-t border-white/10 px-5 py-4">
+          <div className="border-t border-[var(--hairline)] px-4 py-4 sm:px-5 sm:py-5">
             {intro && (
-              <p
-                className="mb-4 rounded-xl border-l-2 px-3 py-2 text-xs leading-relaxed text-muted-foreground"
-                style={{
-                  borderColor: `var(--${stage.color})`,
-                  background: "oklch(1 0 0 / 0.03)",
-                }}
-              >
+              <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                 {intro}
               </p>
             )}
-            <ul className="space-y-1.5">
+            <ul className="-mx-2 space-y-0.5">
               {items.map((item, i) => {
                 const id = itemId(stage.id, title, i);
                 const checked = !!progress[id];
@@ -478,20 +462,19 @@ function CategoryCard({
                     <button
                       type="button"
                       onClick={() => onItemToggle(id)}
-                      className="group flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/[0.04]"
+                      className="group flex w-full items-start gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-[var(--surface-strong)]"
                     >
                       <span
-                        className="mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[6px] border transition-all"
+                        className="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md border transition-all duration-200"
                         style={
                           checked
                             ? {
                                 borderColor: `var(--${stage.color})`,
                                 background: `var(--${stage.color})`,
-                                boxShadow: `0 4px 12px -4px var(--${stage.color})`,
                               }
                             : {
-                                borderColor: `oklch(from var(--${stage.color}) l c h / 0.5)`,
-                                background: `oklch(from var(--${stage.color}) l c h / 0.08)`,
+                                borderColor: "var(--hairline-strong)",
+                                background: "transparent",
                               }
                         }
                         aria-hidden
@@ -502,7 +485,7 @@ function CategoryCard({
                             height="11"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="oklch(0.18 0.03 255)"
+                            stroke="oklch(0.16 0.012 255)"
                             strokeWidth="3.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -511,11 +494,13 @@ function CategoryCard({
                           </svg>
                         )}
                       </span>
-                      <div className="space-y-1.5">
+                      <div className="space-y-1">
                         <p
                           className={[
-                            "text-sm font-medium leading-snug transition-colors",
-                            checked ? "text-muted-foreground line-through" : "text-foreground",
+                            "text-[14px] font-medium leading-snug transition-colors",
+                            checked
+                              ? "text-muted-foreground line-through decoration-muted-foreground/40"
+                              : "text-foreground",
                           ].join(" ")}
                         >
                           {item.title}
