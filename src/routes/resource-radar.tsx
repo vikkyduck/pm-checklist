@@ -214,6 +214,21 @@ function ResourceRadarPage() {
             <span className="text-[var(--hairline-strong)]">·</span>
             <span>~5 мин</span>
           </div>
+
+          {/* Onboarding hint */}
+          <div className="mt-6 surface flex items-start gap-3 rounded-xl p-4 sm:p-5">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+              <Sparkles className="h-3.5 w-3.5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] leading-relaxed text-foreground/90 sm:text-sm">
+                Отметьте утверждения во всех{" "}
+                <span className="font-medium text-foreground">4 блоках</span> —
+                так результат будет точным. Можно пропустить блок, но архетип
+                окажется приблизительным. Прогресс сохраняется автоматически.
+              </p>
+            </div>
+          </div>
         </header>
 
         <div className="grid gap-5 md:grid-cols-[1fr_2fr] md:gap-6 lg:grid-cols-[1fr_2.2fr] lg:gap-8">
