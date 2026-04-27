@@ -578,10 +578,10 @@ function ResultsView({
                 type="button"
                 onClick={handleDownload}
                 className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-foreground px-3 py-1.5 text-[11px] font-medium text-background transition-opacity hover:opacity-90"
-                title="Сохранить результаты в PDF"
+                title="Откроется окно печати — выберите «Сохранить как PDF»"
               >
                 <Download className="h-3 w-3" />
-                <span className="hidden sm:inline">Скачать PDF</span>
+                <span className="hidden sm:inline">Распечатать</span>
                 <span className="sm:hidden">PDF</span>
               </button>
               <button
