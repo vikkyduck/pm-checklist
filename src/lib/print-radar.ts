@@ -20,6 +20,14 @@ export type PrintRadarBlock = {
   score: number;
 };
 
+export type PrintRadarTool = {
+  name: string;
+  author?: string;
+  description: string;
+  steps?: string[];
+  effect?: string;
+};
+
 export type PrintRadarArchetype = {
   id: string;
   name: string;
@@ -28,6 +36,7 @@ export type PrintRadarArchetype = {
   whyDrains: string;
   recovery: { title: string; text: string }[];
   earlyWarnings: { level: string; signals: string[] };
+  tools?: { title: string; intro?: string; tools: PrintRadarTool[] };
   /** Цвет архетипа */
   color: string;
 };
