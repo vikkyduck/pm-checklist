@@ -113,6 +113,7 @@ const LEVELS: Level[] = [
 ];
 
 function NegotiationsPage() {
+
   const ambientRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const onMove = (e: MouseEvent) => {

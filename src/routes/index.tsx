@@ -101,11 +101,11 @@ function MindMapPage() {
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
-        {/* Top nav */}
+        {/* Nav */}
         <div className="mb-6 flex justify-end">
           <Link
             to="/negotiations"
-            className="glass-pill rounded-full px-3.5 py-1.5 text-xs font-medium text-foreground/85 transition-colors hover:text-foreground"
+            className="glass-pill rounded-full px-4 py-2 text-xs font-medium text-foreground/85 transition-colors hover:bg-white/[0.06] hover:text-foreground"
           >
             Переговоры →
           </Link>
