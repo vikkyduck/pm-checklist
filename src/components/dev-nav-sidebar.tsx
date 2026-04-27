@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { ShieldCheck, Battery, MessagesSquare, Radar } from "lucide-react";
+import { Home, ShieldCheck, Battery, MessagesSquare, Radar } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,8 +25,14 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    title: "Митигирование рисков",
+    title: "Главная",
     url: "/",
+    icon: Home,
+    hint: "Обзор всех разделов",
+  },
+  {
+    title: "Митигирование рисков",
+    url: "/pm-checklist",
     icon: ShieldCheck,
     hint: "Чек-лист от первого дня до закрытия",
   },

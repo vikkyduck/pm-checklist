@@ -4,7 +4,8 @@ import { ChevronRight } from "lucide-react";
 type Crumb = { label: string; to?: string };
 
 const ROUTE_LABELS: Record<string, string> = {
-  "/": "Митигирование рисков",
+  "/": "Главная",
+  "/pm-checklist": "Митигирование рисков",
   "/negotiations": "Переговоры",
   "/resource-state": "Ресурсное состояние",
   "/resource-radar": "Радар ресурсности",
