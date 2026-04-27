@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Sparkles,
   TriangleAlert,
+  Wrench,
 } from "lucide-react";
 import {
   ARCHETYPES,
@@ -510,6 +511,7 @@ function ResultsView({
         whyDrains: a.whyDrains,
         recovery: a.recovery,
         earlyWarnings: a.earlyWarnings,
+        tools: a.tools,
         color: cssVar(
           BLOCKS.find((b) => b.id === a.id)?.stageVar ?? "--accent",
         ),
@@ -746,6 +748,74 @@ function ResultsView({
                   ))}
                 </ul>
               </div>
+
+              {archetype.tools && (
+                <div className="border-t border-[var(--hairline)] pt-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <Wrench
+                      className="h-4 w-4"
+                      style={{ color: `var(${stageVar})` }}
+                    />
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {archetype.tools.title}
+                    </h3>
+                  </div>
+                  {archetype.tools.intro && (
+                    <p className="mb-4 text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+                      {archetype.tools.intro}
+                    </p>
+                  )}
+                  <div className="space-y-3">
+                    {archetype.tools.tools.map((tool, ti) => (
+                      <div
+                        key={ti}
+                        className="rounded-xl border border-[var(--hairline)] bg-[var(--surface-strong)] p-3 sm:p-4"
+                      >
+                        <div className="mb-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                          <span
+                            className="text-[13px] font-semibold text-foreground sm:text-sm"
+                            style={{ color: `var(${stageVar})` }}
+                          >
+                            {tool.name}
+                          </span>
+                          {tool.author && (
+                            <span className="text-[11px] italic text-muted-foreground">
+                              · {tool.author}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[12px] leading-relaxed text-foreground/80 sm:text-[13px]">
+                          {tool.description}
+                        </p>
+                        {tool.steps && tool.steps.length > 0 && (
+                          <ul className="mt-2 space-y-1.5">
+                            {tool.steps.map((step, si) => (
+                              <li
+                                key={si}
+                                className="flex gap-2 text-[12px] leading-relaxed text-foreground/80 sm:text-[13px]"
+                              >
+                                <span
+                                  className="mt-[7px] inline-block h-1 w-1 shrink-0 rounded-full"
+                                  style={{ background: `var(${stageVar})` }}
+                                />
+                                <span>{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {tool.effect && (
+                          <p className="mt-2 border-l-2 pl-3 text-[12px] leading-relaxed text-foreground/70 sm:text-[13px]"
+                             style={{ borderColor: `var(${stageVar})` }}
+                          >
+                            <span className="font-medium text-foreground/85">Эффект: </span>
+                            {tool.effect}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
           );
         })}

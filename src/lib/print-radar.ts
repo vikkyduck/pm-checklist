@@ -20,6 +20,14 @@ export type PrintRadarBlock = {
   score: number;
 };
 
+export type PrintRadarTool = {
+  name: string;
+  author?: string;
+  description: string;
+  steps?: string[];
+  effect?: string;
+};
+
 export type PrintRadarArchetype = {
   id: string;
   name: string;
@@ -28,6 +36,7 @@ export type PrintRadarArchetype = {
   whyDrains: string;
   recovery: { title: string; text: string }[];
   earlyWarnings: { level: string; signals: string[] };
+  tools?: { title: string; intro?: string; tools: PrintRadarTool[] };
   /** Цвет архетипа */
   color: string;
 };
@@ -167,6 +176,38 @@ function renderArchetypeBlock(a: PrintRadarArchetype, idx: number, hasDual: bool
             .join("")}
         </ul>
       </div>
+      ${
+        a.tools
+          ? `<div class="arch-section">
+              <h3 class="arch-h3">${escapeHtml(a.tools.title)}</h3>
+              ${a.tools.intro ? `<p class="arch-meta">${escapeHtml(a.tools.intro)}</p>` : ""}
+              <div class="tools-list">
+                ${a.tools.tools
+                  .map(
+                    (t) => `
+                  <div class="tool-card">
+                    <p class="tool-name">
+                      ${escapeHtml(t.name)}${t.author ? ` <span class="tool-author">· ${escapeHtml(t.author)}</span>` : ""}
+                    </p>
+                    <p class="tool-desc">${escapeHtml(t.description)}</p>
+                    ${
+                      t.steps && t.steps.length
+                        ? `<ul class="tool-steps">${t.steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>`
+                        : ""
+                    }
+                    ${
+                      t.effect
+                        ? `<p class="tool-effect"><span class="tool-effect-label">Эффект:</span> ${escapeHtml(t.effect)}</p>`
+                        : ""
+                    }
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </div>`
+          : ""
+      }
     </section>
   `;
 }
@@ -330,6 +371,43 @@ function buildHtml(data: PrintRadarData): string {
   .signals li {
     font-size: 9.5pt; color: #374151;
     margin-bottom: 3pt; line-height: 1.45;
+  }
+
+  .tools-list {
+    display: flex; flex-direction: column; gap: 6pt; margin-top: 4pt;
+  }
+  .tool-card {
+    background: #f9fafb; border: 1px solid #f3f4f6;
+    border-left: 2pt solid var(--accent);
+    border-radius: 4pt; padding: 7pt 9pt;
+    page-break-inside: avoid;
+  }
+  .tool-name {
+    font-size: 9.5pt; font-weight: 600;
+    margin: 0 0 3pt 0; color: var(--accent);
+  }
+  .tool-author {
+    font-size: 8.5pt; font-weight: 400;
+    color: #6b7280; font-style: italic;
+  }
+  .tool-desc {
+    font-size: 9pt; color: #374151; margin: 0;
+    line-height: 1.45;
+  }
+  .tool-steps {
+    margin: 4pt 0 0 0; padding-left: 14pt;
+  }
+  .tool-steps li {
+    font-size: 8.5pt; color: #4b5563;
+    margin-bottom: 2pt; line-height: 1.4;
+  }
+  .tool-effect {
+    margin: 5pt 0 0 0; padding: 4pt 7pt;
+    background: #fff; border-left: 2pt solid var(--accent);
+    font-size: 8.5pt; color: #4b5563; line-height: 1.45;
+  }
+  .tool-effect-label {
+    font-weight: 600; color: #111827;
   }
 
   .footer-note {
