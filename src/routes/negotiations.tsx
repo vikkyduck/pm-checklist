@@ -785,8 +785,36 @@ function GuideSection() {
 
         {/* 05 — Власть / Интерес */}
         <GuideCard block={GUIDE_BLOCKS[4]}>
-          <div className="-mx-4 overflow-x-auto sm:mx-0">
-            <table className="w-full min-w-[640px] border-separate border-spacing-y-1.5 px-4 text-left text-sm sm:px-0">
+          {/* Mobile: stacked cards */}
+          <div className="grid gap-2.5 sm:hidden">
+            {MATRIX.map((r) => (
+              <div
+                key={r.power}
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3.5"
+              >
+                <div className="text-sm font-semibold text-foreground">
+                  {r.power}
+                </div>
+                <dl className="mt-2 grid gap-2 text-sm">
+                  <div>
+                    <dt className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Высокий интерес
+                    </dt>
+                    <dd className="mt-0.5 text-foreground/85">{r.highInterest}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Низкий интерес
+                    </dt>
+                    <dd className="mt-0.5 text-foreground/85">{r.lowInterest}</dd>
+                  </div>
+                </dl>
+              </div>
+            ))}
+          </div>
+          {/* Desktop: table */}
+          <div className="hidden sm:block">
+            <table className="w-full border-separate border-spacing-y-1.5 text-left text-sm">
               <thead>
                 <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
                   <th className="px-3 pb-1 font-medium" />
