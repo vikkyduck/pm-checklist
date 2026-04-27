@@ -193,6 +193,13 @@ function NegotiationsPage() {
 
         {/* Sections */}
         <div className="grid gap-5 sm:gap-6 lg:gap-8">
+          <a
+            href="#guide"
+            className="glass-soft inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:text-foreground sm:text-xs"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+            Перейти к руководству по аргументации →
+          </a>
           {SECTIONS.map((section, idx) => {
             const doneInSection = section.items.filter(
               (_, i) => progress[negotiationItemId(section.id, i)],
@@ -318,7 +325,494 @@ function NegotiationsPage() {
             );
           })}
         </div>
+
+        <GuideSection />
       </div>
     </main>
   );
 }
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/*  Guide: Argumentation & Stakeholder Interaction                            */
+/* ────────────────────────────────────────────────────────────────────────── */
+
+type GuideBlock = {
+  id: string;
+  number: string;
+  title: string;
+  lead: string;
+  stageVar: string;
+};
+
+const GUIDE_BLOCKS: GuideBlock[] = [
+  {
+    id: "guide-type",
+    number: "01",
+    title: "По типу стейкхолдера",
+    lead: "Первичная классификация: определяет формат канала и уровень детализации коммуникации.",
+    stageVar: "--stage-1",
+  },
+  {
+    id: "guide-interest",
+    number: "02",
+    title: "По типу интереса стейкхолдера",
+    lead: "Язык аргументации должен совпадать с системой ценностей и целями конкретного стейкхолдера.",
+    stageVar: "--stage-2",
+  },
+  {
+    id: "guide-argument",
+    number: "03",
+    title: "По типу аргумента",
+    lead: "Комбинирование типов повышает убедительность: логика создаёт доверие, риторика мотивирует, практика снимает скептицизм.",
+    stageVar: "--stage-3",
+  },
+  {
+    id: "guide-goal",
+    number: "04",
+    title: "По цели взаимодействия",
+    lead: "Выбор цели определяет структуру встречи, формат документа и необходимый уровень детализации.",
+    stageVar: "--stage-4",
+  },
+  {
+    id: "guide-matrix",
+    number: "05",
+    title: "По уровню власти и интереса",
+    lead: "Матрица «Власть / Интерес» помогает приоритизировать усилия на коммуникацию и определить глубину вовлечения.",
+    stageVar: "--stage-5",
+  },
+  {
+    id: "guide-methods",
+    number: "06",
+    title: "Методы аргументации",
+    lead: "Выбор метода зависит от цели взаимодействия, типа стейкхолдера и характера его возражений.",
+    stageVar: "--stage-3",
+  },
+];
+
+const STAKEHOLDER_TYPES: { group: string; items: string[] }[] = [
+  {
+    group: "Внутренние",
+    items: [
+      "Команда проекта",
+      "Функциональные руководители",
+      "Топ-менеджмент",
+      "Смежные отделы",
+    ],
+  },
+  {
+    group: "Внешние",
+    items: [
+      "Заказчики и клиенты",
+      "Подрядчики и вендоры",
+      "Регуляторы и органы надзора",
+      "Конечные пользователи",
+    ],
+  },
+];
+
+const INTEREST_ROWS: {
+  type: string;
+  who: string;
+  args: string;
+}[] = [
+  {
+    type: "Финансовый",
+    who: "Спонсор, CFO, инвестор",
+    args: "ROI, бюджет, экономия, риски затрат",
+  },
+  {
+    type: "Операционный",
+    who: "Функц. руководитель, PMO",
+    args: "Сроки, процессы, ресурсы, KPI",
+  },
+  {
+    type: "Стратегический",
+    who: "CEO, совет директоров",
+    args: "Цели компании, конкурентное преимущество",
+  },
+  {
+    type: "Политический",
+    who: "Руководители смежных отделов",
+    args: "Влияние, статус, зоны ответственности",
+  },
+  {
+    type: "Технический",
+    who: "Архитекторы, тех. лиды",
+    args: "Архитектура, качество, feasibility",
+  },
+];
+
+const ARGUMENT_ROWS: { type: string; sub: string; desc: string }[] = [
+  {
+    type: "Логическая",
+    sub: "Дедуктивная",
+    desc: "От общего к частному: общая закономерность → конкретный вывод для проекта",
+  },
+  {
+    type: "Логическая",
+    sub: "Индуктивная",
+    desc: "От частного к общему: накопленные факты → обоснованный прогноз",
+  },
+  {
+    type: "Риторическая",
+    sub: "Эмоциональное воздействие (пафос)",
+    desc: "Апелляция к ценностям, рискам для репутации, командному духу и доверию",
+  },
+  {
+    type: "Риторическая",
+    sub: "Апелляция к авторитету (этос)",
+    desc: "Ссылки на экспертов, индустриальные стандарты, референсные кейсы",
+  },
+  {
+    type: "Практическая",
+    sub: "Опыт и прецеденты",
+    desc: "Аналогичные проекты, ретроспективные данные, уроки из прошлого",
+  },
+  {
+    type: "Практическая",
+    sub: "Факты и метрики",
+    desc: "KPI, ROI, данные мониторинга, измеримые результаты",
+  },
+];
+
+const GOALS: { title: string; desc: string }[] = [
+  { title: "Информирование", desc: "статус, риски, изменения в плане" },
+  { title: "Согласование", desc: "решения, ресурсы, приоритеты" },
+  { title: "Эскалация", desc: "блокеры, конфликты интересов, отклонения" },
+  { title: "Вовлечение", desc: "получение поддержки, сбор экспертизы" },
+  {
+    title: "Управление ожиданиями",
+    desc: "сдвиг сроков, изменение scope, пересмотр KPI",
+  },
+];
+
+const MATRIX: {
+  power: string;
+  highInterest: string;
+  lowInterest: string;
+}[] = [
+  {
+    power: "Высокая власть",
+    highInterest: "Управлять вплотную — ключевые партнёры проекта",
+    lowInterest: "Держать довольными — информировать о стратегических решениях",
+  },
+  {
+    power: "Низкая власть",
+    highInterest: "Держать информированными — регулярный статус и вовлечение",
+    lowInterest: "Минимальное взаимодействие — точечные обновления",
+  },
+];
+
+const METHODS: { name: string; desc: string; use: string }[] = [
+  {
+    name: "Сократовский метод",
+    desc: "Последовательные вопросы, подводящие стейкхолдера к самостоятельному выводу",
+    use: "Согласование приоритетов, работа с сопротивлением",
+  },
+  {
+    name: "Метод «PREP»",
+    desc: "Position → Reason → Example → Position. Чёткая структура: тезис — обоснование — пример — повторение тезиса",
+    use: "Презентации, эскалации, принятие решений",
+  },
+  {
+    name: "«Проблема — Решение — Выгода»",
+    desc: "Сначала обозначить боль стейкхолдера, затем предложить решение и показать конкретную выгоду",
+    use: "Продажа идеи изменений, защита бюджета",
+  },
+  {
+    name: "Контрфактический анализ",
+    desc: "«Что будет, если мы НЕ сделаем X?» — акцент на потерях при бездействии",
+    use: "Преодоление инерции, обоснование срочности",
+  },
+  {
+    name: "Метод аналогии",
+    desc: "Сравнение с известным и успешным кейсом для снижения неопределённости",
+    use: "Новые инициативы, убеждение скептиков",
+  },
+  {
+    name: "Метод «Айсберга»",
+    desc: "Сначала вывод, потом детали по запросу (pyramid principle). Краткий executive summary, развёрнутые приложения — по запросу",
+    use: "Коммуникация с топ-менеджментом",
+  },
+  {
+    name: "Метод «Да, и…»",
+    desc: "Принять позицию оппонента, добавить свой аргумент, не создавая конфронтации",
+    use: "Управление возражениями, переговоры",
+  },
+  {
+    name: "Стейкхолдерские нарративы",
+    desc: "Перевод технических/операционных проблем в язык целей и ценностей конкретного стейкхолдера",
+    use: "Финансовые споры, кросс-функциональные конфликты",
+  },
+];
+
+function GuideCard({
+  block,
+  children,
+}: {
+  block: GuideBlock;
+  children: React.ReactNode;
+}) {
+  return (
+    <article
+      id={block.id}
+      className="glass stage-glow relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-9"
+      style={{ "--stage-color": `var(${block.stageVar})` } as React.CSSProperties}
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-3 -top-4 select-none text-[90px] font-semibold leading-none tracking-tighter opacity-[0.06] sm:-right-4 sm:-top-6 sm:text-[120px] lg:text-[170px]"
+        style={{ color: `var(${block.stageVar})` }}
+      >
+        {block.number}
+      </span>
+      <div className="relative space-y-4 sm:space-y-5">
+        <div>
+          <div
+            className="mb-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:px-3 sm:text-[11px]"
+            style={{
+              background: `color-mix(in oklab, var(${block.stageVar}) 18%, transparent)`,
+              color: `var(${block.stageVar})`,
+            }}
+          >
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{
+                background: `var(${block.stageVar})`,
+                boxShadow: `0 0 10px var(${block.stageVar})`,
+              }}
+            />
+            Раздел {block.number}
+          </div>
+          <h3 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
+            {block.title}
+          </h3>
+          <p className="mt-1.5 max-w-3xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            {block.lead}
+          </p>
+        </div>
+        {children}
+      </div>
+    </article>
+  );
+}
+
+function GuideSection() {
+  return (
+    <section id="guide" className="mt-10 sm:mt-14 lg:mt-20">
+      <header className="mb-6 space-y-3 sm:mb-8 lg:mb-10">
+        <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+          Руководство для руководителей проектов
+        </div>
+        <h2 className="text-balance text-2xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl">
+          Аргументация и взаимодействие
+          <span className="mt-1 block bg-gradient-to-r from-[var(--stage-1)] via-[var(--stage-3)] to-[var(--stage-5)] bg-clip-text text-transparent">
+            со стейкхолдерами
+          </span>
+        </h2>
+        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Шесть осей анализа: от классификации стейкхолдеров до выбора метода
+          аргументации.
+        </p>
+      </header>
+
+      <div className="grid gap-5 sm:gap-6 lg:gap-8">
+        {/* 01 — Тип стейкхолдера */}
+        <GuideCard block={GUIDE_BLOCKS[0]}>
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            {STAKEHOLDER_TYPES.map((g) => (
+              <div
+                key={g.group}
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3.5 sm:p-4"
+              >
+                <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-foreground/70 sm:text-xs">
+                  {g.group}
+                </div>
+                <ul className="space-y-1.5">
+                  {g.items.map((it) => (
+                    <li
+                      key={it}
+                      className="flex items-start gap-2 text-sm text-foreground/90"
+                    >
+                      <span
+                        className="mt-1.5 h-1 w-1 shrink-0 rounded-full"
+                        style={{ background: `var(${GUIDE_BLOCKS[0].stageVar})` }}
+                      />
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </GuideCard>
+
+        {/* 02 — Тип интереса */}
+        <GuideCard block={GUIDE_BLOCKS[1]}>
+          <div className="-mx-4 overflow-x-auto sm:mx-0">
+            <table className="w-full min-w-[640px] border-separate border-spacing-y-1.5 px-4 text-left text-sm sm:px-0">
+              <thead>
+                <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <th className="px-3 pb-1 font-medium">Тип интереса</th>
+                  <th className="px-3 pb-1 font-medium">Типичные стейкхолдеры</th>
+                  <th className="px-3 pb-1 font-medium">Ключевые аргументы</th>
+                </tr>
+              </thead>
+              <tbody>
+                {INTEREST_ROWS.map((r) => (
+                  <tr key={r.type} className="align-top">
+                    <td className="rounded-l-xl border-y border-l border-white/[0.06] bg-white/[0.02] px-3 py-2.5 font-medium text-foreground">
+                      {r.type}
+                    </td>
+                    <td className="border-y border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-foreground/85">
+                      {r.who}
+                    </td>
+                    <td className="rounded-r-xl border-y border-r border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-foreground/85">
+                      {r.args}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GuideCard>
+
+        {/* 03 — Тип аргумента */}
+        <GuideCard block={GUIDE_BLOCKS[2]}>
+          <div className="-mx-4 overflow-x-auto sm:mx-0">
+            <table className="w-full min-w-[640px] border-separate border-spacing-y-1.5 px-4 text-left text-sm sm:px-0">
+              <thead>
+                <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <th className="px-3 pb-1 font-medium">Тип</th>
+                  <th className="px-3 pb-1 font-medium">Подвид</th>
+                  <th className="px-3 pb-1 font-medium">Суть и применение</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ARGUMENT_ROWS.map((r, i) => (
+                  <tr key={i} className="align-top">
+                    <td className="rounded-l-xl border-y border-l border-white/[0.06] bg-white/[0.02] px-3 py-2.5 font-medium text-foreground">
+                      {r.type}
+                    </td>
+                    <td className="border-y border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-foreground/85">
+                      {r.sub}
+                    </td>
+                    <td className="rounded-r-xl border-y border-r border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-foreground/85">
+                      {r.desc}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GuideCard>
+
+        {/* 04 — Цель взаимодействия */}
+        <GuideCard block={GUIDE_BLOCKS[3]}>
+          <ul className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+            {GOALS.map((g) => (
+              <li
+                key={g.title}
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 sm:px-4"
+              >
+                <div className="text-sm font-semibold text-foreground">
+                  {g.title}
+                </div>
+                <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                  {g.desc}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </GuideCard>
+
+        {/* 05 — Власть / Интерес */}
+        <GuideCard block={GUIDE_BLOCKS[4]}>
+          <div className="-mx-4 overflow-x-auto sm:mx-0">
+            <table className="w-full min-w-[640px] border-separate border-spacing-y-1.5 px-4 text-left text-sm sm:px-0">
+              <thead>
+                <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <th className="px-3 pb-1 font-medium" />
+                  <th className="px-3 pb-1 font-medium">Высокий интерес</th>
+                  <th className="px-3 pb-1 font-medium">Низкий интерес</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MATRIX.map((r) => (
+                  <tr key={r.power} className="align-top">
+                    <td className="rounded-l-xl border-y border-l border-white/[0.06] bg-white/[0.02] px-3 py-2.5 font-medium text-foreground">
+                      {r.power}
+                    </td>
+                    <td className="border-y border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-foreground/85">
+                      {r.highInterest}
+                    </td>
+                    <td className="rounded-r-xl border-y border-r border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-foreground/85">
+                      {r.lowInterest}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GuideCard>
+
+        {/* 06 — Методы аргументации */}
+        <GuideCard block={GUIDE_BLOCKS[5]}>
+          <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+            {METHODS.map((m) => (
+              <div
+                key={m.name}
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3.5 sm:p-4"
+              >
+                <div className="text-sm font-semibold text-foreground">
+                  {m.name}
+                </div>
+                <p className="mt-1 text-xs leading-relaxed text-foreground/80 sm:text-sm">
+                  {m.desc}
+                </p>
+                <div
+                  className="mt-2.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:text-[11px]"
+                  style={{
+                    background: `color-mix(in oklab, var(${GUIDE_BLOCKS[5].stageVar}) 18%, transparent)`,
+                    color: `var(${GUIDE_BLOCKS[5].stageVar})`,
+                  }}
+                >
+                  Применение
+                </div>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                  {m.use}
+                </p>
+              </div>
+            ))}
+          </div>
+        </GuideCard>
+
+        {/* Принцип */}
+        <div
+          className="glass relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-8"
+          style={
+            {
+              "--stage-color": "var(--accent)",
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--accent) 14%, transparent), transparent 60%)",
+            } as React.CSSProperties
+          }
+        >
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-accent">
+            Ключевой принцип
+          </div>
+          <p className="text-sm leading-relaxed text-foreground/90 sm:text-base">
+            Подбирайте метод и тип аргумента под{" "}
+            <span className="font-semibold text-foreground">
+              конкретного стейкхолдера
+            </span>
+            , а не под своё удобство. Один и тот же аргумент, поданный разными
+            методами, даёт принципиально разный результат.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
