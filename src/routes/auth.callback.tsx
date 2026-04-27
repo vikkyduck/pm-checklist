@@ -14,46 +14,87 @@ function CallbackPage() {
   useEffect(() => {
     let cancelled = false;
 
+    async function persistDisplayName(userId: string, meta: Record<string, unknown>) {
+      const displayName =
+        (typeof meta?.display_name === "string" && meta.display_name) ||
+        (typeof meta?.name === "string" && meta.name) ||
+        null;
+      if (displayName) {
+        await supabase
+          .from("profiles")
+          .update({ display_name: displayName })
+          .eq("id", userId);
+      }
+    }
+
     async function finish() {
-      // Supabase auto-detects session from URL hash/query (detectSessionInUrl).
-      // We just wait for the session to materialise.
-      const { data, error } = await supabase.auth.getSession();
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      const errorParam = url.searchParams.get("error_description") || url.searchParams.get("error");
+
+      if (errorParam) {
+        setError(decodeURIComponent(errorParam));
+        return;
+      }
+
+      // PKCE flow: explicitly exchange the ?code=... param for a session
+      // and let supabase-js persist it to localStorage.
+      if (code) {
+        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (cancelled) return;
+        if (exchangeError) {
+          setError(exchangeError.message);
+          return;
+        }
+        if (data.session) {
+          await persistDisplayName(
+            data.session.user.id,
+            (data.session.user.user_metadata ?? {}) as Record<string, unknown>,
+          );
+          // clean ?code= from the URL before navigating
+          window.history.replaceState({}, "", "/auth/callback");
+          navigate({ to: "/", replace: true });
+          return;
+        }
+      }
+
+      // Implicit / hash flow fallback (#access_token=...): supabase-js
+      // auto-detects the session from the URL hash on init.
+      const { data, error: sessionError } = await supabase.auth.getSession();
       if (cancelled) return;
-      if (error) {
-        setError(error.message);
+      if (sessionError) {
+        setError(sessionError.message);
         return;
       }
       if (data.session) {
-        // Make sure profile.display_name reflects the name from login form.
-        const meta = data.session.user.user_metadata as Record<string, unknown>;
-        const displayName =
-          (typeof meta?.display_name === "string" && meta.display_name) ||
-          (typeof meta?.name === "string" && meta.name) ||
-          null;
-        if (displayName) {
-          await supabase
-            .from("profiles")
-            .update({ display_name: displayName })
-            .eq("id", data.session.user.id);
-        }
+        await persistDisplayName(
+          data.session.user.id,
+          (data.session.user.user_metadata ?? {}) as Record<string, unknown>,
+        );
         navigate({ to: "/", replace: true });
         return;
       }
 
-      // If session not ready yet, listen briefly.
+      // Wait briefly for onAuthStateChange in case session is materialising
       const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
         if (session) {
           sub.subscription.unsubscribe();
           navigate({ to: "/", replace: true });
         }
       });
-      // Timeout fallback
-      setTimeout(() => {
+      const timeout = window.setTimeout(() => {
         if (!cancelled) {
           sub.subscription.unsubscribe();
-          setError("Не удалось войти. Запросите ссылку ещё раз.");
+          setError(
+            "Не удалось восстановить сессию. Возможно, ссылка уже использована или истекла. Запросите новую.",
+          );
         }
-      }, 5000);
+      }, 6000);
+
+      return () => {
+        sub.subscription.unsubscribe();
+        window.clearTimeout(timeout);
+      };
     }
 
     finish();
