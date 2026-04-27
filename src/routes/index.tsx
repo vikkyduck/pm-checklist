@@ -100,32 +100,32 @@ function MindMapPage() {
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-10 lg:py-14">
 
         {/* Header */}
-        <header className="mb-8 flex flex-col gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
-            <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide text-foreground/80">
+        <header className="mb-6 flex flex-col gap-4 sm:mb-8 sm:gap-6 lg:mb-12 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-2.5 sm:space-y-3 pl-12 sm:pl-14 lg:pl-0">
+            <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
               <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
               {META.subtitle}
             </div>
-            <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
               {META.title}
               <span className="block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
                 от первого дня до закрытия
               </span>
             </h1>
-            <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
+            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
               {META.description}
             </p>
-            <p className="max-w-xl text-xs text-muted-foreground/80">
+            <p className="max-w-xl text-[11px] text-muted-foreground/80 sm:text-xs">
               Шесть этапов · {ROADMAP.reduce((s, x) => s + x.categories.length, 0)}{" "}
               блоков · {totalItems} конкретных шагов
             </p>
           </div>
 
           {/* Search */}
-          <div className="glass relative w-full max-w-sm rounded-2xl px-4 py-2.5">
+          <div className="glass relative w-full rounded-2xl px-3.5 py-2 sm:max-w-sm sm:px-4 sm:py-2.5">
             <div className="flex items-center gap-3">
               <SearchIcon />
               <input
@@ -155,7 +155,7 @@ function MindMapPage() {
         />
 
         {/* Detail */}
-        <section className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-12">
+        <section className="mt-6 grid gap-5 sm:mt-10 sm:gap-6 lg:mt-14 lg:grid-cols-12">
           {/* Stage summary */}
           <aside className="lg:col-span-4">
             <StageSummary stage={stage} progress={progress} />
@@ -163,7 +163,7 @@ function MindMapPage() {
 
           {/* Categories */}
           <div className="lg:col-span-8">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
               {filteredCategories.map((cat, idx) => {
                 const key = `${stage.id}-${cat.title}`;
                 const isOpen = openCategory === key;
@@ -183,7 +183,7 @@ function MindMapPage() {
                 );
               })}
               {filteredCategories.length === 0 && (
-                <div className="glass col-span-full rounded-2xl p-8 text-center text-muted-foreground">
+                <div className="glass col-span-full rounded-2xl p-6 text-center text-sm text-muted-foreground sm:p-8">
                   Ничего не найдено по запросу «{query}»
                 </div>
               )}
@@ -192,11 +192,11 @@ function MindMapPage() {
         </section>
 
         {/* How to use */}
-        <section className="mt-10">
-          <div className="glass rounded-3xl p-6 lg:p-8">
-            <div className="mb-4 flex items-center gap-2">
+        <section className="mt-8 sm:mt-10">
+          <div className="glass rounded-2xl p-5 sm:rounded-3xl sm:p-6 lg:p-8">
+            <div className="mb-3 flex items-center gap-2 sm:mb-4">
               <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-              <h2 className="text-sm font-medium uppercase tracking-wider text-foreground/80">
+              <h2 className="text-xs font-medium uppercase tracking-wider text-foreground/80 sm:text-sm">
                 Как пользоваться
               </h2>
             </div>
@@ -204,7 +204,7 @@ function MindMapPage() {
               {META.usage.map((u, i) => (
                 <li
                   key={i}
-                  className="glass-soft rounded-2xl p-4 text-sm leading-relaxed text-foreground/85"
+                  className="glass-soft rounded-2xl p-3.5 text-sm leading-relaxed text-foreground/85 sm:p-4"
                 >
                   <span className="mb-2 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                     {String(i + 1).padStart(2, "0")}
@@ -217,7 +217,7 @@ function MindMapPage() {
         </section>
 
         {/* Footer */}
-        <footer className="mt-16 flex flex-col items-center gap-2 text-center text-xs text-muted-foreground/70">
+        <footer className="mt-12 flex flex-col items-center gap-2 text-center text-xs text-muted-foreground/70 sm:mt-16">
           <div className="glass-pill rounded-full px-3 py-1">
             Liquid Glass · 2026
           </div>
