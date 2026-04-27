@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, LogIn, MessageSquare, Shield, Mail, RotateCcw } from "lucide-react";
+import { Home, MessageSquare } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,22 +17,11 @@ type NavItem = {
   title: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
-  badge?: string;
 };
 
 const PUBLIC_ITEMS: NavItem[] = [
   { title: "Главная (чек-лист)", url: "/", icon: Home },
-  { title: "Вход", url: "/login", icon: LogIn },
   { title: "Переговоры", url: "/negotiations", icon: MessageSquare },
-];
-
-const AUTH_ITEMS: NavItem[] = [
-  { title: "Админка", url: "/admin", icon: Shield, badge: "admin" },
-  { title: "Auth callback", url: "/auth/callback", icon: RotateCcw },
-];
-
-const DEV_ITEMS: NavItem[] = [
-  { title: "Превью писем", url: "/lovable/email/auth/preview", icon: Mail },
 ];
 
 export function DevNavSidebar() {
@@ -55,16 +44,7 @@ export function DevNavSidebar() {
         >
           <Link to={item.url}>
             <item.icon className="h-4 w-4" />
-            {!collapsed && (
-              <span className="flex-1 truncate">
-                {item.title}
-                {item.badge && (
-                  <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase text-muted-foreground">
-                    {item.badge}
-                  </span>
-                )}
-              </span>
-            )}
+            {!collapsed && <span className="flex-1 truncate">{item.title}</span>}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -85,23 +65,9 @@ export function DevNavSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Публичные</SidebarGroupLabel>
+          <SidebarGroupLabel>Страницы</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>{PUBLIC_ITEMS.map(renderItem)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Для авторизованных</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>{AUTH_ITEMS.map(renderItem)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Email-превью</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>{DEV_ITEMS.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
