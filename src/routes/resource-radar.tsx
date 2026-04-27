@@ -189,27 +189,30 @@ function ResourceRadarPage() {
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
         {/* Header */}
         <header className="mb-8 sm:mb-12 lg:mb-16">
-          <div className="pl-12 sm:pl-14 lg:pl-0">
-            <Link
-              to="/resource-state"
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Ресурсное состояние
-            </Link>
-            <div className="eyebrow mt-5 mb-4">Тонус-менеджмент</div>
-            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl lg:text-[3.75rem]">
-              Где мой источник ресурса?
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
-              Отметьте утверждения, которые про вас. Получите карту источников
-              энергии и архетип восстановления.
-            </p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1 text-[11px] text-muted-foreground">
-              <span>4 блока · {TOTAL_CRITERIA} утверждений</span>
-              <span className="text-[var(--hairline-strong)]">·</span>
-              <span>~5 мин</span>
-            </div>
+          <Link
+            to="/resource-state"
+            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            <ArrowLeft className="h-3 w-3" />
+            Ресурсное состояние
+          </Link>
+          <div className="eyebrow mt-6 mb-5">Тонус-менеджмент · опрос</div>
+          <h1 className="text-balance text-foreground display text-[2.25rem] sm:text-5xl lg:text-[4.5rem]">
+            Где мой{" "}
+            <em className="display-italic" style={{ color: "var(--accent)" }}>
+              источник
+            </em>{" "}
+            ресурса?
+          </h1>
+          <p className="lede mt-6 max-w-2xl">
+            Отметьте утверждения, которые про вас. Получите карту источников
+            энергии и архетип восстановления.
+          </p>
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3.5 py-1.5 text-[11px] text-muted-foreground" style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.05em" }}>
+            <span className="num">4 блока · {TOTAL_CRITERIA} утверждений</span>
+            <span className="text-[var(--hairline-strong)]">·</span>
+            <span>~5 мин</span>
           </div>
         </header>
 
