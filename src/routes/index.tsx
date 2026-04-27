@@ -98,10 +98,10 @@ function MindMapPage() {
               type="button"
               onClick={handleDownload}
               className="btn-ghost"
-              title="Открыть для печати или сохранения в PDF"
+              title="Откроется окно печати — выберите «Сохранить как PDF»"
             >
               <Download className="h-3.5 w-3.5" aria-hidden />
-              Скачать PDF
+              Распечатать
             </button>
           </div>
 
