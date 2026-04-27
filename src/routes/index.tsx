@@ -350,7 +350,7 @@ function StageSummary({ stage, progress }: { stage: Stage; progress: Record<stri
         <div className="eyebrow mb-3">
           Этап {stage.index} · {doneCount}/{itemCount}
         </div>
-        <h2 className="text-balance text-2xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-3xl">
+        <h2 className="text-balance text-3xl leading-[1.04] text-foreground sm:text-4xl">
           {stage.title}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
