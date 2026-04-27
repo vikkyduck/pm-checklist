@@ -13,6 +13,7 @@ import { Route as ResourceStateRouteImport } from './routes/resource-state'
 import { Route as ResourceRadarRouteImport } from './routes/resource-radar'
 import { Route as PmChecklistRouteImport } from './routes/pm-checklist'
 import { Route as NegotiationsRouteImport } from './routes/negotiations'
+import { Route as IndexRouteImport } from './routes/index'
 
 const ResourceStateRoute = ResourceStateRouteImport.update({
   id: '/resource-state',
@@ -34,14 +35,21 @@ const NegotiationsRoute = NegotiationsRouteImport.update({
   path: '/negotiations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
   '/pm-checklist': typeof PmChecklistRoute
   '/resource-radar': typeof ResourceRadarRoute
   '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
   '/pm-checklist': typeof PmChecklistRoute
   '/resource-radar': typeof ResourceRadarRoute
@@ -49,6 +57,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
   '/pm-checklist': typeof PmChecklistRoute
   '/resource-radar': typeof ResourceRadarRoute
@@ -57,14 +66,21 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/negotiations'
     | '/pm-checklist'
     | '/resource-radar'
     | '/resource-state'
   fileRoutesByTo: FileRoutesByTo
-  to: '/negotiations' | '/pm-checklist' | '/resource-radar' | '/resource-state'
+  to:
+    | '/'
+    | '/negotiations'
+    | '/pm-checklist'
+    | '/resource-radar'
+    | '/resource-state'
   id:
     | '__root__'
+    | '/'
     | '/negotiations'
     | '/pm-checklist'
     | '/resource-radar'
@@ -72,6 +88,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   NegotiationsRoute: typeof NegotiationsRoute
   PmChecklistRoute: typeof PmChecklistRoute
   ResourceRadarRoute: typeof ResourceRadarRoute
@@ -108,10 +125,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NegotiationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   NegotiationsRoute: NegotiationsRoute,
   PmChecklistRoute: PmChecklistRoute,
   ResourceRadarRoute: ResourceRadarRoute,
