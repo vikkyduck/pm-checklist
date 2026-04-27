@@ -264,16 +264,17 @@ function buildHtml(data: PrintRadarData): string {
   body { background: #f3f4f6; padding: 16px; }
   .sheet {
     width: 194mm;
-    min-height: 281mm;
+    height: 281mm;
     background: #fff;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     margin: 0 auto;
     padding: 8mm;
     transform-origin: top left;
+    overflow: hidden;
   }
   @media print {
     body { background: #fff; padding: 0; }
-    .sheet { box-shadow: none; padding: 0; margin: 0; min-height: 281mm; }
+    .sheet { box-shadow: none; padding: 0; margin: 0; height: 281mm; overflow: hidden; }
   }
 
   .doc { font-size: 8pt; }
