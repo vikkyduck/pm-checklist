@@ -77,7 +77,7 @@ function ResourceRadarPage() {
   const [hydrated, setHydrated] = useState(false);
   const [openBlocks, setOpenBlocks] = useState<Record<string, boolean>>({});
   const [view, setView] = useState<"form" | "results">("form");
-  const [showMobileRadar, setShowMobileRadar] = useState(false);
+  const [showMobileRadar, setShowMobileRadar] = useState(true);
   const [resetConfirm, setResetConfirm] = useState(false);
 
   // Hydrate from localStorage on client
