@@ -553,7 +553,7 @@ function GuideSection() {
         </p>
       </header>
 
-      <div className="space-y-12 sm:space-y-16 lg:space-y-20">
+      <div className="space-y-3">
         {/* 01 — Тип стейкхолдера */}
         <GuideCard block={GUIDE_BLOCKS[0]}>
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
