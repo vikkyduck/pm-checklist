@@ -8,6 +8,7 @@ import {
   BellRing,
   ChevronDown,
   ChevronRight,
+  Download,
   RotateCcw,
   Sparkles,
   TriangleAlert,
@@ -19,6 +20,7 @@ import {
   type BlockId,
 } from "@/lib/resource-radar";
 import { ResourceRadarChart } from "@/components/resource-radar-chart";
+import { printRadar } from "@/lib/print-radar";
 
 export const Route = createFileRoute("/resource-radar")({
   component: ResourceRadarPage,
