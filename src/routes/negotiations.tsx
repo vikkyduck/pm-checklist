@@ -193,6 +193,13 @@ function NegotiationsPage() {
 
         {/* Sections */}
         <div className="grid gap-5 sm:gap-6 lg:gap-8">
+          <a
+            href="#guide"
+            className="glass-soft inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:text-foreground sm:text-xs"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+            Перейти к руководству по аргументации →
+          </a>
           {SECTIONS.map((section, idx) => {
             const doneInSection = section.items.filter(
               (_, i) => progress[negotiationItemId(section.id, i)],
