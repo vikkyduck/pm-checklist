@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResourceStateRouteImport } from './routes/resource-state'
 import { Route as NegotiationsRouteImport } from './routes/negotiations'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ResourceStateRoute = ResourceStateRouteImport.update({
+  id: '/resource-state',
+  path: '/resource-state',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NegotiationsRoute = NegotiationsRouteImport.update({
   id: '/negotiations',
   path: '/negotiations',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/negotiations': typeof NegotiationsRoute
+  '/resource-state': typeof ResourceStateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/negotiations'
+  fullPaths: '/' | '/negotiations' | '/resource-state'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/negotiations'
-  id: '__root__' | '/' | '/negotiations'
+  to: '/' | '/negotiations' | '/resource-state'
+  id: '__root__' | '/' | '/negotiations' | '/resource-state'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NegotiationsRoute: typeof NegotiationsRoute
+  ResourceStateRoute: typeof ResourceStateRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resource-state': {
+      id: '/resource-state'
+      path: '/resource-state'
+      fullPath: '/resource-state'
+      preLoaderRoute: typeof ResourceStateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/negotiations': {
       id: '/negotiations'
       path: '/negotiations'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NegotiationsRoute: NegotiationsRoute,
+  ResourceStateRoute: ResourceStateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
