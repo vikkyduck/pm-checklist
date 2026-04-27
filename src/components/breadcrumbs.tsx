@@ -44,12 +44,9 @@ export function Breadcrumbs() {
   if (trail.length <= 1) return null;
 
   return (
-    <nav
-      aria-label="Хлебные крошки"
-      className="mx-auto w-full max-w-6xl px-4 pt-3 pb-1 sm:px-6 lg:px-10"
-    >
+    <nav aria-label="Хлебные крошки" className="min-w-0">
       <ol
-        className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] uppercase tracking-[0.12em]"
+        className="flex flex-nowrap items-center gap-x-2 overflow-x-auto whitespace-nowrap text-[10.5px] uppercase tracking-[0.12em]"
         style={{ fontFamily: "var(--font-mono)" }}
       >
         {trail.map((crumb, i) => {
