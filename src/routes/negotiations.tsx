@@ -526,27 +526,15 @@ function GuideCard({
   children: React.ReactNode;
 }) {
   return (
-    <section id={block.id} className="scroll-mt-20">
-      <header className="mb-5 sm:mb-6">
-        <div className="flex items-baseline gap-4 sm:gap-5">
-          <span
-            className="text-sm font-semibold tabular-nums tracking-tight"
-            style={{ color: `var(${block.stageVar})` }}
-          >
-            {block.number}
-          </span>
-          <div className="min-w-0 flex-1">
-            <h3 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
-              {block.title}
-            </h3>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              {block.lead}
-            </p>
-          </div>
-        </div>
-      </header>
-      <div className="pl-0 sm:pl-9">{children}</div>
-    </section>
+    <DisclosureBox
+      id={block.id}
+      number={block.number}
+      accentVar={block.stageVar}
+      title={block.title}
+      subtitle={block.lead}
+    >
+      {children}
+    </DisclosureBox>
   );
 }
 
