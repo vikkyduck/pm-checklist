@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useChecklistProgress } from "@/hooks/use-checklist-progress";
+import { printChecklist } from "@/lib/print-checklist";
 
 export const Route = createFileRoute("/negotiations")({
   component: NegotiationsPage,
