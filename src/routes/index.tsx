@@ -92,8 +92,19 @@ function MindMapPage() {
         {/* Header */}
         <header className="mb-10 sm:mb-14 lg:mb-20">
           <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="eyebrow mb-5">{META.subtitle}</div>
-            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[5rem]">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="eyebrow">{META.subtitle}</div>
+              <button
+                type="button"
+                onClick={handleDownload}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)] hover:text-foreground"
+                title="Открыть для печати или сохранения в PDF"
+              >
+                <DownloadIcon />
+                Скачать чек-лист
+              </button>
+            </div>
+            <h1 className="mt-5 text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[5rem]">
               {META.title}
             </h1>
             <p className="mt-3 text-base leading-snug text-muted-foreground sm:text-lg lg:text-xl">
