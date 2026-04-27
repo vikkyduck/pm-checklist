@@ -402,6 +402,9 @@ function CategoryCard({
   progress: Record<string, boolean>;
   onItemToggle: (id: string) => void;
 }) {
+  const doneCount = items.filter(
+    (_, i) => progress[itemId(stage.id, title, i)],
+  ).length;
   const complete = doneCount === items.length && items.length > 0;
   return (
     <div
