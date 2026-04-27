@@ -797,3 +797,12 @@ function ResultsView({
     </main>
   );
 }
+
+/** Резолвит CSS-переменную в актуальный цвет (для встраивания в печатный HTML/SVG) */
+function cssVar(name: string): string {
+  if (typeof window === "undefined") return "#111827";
+  const v = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  return v || "#111827";
+}
