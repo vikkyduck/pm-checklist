@@ -88,7 +88,9 @@ function renderSection(section: PrintSection): string {
         <h2 class="section-title">${escapeHtml(section.title)}</h2>
         ${section.subtitle ? `<span class="section-subtitle">${escapeHtml(section.subtitle)}</span>` : ""}
       </header>
-      ${section.groups.map(renderGroup).join("")}
+      <div class="section-body">
+        ${section.groups.map(renderGroup).join("")}
+      </div>
     </section>
   `;
 }
@@ -147,9 +149,24 @@ function buildHtml(data: PrintChecklist): string {
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
+    height: 100%;
   }
-  .columns-wrap { flex: 1 1 auto; min-height: 0; display: flex; }
-  .columns { flex: 1 1 auto; }
+  .layout-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+  }
+  .sections-grid {
+    --cols: 2;
+    --rows: 3;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
+    gap: 6pt;
+    align-items: stretch;
+  }
 
   /* Шапка — компактная, в одну строку */
   .cover {
@@ -198,23 +215,18 @@ function buildHtml(data: PrintChecklist): string {
     line-height: 1.35;
   }
 
-  /* Колонки — основной приём для одной страницы */
-  .columns {
-    column-count: 3;
-    column-gap: 6pt;
-    column-fill: balance;
-  }
-
   /* Section */
   .section {
-    break-inside: avoid-column;
     page-break-inside: avoid;
-    margin: 0 0 5pt 0;
     padding: 4pt 5pt;
     border: 0.5pt solid #e5e7eb;
     border-left: 1.6pt solid var(--accent, #111827);
     border-radius: 2pt;
     background: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
   }
   .section-head {
     display: flex;
@@ -250,12 +262,20 @@ function buildHtml(data: PrintChecklist): string {
     margin-top: 1pt;
     line-height: 1.25;
   }
+  .section-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 3pt;
+  }
 
   /* Group */
   .group {
     break-inside: avoid;
     page-break-inside: avoid;
-    margin: 3pt 0 0 0;
+    margin: 0;
   }
   .group-title {
     font-size: 7.5pt;
@@ -326,7 +346,7 @@ function buildHtml(data: PrintChecklist): string {
     .no-print { display: none !important; }
     html, body { width: 210mm; height: 297mm; }
     /* Запрещаем любые переносы — всё уже подогнано под одну страницу */
-    .doc, .sheet, .columns, .section, .group, .item {
+     .doc, .sheet, .sections-grid, .section, .group, .item {
       page-break-inside: avoid;
       break-inside: avoid;
     }
@@ -392,8 +412,8 @@ function buildHtml(data: PrintChecklist): string {
         </div>
       </header>
       ${data.description ? `<p class="doc-description">${escapeHtml(data.description)}</p>` : ""}
-      <div class="columns-wrap">
-        <div class="columns" id="columns">
+      <div class="layout-area">
+        <div class="sections-grid" id="sections-grid">
           ${data.sections.map(renderSection).join("")}
         </div>
       </div>
@@ -411,19 +431,15 @@ function buildHtml(data: PrintChecklist): string {
     (function () {
       var sheet = document.querySelector('.sheet');
       var doc = document.getElementById('doc');
-      var columns = document.getElementById('columns');
-      if (!sheet || !doc || !columns) return;
+      var grid = document.getElementById('sections-grid');
+      if (!sheet || !doc || !grid) return;
 
       // Доступная высота: A4 высота (297мм) минус 2×8мм поля = 281мм
       // в пикселях при 96dpi: 1мм ≈ 3.7795 px
       var maxHeightPx = 281 * 3.7795;
-      // Целимся в заполнение 96-99% листа — без пустот снизу
-      var targetMin = maxHeightPx * 0.96;
-
       var itemCount = ${totalItems};
-      // Стартовое кол-во колонок: подбираем по объёму
-      if (itemCount > 60) columns.style.columnCount = '4';
-      if (itemCount > 110) columns.style.columnCount = '5';
+      var sectionCount = ${totalSections};
+      var sections = Array.from(grid.querySelectorAll('.section'));
 
       var fontPt = 8.5;
       var minFontPt = 5.0;
@@ -431,60 +447,71 @@ function buildHtml(data: PrintChecklist): string {
       var step = 0.25;
 
       function fits() { return doc.scrollHeight <= maxHeightPx + 1; }
-      function tooSmall() { return doc.scrollHeight < targetMin; }
       function setFont(pt) { doc.style.fontSize = pt.toFixed(2) + 'pt'; }
+      function setGrid(cols) {
+        var rows = Math.ceil(sectionCount / cols);
+        grid.style.setProperty('--cols', String(cols));
+        grid.style.setProperty('--rows', String(rows));
+      }
+      function cellsFit() {
+        return sections.every(function (section) {
+          return section.scrollHeight <= section.clientHeight + 2;
+        });
+      }
+      function cellFillRatio() {
+        return Math.max.apply(
+          null,
+          sections.map(function (section) {
+            return section.clientHeight ? section.scrollHeight / section.clientHeight : 0;
+          }),
+        );
+      }
 
       setFont(fontPt);
 
-      // 1) Сначала уменьшаем колонки, если контента мало (чтобы шрифт мог расти)
-      var cols = parseInt(getComputedStyle(columns).columnCount, 10) || 3;
-      // если стартово 3 и пунктов <= 30 — пробуем 2 колонки для большего шрифта
-      if (itemCount <= 24 && cols > 2) {
-        columns.style.columnCount = '2';
-        cols = 2;
-      }
-      if (itemCount <= 12 && cols > 1) {
-        columns.style.columnCount = '1';
-        cols = 1;
-      }
+      var cols = 2;
+      if (sectionCount <= 2) cols = 1;
+      else if (itemCount > 80 || sectionCount > 6) cols = 3;
+      else if (itemCount > 140 || sectionCount > 9) cols = 4;
+      setGrid(cols);
 
       var safety = 400;
 
-      // 2) Если контент переполняет — уменьшаем шрифт
-      while (!fits() && fontPt > minFontPt && safety-- > 0) {
+      // 1) Если контент переполняет ячейки или страницу — уменьшаем шрифт
+      while ((!fits() || !cellsFit()) && fontPt > minFontPt && safety-- > 0) {
         fontPt -= step;
         setFont(fontPt);
       }
-      // Если всё ещё не влезает — добавляем колонки
-      while (!fits() && cols < 6 && safety-- > 0) {
+
+      // 2) Если всё ещё тесно — добавляем колонки до разумного предела
+      while ((!fits() || !cellsFit()) && cols < 4 && safety-- > 0) {
         cols += 1;
-        columns.style.columnCount = String(cols);
+        setGrid(cols);
       }
-      // Финальный жим вниз
-      while (!fits() && fontPt > 4 && safety-- > 0) {
+
+      while ((!fits() || !cellsFit()) && fontPt > 4 && safety-- > 0) {
         fontPt -= 0.2;
         setFont(fontPt);
       }
 
-      // 3) Если контент сильно меньше листа — РАСТЯГИВАЕМ шрифт вверх,
-      //    чтобы заполнить всю страницу без белых полей снизу.
+      // 3) Если внутри боксов ещё много воздуха — аккуратно увеличиваем шрифт,
+      //    сохраняя ровно одну страницу и заполнение листа всей сеткой.
       safety = 400;
-      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+      while (cellFillRatio() < 0.82 && fits() && cellsFit() && fontPt < maxFontPt && safety-- > 0) {
         fontPt += step;
         setFont(fontPt);
-        // если перелетели — откатываемся на полшага и выходим
-        if (!fits()) {
+        if (!fits() || !cellsFit()) {
           fontPt -= step;
           setFont(fontPt);
           break;
         }
       }
-      // Микро-подгонка вверх
+
       safety = 50;
-      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+      while (cellFillRatio() < 0.88 && fits() && cellsFit() && fontPt < maxFontPt && safety-- > 0) {
         fontPt += 0.1;
         setFont(fontPt);
-        if (!fits()) {
+        if (!fits() || !cellsFit()) {
           fontPt -= 0.1;
           setFont(fontPt);
           break;
