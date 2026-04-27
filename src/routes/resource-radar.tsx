@@ -490,11 +490,42 @@ function ResultsView({
   const primaryStage =
     BLOCKS.find((b) => b.id === primary?.id)?.stageVar ?? "--accent";
 
+  function handleDownload() {
+    printRadar({
+      blocks: blockStats.map((b) => ({
+        id: b.id,
+        label: b.label,
+        shortLabel: b.shortLabel,
+        color: cssVar(b.stageVar),
+        checked: b.checked,
+        total: b.total,
+        pct: b.pct,
+        score: scores[b.id] ?? 0,
+      })),
+      dominantArchetypes: dominantArchetypes.map((a) => ({
+        id: a.id,
+        name: a.name,
+        tagline: a.tagline,
+        uniqueness: a.uniqueness,
+        whyDrains: a.whyDrains,
+        recovery: a.recovery,
+        earlyWarnings: a.earlyWarnings,
+        color: cssVar(
+          BLOCKS.find((b) => b.id === a.id)?.stageVar ?? "--accent",
+        ),
+      })),
+      hasDual,
+      totalChecked,
+      totalCriteria: TOTAL_CRITERIA,
+      overallPct,
+    });
+  }
+
   return (
     <main className="relative min-h-screen">
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
         <header className="mb-10 sm:mb-12">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between gap-2">
             <button
               type="button"
               onClick={onBack}
@@ -503,18 +534,30 @@ function ResultsView({
               <ArrowLeft className="h-3.5 w-3.5" />
               Вернуться к опросу
             </button>
-            <button
-              type="button"
-              onClick={onReset}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] transition-colors ${
-                resetConfirm
-                  ? "border-destructive/40 bg-destructive/10 text-destructive"
-                  : "border-[var(--hairline)] bg-[var(--surface)] text-foreground/70 hover:border-[var(--hairline-strong)]"
-              }`}
-            >
-              <RotateCcw className="h-3 w-3" />
-              {resetConfirm ? "Точно?" : "Сбросить"}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleDownload}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-foreground px-3 py-1.5 text-[11px] font-medium text-background transition-opacity hover:opacity-90"
+                title="Сохранить результаты в PDF"
+              >
+                <Download className="h-3 w-3" />
+                <span className="hidden sm:inline">Скачать PDF</span>
+                <span className="sm:hidden">PDF</span>
+              </button>
+              <button
+                type="button"
+                onClick={onReset}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] transition-colors ${
+                  resetConfirm
+                    ? "border-destructive/40 bg-destructive/10 text-destructive"
+                    : "border-[var(--hairline)] bg-[var(--surface)] text-foreground/70 hover:border-[var(--hairline-strong)]"
+                }`}
+              >
+                <RotateCcw className="h-3 w-3" />
+                {resetConfirm ? "Точно?" : "Сбросить"}
+              </button>
+            </div>
           </div>
 
           <div className="pl-12 sm:pl-14 lg:pl-0">
