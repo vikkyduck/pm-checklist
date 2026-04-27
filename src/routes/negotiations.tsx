@@ -131,29 +131,31 @@ function NegotiationsPage() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-5xl px-6 py-12 lg:px-10 lg:py-20">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-10 lg:py-20">
         {/* Hero */}
-        <header className="mb-10 space-y-4 lg:mb-14">
-          <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide text-foreground/80">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-            Чек-лист оценки PM в ролевой игре
+        <header className="mb-8 space-y-4 sm:mb-10 lg:mb-14">
+          <div className="pl-12 sm:pl-14 lg:pl-0">
+            <div className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide text-foreground/80 sm:px-3.5 sm:text-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+              Чек-лист оценки PM в ролевой игре
+            </div>
+            <h1 className="mt-3 text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+              Переговоры с заказчиком
+              <span className="mt-2 block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
+                что должен сделать игрок
+              </span>
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Пять блоков наблюдаемого поведения PM: от запуска встречи до
+              фиксации результата. Отмечайте по ходу разбора — прогресс
+              сохраняется локально.
+            </p>
           </div>
-          <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Переговоры с заказчиком
-            <span className="mt-2 block bg-gradient-to-r from-[var(--stage-3)] via-[var(--stage-4)] to-[var(--stage-5)] bg-clip-text text-transparent">
-              что должен сделать игрок
-            </span>
-          </h1>
-          <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Пять блоков наблюдаемого поведения PM: от запуска встречи до
-            фиксации результата. Отмечайте по ходу разбора — прогресс сохраняется
-            локально.
-          </p>
 
           {/* Progress */}
-          <div className="glass mt-6 flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="glass mt-5 flex flex-col gap-3 rounded-2xl p-3.5 sm:mt-6 sm:flex-row sm:items-center sm:justify-between sm:p-4">
             <div className="flex items-center gap-3">
-              <div className="text-2xl font-semibold tabular-nums text-foreground">
+              <div className="text-xl font-semibold tabular-nums text-foreground sm:text-2xl">
                 {totals.done}
                 <span className="text-muted-foreground">/{totals.total}</span>
               </div>
@@ -175,12 +177,12 @@ function NegotiationsPage() {
           </div>
 
           {/* Quick nav */}
-          <nav className="mt-4 flex flex-wrap gap-2">
+          <nav className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
             {SECTIONS.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="glass-soft rounded-full px-3.5 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:text-foreground"
+                className="glass-soft shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:text-foreground sm:px-3.5 sm:text-xs"
               >
                 <span className="mr-1.5 text-muted-foreground">{s.number}</span>
                 {s.title}
@@ -190,7 +192,7 @@ function NegotiationsPage() {
         </header>
 
         {/* Sections */}
-        <div className="grid gap-6 lg:gap-8">
+        <div className="grid gap-5 sm:gap-6 lg:gap-8">
           {SECTIONS.map((section, idx) => {
             const doneInSection = section.items.filter(
               (_, i) => progress[negotiationItemId(section.id, i)],
@@ -199,7 +201,7 @@ function NegotiationsPage() {
               <article
                 key={section.id}
                 id={section.id}
-                className="glass stage-glow relative overflow-hidden rounded-3xl p-6 lg:p-9"
+                className="glass stage-glow relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-9"
                 style={
                   {
                     "--stage-color": `var(${section.stageVar})`,
@@ -209,17 +211,17 @@ function NegotiationsPage() {
               >
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute -right-4 -top-6 select-none text-[120px] font-semibold leading-none tracking-tighter opacity-[0.06] lg:text-[170px]"
+                  className="pointer-events-none absolute -right-3 -top-4 select-none text-[90px] font-semibold leading-none tracking-tighter opacity-[0.06] sm:-right-4 sm:-top-6 sm:text-[120px] lg:text-[170px]"
                   style={{ color: `var(${section.stageVar})` }}
                 >
                   {section.number}
                 </span>
 
-                <div className="relative space-y-5">
+                <div className="relative space-y-4 sm:space-y-5">
                   <div className="flex flex-wrap items-end justify-between gap-3">
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div
-                        className="mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-wider"
+                        className="mb-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:px-3 sm:text-[11px]"
                         style={{
                           background: `color-mix(in oklab, var(${section.stageVar}) 18%, transparent)`,
                           color: `var(${section.stageVar})`,
@@ -234,10 +236,10 @@ function NegotiationsPage() {
                         />
                         Блок {section.number}
                       </div>
-                      <h2 className="text-2xl font-semibold leading-tight tracking-tight text-foreground lg:text-3xl">
+                      <h2 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
                         {section.title}
                       </h2>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                         {section.subtitle}
                       </p>
                     </div>
@@ -252,7 +254,7 @@ function NegotiationsPage() {
                     </span>
                   </div>
 
-                  <ul className="grid gap-2.5">
+                  <ul className="grid gap-2 sm:gap-2.5">
                     {section.items.map((text, i) => {
                       const id = negotiationItemId(section.id, i);
                       const checked = !!progress[id];
@@ -262,7 +264,7 @@ function NegotiationsPage() {
                             type="button"
                             onClick={() => toggle(id)}
                             className={[
-                              "group flex w-full items-start gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-left transition-all",
+                              "group flex w-full items-start gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-left transition-all sm:px-4 sm:py-3",
                               "hover:border-white/[0.12] hover:bg-white/[0.05]",
                               checked ? "opacity-70" : "",
                             ].join(" ")}
