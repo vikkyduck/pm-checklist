@@ -211,63 +211,72 @@ function StageRail({
   progress: Record<string, boolean>;
 }) {
   return (
-    <div className="glass relative rounded-3xl p-3 sm:p-4">
-      <div className="flex gap-2 overflow-x-auto sm:gap-3">
-        {ROADMAP.map((s) => {
-          const active = s.id === activeStage;
-          const total = s.categories.reduce((sum, c) => sum + c.items.length, 0);
-          const done = s.categories.reduce(
-            (sum, c) => sum + c.items.filter((_, i) => progress[itemId(s.id, c.title, i)]).length,
-            0,
-          );
-          return (
-            <button
-              key={s.id}
-              onClick={() => onSelect(s.id)}
-              className={[
-                "group relative min-w-[150px] flex-1 rounded-2xl px-3 py-3 text-left transition-all duration-500 sm:min-w-[180px] sm:px-4 sm:py-4",
-                active
-                  ? "bg-white/10 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] scale-[1.02]"
-                  : "hover:bg-white/5",
-              ].join(" ")}
-              style={
-                {
-                  "--stage-color": `var(--${s.color})`,
-                } as React.CSSProperties
-              }
-            >
-              {active && (
-                <span
-                  className="absolute inset-0 rounded-2xl opacity-30"
-                  style={{
-                    background: `linear-gradient(135deg, var(--${s.color}) 0%, transparent 60%)`,
-                  }}
-                />
-              )}
-              <div className="relative flex items-center gap-3">
-                <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-semibold"
-                  style={{
-                    background: `var(--${s.color})`,
-                    color: "oklch(0.18 0.03 255)",
-                    boxShadow: `0 4px 16px -4px var(--${s.color})`,
-                  }}
-                >
-                  {s.index}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                    Этап {s.index} · {done}/{total}
+    <div className="-mx-4 flex gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:gap-2 sm:px-0">
+      {ROADMAP.map((s) => {
+        const active = s.id === activeStage;
+        const total = s.categories.reduce((sum, c) => sum + c.items.length, 0);
+        const done = s.categories.reduce(
+          (sum, c) =>
+            sum +
+            c.items.filter((_, i) => progress[itemId(s.id, c.title, i)]).length,
+          0,
+        );
+        const pct = total ? done / total : 0;
+        return (
+          <button
+            key={s.id}
+            onClick={() => onSelect(s.id)}
+            className={[
+              "group relative min-w-[150px] flex-1 rounded-2xl border px-3.5 py-3 text-left transition-all duration-300 sm:min-w-[170px] sm:px-4 sm:py-3.5",
+              active
+                ? "border-[var(--hairline-strong)] bg-[var(--surface-strong)]"
+                : "border-[var(--hairline)] bg-[var(--surface)] hover:border-[var(--hairline-strong)]",
+            ].join(" ")}
+          >
+            <div className="flex items-center gap-3">
+              <span
+                className={[
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums tracking-tight transition-colors",
+                  active ? "text-background" : "text-foreground/80",
+                ].join(" ")}
+                style={
+                  active
+                    ? {
+                        background: `var(--${s.color})`,
+                      }
+                    : {
+                        background: "var(--surface-strong)",
+                        border: "1px solid var(--hairline-strong)",
+                      }
+                }
+              >
+                {s.index}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[13px] font-medium leading-tight text-foreground">
+                  {s.title}
+                </div>
+                <div className="mt-1 flex items-center gap-2">
+                  <div className="h-[2px] flex-1 overflow-hidden rounded-full bg-[var(--hairline)]">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${Math.round(pct * 100)}%`,
+                        background: active
+                          ? `var(--${s.color})`
+                          : "var(--hairline-strong)",
+                      }}
+                    />
                   </div>
-                  <div className="truncate text-sm font-medium text-foreground">
-                    {s.title}
-                  </div>
+                  <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">
+                    {done}/{total}
+                  </span>
                 </div>
               </div>
-            </button>
-          );
-        })}
-      </div>
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 }
