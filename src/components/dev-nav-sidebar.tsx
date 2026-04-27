@@ -50,13 +50,26 @@ export function DevNavSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b">
-        {!collapsed && (
-          <div className="px-2 py-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              PM Навигатор
-            </p>
-            <p className="text-[10px] text-muted-foreground/70">три направления</p>
+      <SidebarHeader className="border-b border-[var(--hairline)]">
+        {!collapsed ? (
+          <div className="flex items-center gap-2.5 px-2 py-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-[11px] font-semibold tracking-tight text-background">
+              P
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium leading-tight text-foreground">
+                Practice
+              </p>
+              <p className="truncate text-[10px] leading-tight text-muted-foreground">
+                навигатор PM
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center px-1 py-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-[11px] font-semibold tracking-tight text-background">
+              P
+            </span>
           </div>
         )}
       </SidebarHeader>
