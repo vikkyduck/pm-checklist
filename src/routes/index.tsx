@@ -289,13 +289,23 @@ function StageRail({
           <button
             key={s.id}
             onClick={() => onSelect(s.id)}
+            aria-pressed={active}
+            title={`Этап ${s.index}: ${s.title}`}
             className={[
-              "group relative min-w-[150px] flex-1 rounded-2xl border px-3.5 py-3 text-left transition-all duration-300 sm:min-w-[170px] sm:px-4 sm:py-3.5",
+              "group relative min-w-[150px] flex-1 cursor-pointer rounded-2xl border px-3.5 py-3 text-left transition-all duration-300 sm:min-w-[170px] sm:px-4 sm:py-3.5",
               active
-                ? "border-[var(--hairline-strong)] bg-[var(--surface-strong)]"
-                : "border-[var(--hairline)] bg-[var(--surface)] hover:border-[var(--hairline-strong)]",
+                ? "border-[var(--hairline-strong)] bg-[var(--surface-strong)] shadow-[var(--shadow-md)]"
+                : "border-[var(--hairline)] bg-[var(--surface)] hover:-translate-y-px hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)]",
             ].join(" ")}
           >
+            {/* Active indicator — top accent bar */}
+            {active && (
+              <span
+                className="absolute inset-x-3 top-0 h-[2px] rounded-b-full"
+                style={{ background: `var(--${s.color})` }}
+                aria-hidden
+              />
+            )}
             <div className="flex items-center gap-3">
               <span
                 className={[
