@@ -113,11 +113,13 @@
   }
 
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
     /* Single, ultra-quiet ambient wash. No animation. */
+    /* NOTE: avoid background-attachment: fixed and overscroll-behavior: none —
+       both can break vertical scrolling on iOS Safari / Cloudflare-served prod. */
     background-image:
       radial-gradient(
         ellipse 80% 50% at 50% -10%,
@@ -129,12 +131,11 @@
         oklch(0.28 0.08 220 / 0.35),
         transparent 70%
       );
-    background-attachment: fixed;
-    background-size: cover;
-    min-height: 100vh;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    min-height: 100svh;
+    overflow-x: clip;
+    overflow-y: auto;
   }
 
   /* Tighter heading tracking, the Apple way */
