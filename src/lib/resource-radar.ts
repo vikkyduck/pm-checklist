@@ -18,6 +18,27 @@ export type Block = {
 
 export type BlockId = "visionary" | "deep_worker" | "empath" | "biohacker";
 
+export type ArchetypeTool = {
+  /** Название инструмента/техники */
+  name: string;
+  /** Автор/источник, если есть (показывается рядом с названием) */
+  author?: string;
+  /** Подробное описание */
+  description: string;
+  /** Опционально — пошаговая практика или подпункты */
+  steps?: string[];
+  /** Опциональный заметный «эффект» / приписка */
+  effect?: string;
+};
+
+export type ArchetypeToolsSection = {
+  /** Заголовок раздела (например, «Ключевые инструменты для „Сущностной перезагрузки"») */
+  title: string;
+  /** Краткий контекст-преамбула */
+  intro?: string;
+  tools: ArchetypeTool[];
+};
+
 export type Archetype = {
   id: BlockId;
   name: string;
@@ -26,6 +47,8 @@ export type Archetype = {
   whyDrains: string;
   recovery: { title: string; text: string }[];
   earlyWarnings: { level: string; signals: string[] };
+  /** Раздел с конкретными техниками восстановления */
+  tools?: ArchetypeToolsSection;
 };
 
 export const BLOCKS: Block[] = [
