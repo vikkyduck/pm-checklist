@@ -61,6 +61,30 @@ function MindMapPage() {
     setOpenCategory(null);
   }, [activeStage]);
 
+  function handleDownload() {
+    printChecklist({
+      title: META.title,
+      subtitle: META.subtitle,
+      description: META.description,
+      usage: META.usage,
+      sections: ROADMAP.map((s) => ({
+        number: `Этап ${s.index}`,
+        title: s.title,
+        subtitle: s.subtitle,
+        intro: s.intro,
+        accentColor: cssVar(`--${s.color}`),
+        groups: s.categories.map((c) => ({
+          title: c.title,
+          intro: c.intro,
+          items: c.items.map((it) => ({
+            title: it.title,
+            detail: it.detail,
+          })),
+        })),
+      })),
+    });
+  }
+
   return (
     <main className="relative min-h-screen">
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
