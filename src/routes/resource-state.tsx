@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Radar, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/resource-state")({
   component: ResourceStatePage,
