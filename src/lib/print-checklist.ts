@@ -130,17 +130,26 @@ function buildHtml(data: PrintChecklist): string {
   }
 
   /* "Лист" — фиксированная высота A4 за вычетом полей.
-     Внутри JS подбирает scale, пока контент не влезет. */
+     Внутри JS подбирает scale, пока контент не влезет
+     и НЕ оставлял пустоты снизу — растягиваем шрифт вверх. */
   .sheet {
     width: 194mm;        /* A4 (210мм) минус 2×8мм поля */
-    min-height: 281mm;   /* A4 (297мм) минус 2×8мм поля */
+    height: 281mm;       /* A4 (297мм) минус 2×8мм поля — фиксируем */
     padding: 0;
     transform-origin: top left;
+    display: flex;
+    flex-direction: column;
   }
 
   .doc {
     font-size: 8.5pt;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
   }
+  .columns-wrap { flex: 1 1 auto; min-height: 0; display: flex; }
+  .columns { flex: 1 1 auto; }
 
   /* Шапка — компактная, в одну строку */
   .cover {
@@ -382,8 +391,10 @@ function buildHtml(data: PrintChecklist): string {
         </div>
       </header>
       ${data.description ? `<p class="doc-description">${escapeHtml(data.description)}</p>` : ""}
-      <div class="columns" id="columns">
-        ${data.sections.map(renderSection).join("")}
+      <div class="columns-wrap">
+        <div class="columns" id="columns">
+          ${data.sections.map(renderSection).join("")}
+        </div>
       </div>
       <p class="footer-note">Practice · pm-resourse.site · ${escapeHtml(today)} · все ${totalItems} пунктов на одной странице</p>
     </div>
@@ -405,44 +416,78 @@ function buildHtml(data: PrintChecklist): string {
       // Доступная высота: A4 высота (297мм) минус 2×8мм поля = 281мм
       // в пикселях при 96dpi: 1мм ≈ 3.7795 px
       var maxHeightPx = 281 * 3.7795;
+      // Целимся в заполнение 96-99% листа — без пустот снизу
+      var targetMin = maxHeightPx * 0.96;
 
-      // Если секций много — стартуем сразу с 4 колонок
-      var sectionCount = ${totalSections};
       var itemCount = ${totalItems};
+      // Стартовое кол-во колонок: подбираем по объёму
       if (itemCount > 60) columns.style.columnCount = '4';
       if (itemCount > 110) columns.style.columnCount = '5';
 
       var fontPt = 8.5;
       var minFontPt = 5.0;
+      var maxFontPt = 14.0;
       var step = 0.25;
 
-      function fits() {
-        return doc.scrollHeight <= maxHeightPx + 1;
+      function fits() { return doc.scrollHeight <= maxHeightPx + 1; }
+      function tooSmall() { return doc.scrollHeight < targetMin; }
+      function setFont(pt) { doc.style.fontSize = pt.toFixed(2) + 'pt'; }
+
+      setFont(fontPt);
+
+      // 1) Сначала уменьшаем колонки, если контента мало (чтобы шрифт мог расти)
+      var cols = parseInt(getComputedStyle(columns).columnCount, 10) || 3;
+      // если стартово 3 и пунктов <= 30 — пробуем 2 колонки для большего шрифта
+      if (itemCount <= 24 && cols > 2) {
+        columns.style.columnCount = '2';
+        cols = 2;
+      }
+      if (itemCount <= 12 && cols > 1) {
+        columns.style.columnCount = '1';
+        cols = 1;
       }
 
-      function setFont(pt) {
-        doc.style.fontSize = pt.toFixed(2) + 'pt';
-      }
+      var safety = 400;
 
-      // Уменьшаем шрифт пока не влезет
-      var safety = 200;
+      // 2) Если контент переполняет — уменьшаем шрифт
       while (!fits() && fontPt > minFontPt && safety-- > 0) {
         fontPt -= step;
         setFont(fontPt);
       }
-
       // Если всё ещё не влезает — добавляем колонки
-      var cols = parseInt(getComputedStyle(columns).columnCount, 10) || 3;
       while (!fits() && cols < 6 && safety-- > 0) {
         cols += 1;
         columns.style.columnCount = String(cols);
       }
-
-      // Финальный жим — крошечное уменьшение если всё ещё переполнено
-      safety = 50;
+      // Финальный жим вниз
       while (!fits() && fontPt > 4 && safety-- > 0) {
         fontPt -= 0.2;
         setFont(fontPt);
+      }
+
+      // 3) Если контент сильно меньше листа — РАСТЯГИВАЕМ шрифт вверх,
+      //    чтобы заполнить всю страницу без белых полей снизу.
+      safety = 400;
+      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+        fontPt += step;
+        setFont(fontPt);
+        // если перелетели — откатываемся на полшага и выходим
+        if (!fits()) {
+          fontPt -= step;
+          setFont(fontPt);
+          break;
+        }
+      }
+      // Микро-подгонка вверх
+      safety = 50;
+      while (tooSmall() && fontPt < maxFontPt && safety-- > 0) {
+        fontPt += 0.1;
+        setFont(fontPt);
+        if (!fits()) {
+          fontPt -= 0.1;
+          setFont(fontPt);
+          break;
+        }
       }
     })();
 
