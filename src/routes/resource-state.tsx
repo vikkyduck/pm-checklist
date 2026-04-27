@@ -231,26 +231,23 @@ function ResourceStatePage() {
         <section className="mt-16 sm:mt-20 lg:mt-28">
           <div className="hairline mb-6" />
           <div className="border-l-2 border-accent pl-5">
-            <div className="eyebrow mb-2 text-accent">Памятка</div>
+            <div className="eyebrow mb-2 text-accent">Как пользоваться</div>
             <p className="max-w-3xl text-sm leading-relaxed text-foreground/85 sm:text-base">
-              Перед сложным разговором задайте себе четыре вопроса:{" "}
+              Четыре уровня — это не чек-лист «закрой каждый». У каждого есть{" "}
               <span className="font-semibold text-foreground">
-                зачем мне это
-              </span>{" "}
-              (смысл),{" "}
-              <span className="font-semibold text-foreground">
-                что именно я отстаиваю
-              </span>{" "}
-              (интеллект),{" "}
-              <span className="font-semibold text-foreground">
-                в какой я зоне
-              </span>{" "}
-              (эмоции),{" "}
-              <span className="font-semibold text-foreground">
-                готово ли тело
-              </span>{" "}
-              (физика). Если хоть один уровень в дефиците — сначала восстановите
-              ресурс, потом идите в переговоры.
+                свой ведущий уровень восстановления
+              </span>
+              : кто-то возвращает ассертивность через смысл, кто-то — через
+              ясность мысли, эмоции или тело. Чтобы понять свой тип, пройдите{" "}
+              <Link
+                to="/resource-radar"
+                className="font-semibold text-accent underline-offset-4 hover:underline"
+              >
+                Радар ресурсности
+              </Link>{" "}
+              — он покажет ваш архетип. Дальше читайте рекомендации именно по
+              своему ведущему уровню: оттуда восстановление пойдёт быстрее
+              всего, а остальные блоки подтянутся следом.
             </p>
           </div>
         </section>
