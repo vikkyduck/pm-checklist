@@ -98,10 +98,10 @@ function MindMapPage() {
               type="button"
               onClick={handleDownload}
               className="btn-ghost"
-              title="Открыть для печати или сохранения в PDF"
+              title="Откроется окно печати — выберите «Сохранить как PDF»"
             >
               <Download className="h-3.5 w-3.5" aria-hidden />
-              Скачать PDF
+              Распечатать
             </button>
           </div>
 
@@ -162,6 +162,12 @@ function MindMapPage() {
         </header>
 
         {/* Stage rail */}
+        <div className="mb-4 flex items-baseline justify-between gap-3">
+          <div className="eyebrow">Выберите этап ↓</div>
+          <div className="text-[11px] text-muted-foreground">
+            Прогресс сохраняется автоматически
+          </div>
+        </div>
         <StageRail
           activeStage={activeStage}
           onSelect={setActiveStage}
@@ -177,6 +183,12 @@ function MindMapPage() {
 
           {/* Categories */}
           <div className="lg:col-span-8">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="eyebrow">Блоки этапа · нажмите, чтобы раскрыть</div>
+              <div className="text-[11px] text-muted-foreground">
+                {stage.categories.length} {stage.categories.length === 1 ? "блок" : "блоков"}
+              </div>
+            </div>
             <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-2">
               {filteredCategories.map((cat, idx) => {
                 const key = `${stage.id}-${cat.title}`;
@@ -277,13 +289,23 @@ function StageRail({
           <button
             key={s.id}
             onClick={() => onSelect(s.id)}
+            aria-pressed={active}
+            title={`Этап ${s.index}: ${s.title}`}
             className={[
-              "group relative min-w-[150px] flex-1 rounded-2xl border px-3.5 py-3 text-left transition-all duration-300 sm:min-w-[170px] sm:px-4 sm:py-3.5",
+              "group relative min-w-[150px] flex-1 cursor-pointer rounded-2xl border px-3.5 py-3 text-left transition-all duration-300 sm:min-w-[170px] sm:px-4 sm:py-3.5",
               active
-                ? "border-[var(--hairline-strong)] bg-[var(--surface-strong)]"
-                : "border-[var(--hairline)] bg-[var(--surface)] hover:border-[var(--hairline-strong)]",
+                ? "border-[var(--hairline-strong)] bg-[var(--surface-strong)] shadow-[var(--shadow-md)]"
+                : "border-[var(--hairline)] bg-[var(--surface)] hover:-translate-y-px hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)]",
             ].join(" ")}
           >
+            {/* Active indicator — top accent bar */}
+            {active && (
+              <span
+                className="absolute inset-x-3 top-0 h-[2px] rounded-b-full"
+                style={{ background: `var(--${s.color})` }}
+                aria-hidden
+              />
+            )}
             <div className="flex items-center gap-3">
               <span
                 className={[
@@ -457,45 +479,64 @@ function CategoryCard({
     (_, i) => progress[itemId(stage.id, title, i)],
   ).length;
   const complete = doneCount === items.length && items.length > 0;
+  const pct = items.length > 0 ? Math.round((doneCount / items.length) * 100) : 0;
   return (
     <div
       className={[
-        "surface relative overflow-hidden rounded-2xl transition-all duration-300 animate-fade-up",
-        open ? "sm:col-span-2" : "",
+        "surface group/card relative overflow-hidden rounded-2xl transition-all duration-300 animate-fade-up",
+        open
+          ? "sm:col-span-2 border-[var(--hairline-strong)]"
+          : "hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)]/50",
       ].join(" ")}
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <button
         onClick={onToggle}
-        className="relative flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[var(--surface-strong)] sm:px-5 sm:py-4"
+        aria-expanded={open}
+        title={open ? "Свернуть блок" : `Открыть ${items.length} пунктов`}
+        className="relative flex w-full cursor-pointer flex-col gap-2.5 px-4 py-3.5 text-left transition-colors sm:px-5 sm:py-4"
       >
-        <div className="flex min-w-0 items-center gap-3">
-          <span
-            className="h-1.5 w-1.5 shrink-0 rounded-full transition-opacity"
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className="h-1.5 w-1.5 shrink-0 rounded-full transition-opacity"
+              style={{
+                background: `var(--${stage.color})`,
+                opacity: complete ? 1 : doneCount > 0 ? 0.8 : 0.35,
+              }}
+            />
+            <h3
+              className="truncate text-[14.5px] font-medium leading-snug text-foreground"
+              style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.012em" }}
+            >
+              {title}
+            </h3>
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <span
+              className="num text-xs"
+              style={{
+                color: complete
+                  ? `var(--${stage.color})`
+                  : "var(--muted-foreground)",
+              }}
+            >
+              {doneCount}/{items.length}
+            </span>
+            <Chevron open={open} />
+          </div>
+        </div>
+        {/* Mini progress bar — shows fill state at a glance */}
+        <div className="ml-[14px] h-px overflow-hidden bg-[var(--hairline)]">
+          <div
+            className="h-full transition-all duration-500"
             style={{
-              background: `var(--${stage.color})`,
-              opacity: complete ? 1 : 0.6,
+              width: `${pct}%`,
+              background: complete
+                ? `var(--${stage.color})`
+                : "var(--hairline-strong)",
             }}
           />
-          <h3
-            className="truncate text-[14.5px] font-medium leading-snug text-foreground"
-            style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.012em" }}
-          >
-            {title}
-          </h3>
-        </div>
-        <div className="flex shrink-0 items-center gap-3">
-          <span
-            className="text-xs tabular-nums"
-            style={{
-              color: complete
-                ? `var(--${stage.color})`
-                : "var(--muted-foreground)",
-            }}
-          >
-            {doneCount}/{items.length}
-          </span>
-          <Chevron open={open} />
         </div>
       </button>
 

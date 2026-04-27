@@ -48,7 +48,7 @@ export function Breadcrumbs() {
           className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground"
           style={{ fontFamily: "var(--font-mono)" }}
         >
-          Practice · навигатор PM
+          Главная · навигатор PM
         </span>
       </nav>
     );

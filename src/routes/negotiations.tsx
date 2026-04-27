@@ -147,15 +147,15 @@ function NegotiationsPage() {
         {/* Hero */}
         <header className="mb-10 sm:mb-14 lg:mb-20">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="eyebrow">Раздел 04 · Переговоры</div>
+            <div className="eyebrow">Раздел 04 · разбор ролевой игры</div>
             <button
               type="button"
               onClick={handleDownload}
               className="btn-ghost"
-              title="Открыть для печати или сохранения в PDF"
+              title="Откроется окно печати — выберите «Сохранить как PDF»"
             >
               <Download className="h-3.5 w-3.5" aria-hidden />
-              Скачать PDF
+              Распечатать
             </button>
           </div>
           <h1 className="mt-7 text-balance text-foreground display text-[2.25rem] sm:text-5xl md:text-6xl lg:text-[5rem]">
@@ -166,9 +166,9 @@ function NegotiationsPage() {
             игрок
           </h1>
           <p className="lede mt-6 max-w-2xl">
-            Пять блоков наблюдаемого поведения PM: от запуска встречи до
-            фиксации результата. Отмечайте по ходу разбора — прогресс
-            сохраняется автоматически.
+            Чек-лист для дебрифа ролевой игры в переговорах с заказчиком.
+            Используйте во время разбора: отметьте, что игрок (PM) сделал,
+            а что упустил. Прогресс сохраняется автоматически.
           </p>
 
           {/* Progress — single hairline */}
