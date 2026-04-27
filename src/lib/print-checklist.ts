@@ -363,11 +363,12 @@ function buildHtml(data: PrintChecklist): string {
     background: #fff;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     margin: 0 auto;
-    padding: 8mm;
+    padding: 0;
+    overflow: hidden;
   }
   @media print {
     body { background: #fff; padding: 0; }
-    .sheet { box-shadow: none; padding: 0; margin: 0; min-height: 281mm; }
+    .sheet { box-shadow: none; padding: 0; margin: 0; height: 281mm; overflow: hidden; }
   }
 </style>
 </head>
