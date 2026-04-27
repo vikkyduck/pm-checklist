@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { ROADMAP, META, type Stage, type Item } from "@/lib/pm-roadmap";
 import { useChecklistProgress, itemId } from "@/hooks/use-checklist-progress";
+import { printChecklist } from "@/lib/print-checklist";
 
 export const Route = createFileRoute("/")({
   component: MindMapPage,
@@ -60,6 +61,30 @@ function MindMapPage() {
     setOpenCategory(null);
   }, [activeStage]);
 
+  function handleDownload() {
+    printChecklist({
+      title: META.title,
+      subtitle: META.subtitle,
+      description: META.description,
+      usage: META.usage,
+      sections: ROADMAP.map((s) => ({
+        number: `Этап ${s.index}`,
+        title: s.title,
+        subtitle: s.subtitle,
+        intro: s.intro,
+        accentColor: cssVar(`--${s.color}`),
+        groups: s.categories.map((c) => ({
+          title: c.title,
+          intro: c.intro,
+          items: c.items.map((it) => ({
+            title: it.title,
+            detail: it.detail,
+          })),
+        })),
+      })),
+    });
+  }
+
   return (
     <main className="relative min-h-screen">
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
@@ -67,8 +92,19 @@ function MindMapPage() {
         {/* Header */}
         <header className="mb-10 sm:mb-14 lg:mb-20">
           <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="eyebrow mb-5">{META.subtitle}</div>
-            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[5rem]">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="eyebrow">{META.subtitle}</div>
+              <button
+                type="button"
+                onClick={handleDownload}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)] hover:text-foreground"
+                title="Открыть для печати или сохранения в PDF"
+              >
+                <DownloadIcon />
+                Скачать чек-лист
+              </button>
+            </div>
+            <h1 className="mt-5 text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[5rem]">
               {META.title}
             </h1>
             <p className="mt-3 text-base leading-snug text-muted-foreground sm:text-lg lg:text-xl">
@@ -565,4 +601,33 @@ function SearchIcon() {
       <path d="m21 21-4.3-4.3" />
     </svg>
   );
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="13"
+      height="13"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M5 21h14" />
+    </svg>
+  );
+}
+
+/** Резолвит CSS-переменную из :root в актуальный цвет (для встраивания в печатный HTML) */
+function cssVar(name: string): string {
+  if (typeof window === "undefined") return "#111827";
+  const v = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  return v || "#111827";
 }

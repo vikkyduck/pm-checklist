@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useChecklistProgress } from "@/hooks/use-checklist-progress";
+import { printChecklist } from "@/lib/print-checklist";
 
 export const Route = createFileRoute("/negotiations")({
   component: NegotiationsPage,
@@ -118,14 +119,46 @@ function NegotiationsPage() {
     return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
   }, [progress]);
 
+  function handleDownload() {
+    printChecklist({
+      title: "Переговоры с заказчиком",
+      subtitle: "Чек-лист оценки PM в ролевой игре переговоров",
+      description:
+        "Пять блоков наблюдаемого поведения PM: от запуска встречи до фиксации результата. Отмечайте по ходу разбора каждый пункт.",
+      sections: SECTIONS.map((s) => ({
+        number: s.number,
+        title: s.title,
+        subtitle: s.subtitle,
+        accentColor: cssVar(s.stageVar),
+        groups: [
+          {
+            title: "Наблюдаемое поведение",
+            items: s.items.map((text) => ({ title: text })),
+          },
+        ],
+      })),
+    });
+  }
+
   return (
     <main className="relative min-h-screen">
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20">
         {/* Hero */}
         <header className="mb-10 sm:mb-14 lg:mb-20">
           <div className="pl-12 sm:pl-14 lg:pl-0">
-            <div className="eyebrow mb-5">Переговоры с заказчиком</div>
-            <h1 className="text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="eyebrow">Переговоры с заказчиком</div>
+              <button
+                type="button"
+                onClick={handleDownload}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1.5 text-[11px] font-medium text-foreground/80 transition-colors hover:border-[var(--hairline-strong)] hover:bg-[var(--surface-strong)] hover:text-foreground"
+                title="Открыть для печати или сохранения в PDF"
+              >
+                <DownloadIcon />
+                Скачать чек-лист
+              </button>
+            </div>
+            <h1 className="mt-5 text-balance text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] text-foreground sm:text-5xl md:text-6xl lg:text-[4.5rem]">
               Что должен сделать игрок
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg">
@@ -816,6 +849,35 @@ function GuideSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** Резолвит CSS-переменную из :root в актуальный цвет (для встраивания в печатный HTML) */
+function cssVar(name: string): string {
+  if (typeof window === "undefined") return "#111827";
+  const v = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  return v || "#111827";
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="13"
+      height="13"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M5 21h14" />
+    </svg>
   );
 }
 
