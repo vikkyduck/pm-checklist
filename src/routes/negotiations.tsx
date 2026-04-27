@@ -178,128 +178,104 @@ function NegotiationsPage() {
             <span>Перейти к руководству по аргументации</span>
             <span aria-hidden>→</span>
           </a>
-          {SECTIONS.map((section, idx) => {
+          {SECTIONS.map((section) => {
             const doneInSection = section.items.filter(
               (_, i) => progress[negotiationItemId(section.id, i)],
             ).length;
+            const allDone =
+              doneInSection === section.items.length && section.items.length > 0;
             return (
-              <article
+              <section
                 key={section.id}
                 id={section.id}
-                className="glass stage-glow relative overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-6 lg:p-9"
-                style={
-                  {
-                    "--stage-color": `var(${section.stageVar})`,
-                    animationDelay: `${idx * 60}ms`,
-                  } as React.CSSProperties
-                }
+                className="relative animate-fade-up scroll-mt-20"
               >
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -right-3 -top-4 select-none text-[90px] font-semibold leading-none tracking-tighter opacity-[0.06] sm:-right-4 sm:-top-6 sm:text-[120px] lg:text-[170px]"
-                  style={{ color: `var(${section.stageVar})` }}
-                >
-                  {section.number}
-                </span>
-
-                <div className="relative space-y-4 sm:space-y-5">
-                  <div className="flex flex-wrap items-end justify-between gap-3">
+                <header className="mb-5 sm:mb-6">
+                  <div className="flex items-baseline gap-4 sm:gap-5">
+                    <span
+                      className="text-sm font-semibold tabular-nums tracking-tight"
+                      style={{ color: `var(${section.stageVar})` }}
+                    >
+                      {section.number}
+                    </span>
                     <div className="min-w-0 flex-1">
-                      <div
-                        className="mb-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:px-3 sm:text-[11px]"
-                        style={{
-                          background: `color-mix(in oklab, var(${section.stageVar}) 18%, transparent)`,
-                          color: `var(${section.stageVar})`,
-                        }}
-                      >
-                        <span
-                          className="h-1.5 w-1.5 rounded-full"
-                          style={{
-                            background: `var(${section.stageVar})`,
-                            boxShadow: `0 0 10px var(${section.stageVar})`,
-                          }}
-                        />
-                        Блок {section.number}
-                      </div>
-                      <h2 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
+                      <h2 className="text-balance text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl lg:text-3xl">
                         {section.title}
                       </h2>
-                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                        {section.subtitle}
-                      </p>
+                      <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
+                        <span>{section.subtitle}</span>
+                        <span className="h-3 w-px bg-[var(--hairline-strong)]" />
+                        <span
+                          className="tabular-nums"
+                          style={
+                            allDone
+                              ? { color: `var(${section.stageVar})` }
+                              : undefined
+                          }
+                        >
+                          {doneInSection}/{section.items.length}
+                        </span>
+                      </div>
                     </div>
-                    <span
-                      className="rounded-full px-2.5 py-1 text-[11px] font-medium tabular-nums"
-                      style={{
-                        background: `color-mix(in oklab, var(${section.stageVar}) 18%, transparent)`,
-                        color: `var(${section.stageVar})`,
-                      }}
-                    >
-                      {doneInSection}/{section.items.length}
-                    </span>
                   </div>
+                </header>
 
-                  <ul className="grid gap-2 sm:gap-2.5">
-                    {section.items.map((text, i) => {
-                      const id = negotiationItemId(section.id, i);
-                      const checked = !!progress[id];
-                      return (
-                        <li key={id}>
-                          <button
-                            type="button"
-                            onClick={() => toggle(id)}
+                <ul className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+                  {section.items.map((text, i) => {
+                    const id = negotiationItemId(section.id, i);
+                    const checked = !!progress[id];
+                    return (
+                      <li key={id}>
+                        <button
+                          type="button"
+                          onClick={() => toggle(id)}
+                          className="group flex w-full items-start gap-3.5 px-1 py-3.5 text-left transition-colors hover:bg-[var(--surface)] sm:gap-4 sm:px-2 sm:py-4"
+                        >
+                          <span
+                            className="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md border transition-all duration-200"
+                            style={
+                              checked
+                                ? {
+                                    borderColor: `var(${section.stageVar})`,
+                                    background: `var(${section.stageVar})`,
+                                  }
+                                : {
+                                    borderColor: "var(--hairline-strong)",
+                                    background: "transparent",
+                                  }
+                            }
+                            aria-hidden
+                          >
+                            {checked && (
+                              <svg
+                                viewBox="0 0 24 24"
+                                className="h-3 w-3"
+                                fill="none"
+                                stroke="oklch(0.16 0.012 255)"
+                                strokeWidth="3.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M20 6 9 17l-5-5" />
+                              </svg>
+                            )}
+                          </span>
+                          <span
                             className={[
-                              "group flex w-full items-start gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-left transition-all sm:px-4 sm:py-3",
-                              "hover:border-white/[0.12] hover:bg-white/[0.05]",
-                              checked ? "opacity-70" : "",
+                              "text-[14.5px] leading-relaxed transition-colors sm:text-[15px]",
+                              checked
+                                ? "text-muted-foreground line-through decoration-muted-foreground/30"
+                                : "text-foreground/90",
                             ].join(" ")}
                           >
-                            <span
-                              className={[
-                                "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all",
-                                checked
-                                  ? "border-transparent"
-                                  : "border-white/20 group-hover:border-white/40",
-                              ].join(" ")}
-                              style={
-                                checked
-                                  ? {
-                                      background: `var(${section.stageVar})`,
-                                      boxShadow: `0 0 14px color-mix(in oklab, var(${section.stageVar}) 60%, transparent)`,
-                                    }
-                                  : undefined
-                              }
-                              aria-hidden
-                            >
-                              {checked && (
-                                <svg
-                                  viewBox="0 0 16 16"
-                                  className="h-3 w-3"
-                                  fill="none"
-                                  stroke="oklch(0.18 0.03 255)"
-                                  strokeWidth="3"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M3 8.5l3 3 7-7" />
-                                </svg>
-                              )}
-                            </span>
-                            <span
-                              className={[
-                                "text-sm leading-relaxed text-foreground/90",
-                                checked ? "line-through decoration-foreground/30" : "",
-                              ].join(" ")}
-                            >
-                              {text}
-                            </span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </article>
+                            {text}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
             );
           })}
         </div>
