@@ -1,10 +1,10 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { ChevronRight, Home } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 type Crumb = { label: string; to?: string };
 
 const ROUTE_LABELS: Record<string, string> = {
-  "/": "Главная",
+  "/": "Митигирование рисков",
   "/negotiations": "Переговоры",
   "/resource-state": "Ресурсное состояние",
   "/resource-radar": "Радар ресурсности",
@@ -27,10 +27,9 @@ function buildTrail(pathname: string): Crumb[] {
   }
 
   if (pathname !== "/") {
-    trail.unshift({ label: ROUTE_LABELS["/"], to: "/" });
+    trail.unshift({ label: "Practice", to: "/" });
   }
 
-  // The current page (last item) shouldn't be a link
   if (trail.length > 0) {
     trail[trail.length - 1] = { label: trail[trail.length - 1].label };
   }
@@ -47,30 +46,31 @@ export function Breadcrumbs() {
   return (
     <nav
       aria-label="Хлебные крошки"
-      className="mx-auto w-full max-w-5xl px-4 pt-[max(3.5rem,calc(env(safe-area-inset-top)+3rem))] pb-2 sm:px-6 sm:pt-14 lg:px-10"
+      className="mx-auto w-full max-w-6xl px-4 pt-3 pb-1 sm:px-6 lg:px-10"
     >
-      <ol className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground sm:text-xs">
+      <ol
+        className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] uppercase tracking-[0.12em]"
+        style={{ fontFamily: "var(--font-mono)" }}
+      >
         {trail.map((crumb, i) => {
           const isLast = i === trail.length - 1;
           return (
-            <li key={`${crumb.label}-${i}`} className="flex items-center gap-1.5">
+            <li key={`${crumb.label}-${i}`} className="flex items-center gap-2">
               {i > 0 && (
-                <ChevronRight className="h-3 w-3 text-[var(--hairline-strong)]" />
+                <ChevronRight
+                  className="h-3 w-3 text-[var(--hairline-strong)]"
+                  aria-hidden
+                />
               )}
               {crumb.to && !isLast ? (
                 <Link
                   to={crumb.to}
-                  className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 transition-colors hover:bg-[var(--surface)] hover:text-foreground"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  {i === 0 && <Home className="h-3 w-3" />}
                   {crumb.label}
                 </Link>
               ) : (
-                <span
-                  className="inline-flex items-center gap-1 px-1.5 py-0.5 font-medium text-foreground"
-                  aria-current="page"
-                >
-                  {i === 0 && <Home className="h-3 w-3" />}
+                <span className="text-foreground/90" aria-current="page">
                   {crumb.label}
                 </span>
               )}
