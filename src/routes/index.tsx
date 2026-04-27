@@ -162,6 +162,12 @@ function MindMapPage() {
         </header>
 
         {/* Stage rail */}
+        <div className="mb-4 flex items-baseline justify-between gap-3">
+          <div className="eyebrow">Выберите этап ↓</div>
+          <div className="text-[11px] text-muted-foreground">
+            Прогресс сохраняется автоматически
+          </div>
+        </div>
         <StageRail
           activeStage={activeStage}
           onSelect={setActiveStage}
